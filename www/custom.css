@@ -1,0 +1,191 @@
+/* heading/text colours */
+.skin-blue .content-wrapper {
+  color: #001155;
+}
+
+.content {
+  padding-top: 0;
+}
+
+h2 {
+  margin-top: 0;
+}
+
+/* logo */ 
+
+.skin-blue .main-header .logo {
+  background-color: #ffffff;
+  color: #001155;
+  
+}
+/*logo when hovered*/
+
+.skin-blue .main-header .logo:hover {
+  background-color: #ffffff;
+  color: #001155;
+}
+
+
+/* navbar */ 
+.skin-blue .main-header .navbar {
+  background-color: #ffffff;
+} 
+
+
+/* SIDEBAR STYLE */
+
+/* sidebar toggle */
+.skin-blue .main-header .navbar .sidebar-toggle {
+	color: #041457;
+}
+
+/* Sidebar Background Colour */
+.skin-blue .main-sidebar {
+  background: #ffffff; /*white*/
+}
+
+/* Sidebar Tabs */
+.skin-blue .main-sidebar .sidebar .sidebar-menu a{
+	color: #041457;  /*text colour - dark blue */
+	
+}
+
+/*Sidebar Input*/
+
+.skin-blue .main-sidebar .sidebar .sidebar-menu label{
+	color: #041457;  /*text colour - dark blue */
+	
+}
+
+/*Sidebar toggle hover */
+.skin-blue .main-header .navbar .sidebar-toggle:hover{
+  background-color: #041457;
+}
+
+/* sidebar: tab selected*/
+.skin-blue .main-sidebar .sidebar .sidebar-menu .active a{
+	color: #ffffff; /*text colour - white */
+	border-color: #ffee55
+}
+.skin-blue .sidebar-menu > li:hover > a {
+	background: #041457;
+	border-color: #041457
+}
+.skin-blue .sidebar-menu >li.active >a {
+	background: #0077ff;
+	border-color: #ffee55
+}
+
+/* sidebar: tab hovered*/
+.skin-blue .main-sidebar .sidebar .sidebar-menu a:hover{
+	background: #041457;
+	color: #ffffff
+}
+
+/*sliver on selected tab */
+.nav-tabs-custom .nav-tabs li.active:hover a, .nav-tabs-custom .nav-tabs li.active a {
+     background-color: transparent;
+     border-color: transparent;
+}
+
+.nav-tabs-custom .nav-tabs li.active {
+     border-top-color: #ffee55;
+}
+
+/* /*Primary status colour*/
+.box.box-solid.box-info>.box-header {
+	color:#a1a1a1;
+	background-color:#a1a1a1;
+}
+
+.box.box-solid.box-info{
+	border-bottom-color:#a1a1a1;
+	border-left-color:#a1a1a1;
+	border-right-color:#a1a1a1;
+	border-top-color:#a1a1a1;
+} 
+
+.content-wrapper, .right-side {
+	background-color: #ffffff;
+}
+
+/*Info Box Colours*/
+
+.info-box {
+  border: 1px solid #000;
+	color: #ffffff;
+	font-size: 16px;
+}
+
+.info-box-icon {
+  background: #000000;
+  background: rgba(0,0,0,0);
+  border-right: 0.5px black;
+  color: #ffffff;
+  
+}
+
+.info-box-text {
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.info-box-number {
+  font-size: 18px;
+}
+
+.bg-green {
+  color: #001155!important;
+	background-color: #4d94ff!important;
+}
+.bg-red {
+  color: #001155!important;
+	background-color: #ffb24d!important;
+}
+.bg-aqua {
+	background-color: #a1a1a1!important;
+}
+
+
+
+/* Create two equal columns that floats next to each other */
+.column {
+  float: left;
+  width: 50%;
+  padding: 10px;
+  height: 300px; /* Should be removed. Only for demonstration */
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/*Turn off plotly hoverbar */
+.modebar {
+  display: none!important;
+}
+
+.sq {
+  height:15px;
+  width:15px; 
+  border: 1px solid #000;
+  border-color: #000;
+  display: inline-block;
+} 
+.orange {
+  background-color: #ff9100;
+}
+.blue {
+  background-color: #006eff;
+}
+
+.download-button {
+  height: 50px;
+  color: #006eff;
+  background-color: white;
+  padding: 20px;
+}
+

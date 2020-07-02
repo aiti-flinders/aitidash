@@ -1,0 +1,13 @@
+name: WorkSight
+title: WorkSight
+username:
+account: aiti
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 977140
+bundleId: 3342154
+url: https://aiti.shinyapps.io/WorkSight/
+when: 1593668395.51688
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: plot.png|Unemployment rate.png|www/SE_029-AITI-Identifier.png|www/SE_029-AITI-Identifier2.png|archive
