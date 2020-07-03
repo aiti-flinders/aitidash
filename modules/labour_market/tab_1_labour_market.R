@@ -29,25 +29,30 @@ labourMarketUI <- function(id, data) {
   tabPanel(title = uiOutput(ns("title_panel")),
            plotlyOutput(ns("plot"), width = '100%'),
            fluidRow(
-             box(status= 'info',solidHeader=TRUE,
+             box(width = 4, status= 'info',solidHeader=TRUE,
                  selectInput(
                    inputId = ns('indicator'), 
                    label = "Select Indicator",
                    choices = indicator_choices,
-                   selected = "Unemployment rate"),
+                   selected = "Unemployment rate")
+                 ),
+             box(width = 4, status = "info", solidHeader = TRUE,
                  selectInput(
                    inputId = ns('series_type'),
                    label =  "Select Series Type", 
                    choices = series_choices,
-                   selected = "Seasonally Adjusted"),
+                   selected = "Seasonally Adjusted")
+                 ),
+             box(width = 4, status = "info", solidHeader = TRUE,
                  numericInput(
                    inputId = ns('years'),
-                   label = 'Select Years',
+                   label = 'Select Year',
                    value = 2015,
                    min = min_date,
-                   max = max_date
-                   )),
-             box(status = "info", solidHeader = TRUE,
+                   max = max_date)
+                 )),
+             fluidRow(
+             box(width = 12, title = "Download what you see", solidHeader = F,
                  downloadButton(
                    outputId = ns("download_plot"),
                    label = "Download Plot",
@@ -59,6 +64,7 @@ labourMarketUI <- function(id, data) {
                    class = 'download-button'
                    ))
            )
+           
   )
 }
 
@@ -94,7 +100,7 @@ labourMarket <- function(input, output, session, data, region) {
   create_data <- reactive({
     df <- data %>%
       filter(indicator == input$indicator,
-             year >= max(.$year) - input$years,
+             year >= input$years,
              state == region(),
              age == "Total (age)",
              gender == "Persons",
@@ -121,7 +127,7 @@ labourMarket <- function(input, output, session, data, region) {
   
   output$download_plot <- downloadHandler(
     filename = function(){
-      paste(input$indicator, "-", region(), ".png", sep = '')
+      paste(input$indicator, "-plot.png", sep = '')
       },
     content = function(file) {
       plotly_IMAGE(create_plot(), out_file = file)
@@ -133,7 +139,7 @@ labourMarket <- function(input, output, session, data, region) {
       paste(input$indicator, "-data.csv", sep = '')
     },
     content = function(file) {
-      write.csv(plot_data(), file, row.names = FALSE)
+      write.csv(create_data(), file, row.names = FALSE)
     }
   )
   

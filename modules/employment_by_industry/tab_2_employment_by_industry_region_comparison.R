@@ -34,7 +34,20 @@ empIndComparisonUI <- function(id, data) {
                    inputId = ns("comparison"),
                    label = "Select Comparison Region",
                    choices = region_choices)
-             )))
+             )),
+           fluidRow(
+             box(width = 12, title = "Download what you see", solidHeader = F,
+                 downloadButton(
+                   outputId = ns("download_plot"),
+                   label = "Download Plot",
+                   class = 'download-button'
+                 ),
+                 downloadButton(
+                   outputId = ns("download_data"),
+                   label = "Download Data",
+                   class = 'download-button'
+                 ))
+           ))
 }
 
 empIndComparison <- function(input, output, session, data, region) {
@@ -50,8 +63,7 @@ empIndComparison <- function(input, output, session, data, region) {
                        selected = current_selection())
   })
   
-  output$plot <- renderPlotly({
-    #Total Employment
+  create_data <- reactive({
     df <- data %>%
       filter(indicator == input$indicator,
              industry != "Total (industry)") %>% 
@@ -65,42 +77,63 @@ empIndComparison <- function(input, output, session, data, region) {
       spread(key = state, value = share) %>%
       arrange(!!as.name(region())) %>%
       mutate(industry = as_factor(industry)) 
-            
+  })
+  
+  create_plot <- reactive({
+    p <- ggplot(create_data()) + 
+      geom_segment(aes(x = industry, 
+                       xend = industry, 
+                       y = !!as.name(region()), 
+                       yend = !!as.name(input$comparison)), 
+                   colour = aiti_darkblue) + 
+      geom_point(aes(x = industry, 
+                     y = !!as.name(region()),
+                     text = str_c(region(),
+                                  "<br>",industry, 
+                                  "<br>", as_percent(!!as.name(region()))),
+                     fill = region()),
+                 shape = 21, 
+                 colour = aiti_yellow) +
+      geom_point(aes(x = industry, 
+                     y = !!as.name(input$comparison),
+                     text = str_c(input$comparison, 
+                                  "<br>", industry,
+                                  "<br>", as_percent(!!as.name(input$comparison))),
+                     fill = input$comparison), 
+                 shape = 21,
+                 colour = aiti_blue) +
+      scale_fill_manual(breaks = c(region(), input$comparison), values = c(aiti_yellow, aiti_blue)) + 
+      coord_flip() + 
+      labs(
+        y = NULL,
+        x = NULL,
+        title = str_to_upper(str_c("share of industry employment: ", region(), " & ", input$comparison, " (", input$date_range, ")"))
+      ) +
+      theme_aiti(legend = 'bottom', base_family = "Roboto")
     
-      p <- ggplot(df) + 
-        geom_segment(aes(x = industry, 
-                         xend = industry, 
-                         y = !!as.name(region()), 
-                         yend = !!as.name(input$comparison)), 
-                     colour = aiti_darkblue) + 
-        geom_point(aes(x = industry, 
-                       y = !!as.name(region()),
-                       text = str_c(region(),
-                                    "<br>",industry, 
-                                    "<br>", as_percent(!!as.name(region()))),
-                       fill = region()),
-                   shape = 21, 
-                   colour = aiti_yellow) +
-        geom_point(aes(x = industry, 
-                       y = !!as.name(input$comparison),
-                       text = str_c(input$comparison, 
-                                    "<br>", industry,
-                                    "<br>", as_percent(!!as.name(input$comparison))),
-                       fill = input$comparison), 
-                   shape = 21,
-                   colour = aiti_blue) +
-        scale_fill_manual(breaks = c(region(), input$comparison), values = c(aiti_yellow, aiti_blue)) + 
-        coord_flip() + 
-        labs(
-          y = NULL,
-          x = NULL,
-          title = str_to_upper(str_c("share of industry employment: ", region(), " & ", input$comparison, " (", input$date_range, ")"))
-        ) +
-        theme_aiti(legend = 'bottom')
-        
     
     ggplotly(p, tooltip = 'text') %>%
       layout(legend = list(orientation = "h",
                            y = -0.15)) 
   })
+  
+  output$plot <- renderPlotly({create_plot()})
+  
+  output$download_plot <- downloadHandler(
+    filename = function(){
+      paste(input$indicator, "-plot.png", sep = '')
+    },
+    content = function(file) {
+      plotly_IMAGE(create_plot(), out_file = file)
+    }
+  )
+  
+  output$download_data <- downloadHandler(
+    filename = function() {
+      paste(input$indicator, "-data.csv", sep = '')
+    },
+    content = function(file) {
+      write.csv(create_data(), file, row.names = FALSE)
+    }
+  )
 }

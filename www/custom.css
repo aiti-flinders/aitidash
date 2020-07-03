@@ -189,3 +189,14 @@ h2 {
   padding: 20px;
 }
 
+.selectize-input {
+  background-color: white;
+  } .focus {
+  border-color: #006eff;
+}
+
+.irs-bar {
+  background: #006eff;
+  border: #006eff;
+}
+

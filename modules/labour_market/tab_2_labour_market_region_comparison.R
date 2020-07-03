@@ -17,8 +17,8 @@ labourMarketRegionalUI <- function(id, data) {
   series_choices <- sort(unique(data$series_type))
   state_choices <- sort(unique(data$state))
 
-  date_min <- min(data$date)
-  date_max <- max(data$date)
+  date_min <- min(data$year)
+  date_max <- max(data$year)
   
   tabPanel(title = "Regional Comparison", plotlyOutput(ns("plot"), width='100%'),
            fluidRow(
@@ -35,17 +35,29 @@ labourMarketRegionalUI <- function(id, data) {
                    selected = "Seasonally Adjusted"),
                  numericInput(
                    inputId = ns('years'),
-                   label = 'Select Years',
-                   value = 3,
-                   min = 1,
-                   max = 42,
-                   step = 1)),
+                   label = 'Select Year',
+                   value = 2015,
+                   min = date_min,
+                   max = date_max)),
              box(status='info',solidHeader=TRUE,
                  checkboxGroupInput(
                    inputId = ns('state'),
                    label = "Select Comparison Region",
                    choices = state_choices))
-             )
+             ),
+           fluidRow(
+             box(width = 12, title = "Download what you see", solidHeader = F,
+                 downloadButton(
+                   outputId = ns("download_plot"),
+                   label = "Download Plot",
+                   class = 'download-button'
+                 ),
+                 downloadButton(
+                   outputId = ns("download_data"),
+                   label = "Download Data",
+                   class = 'download-button'
+                 ))
+           )
            )
 } 
 
@@ -82,21 +94,43 @@ labourMarketRegional <- function(input, output, session, data, region) {
   })
 
   
-  output$plot <- renderPlotly({
-    
-    validate(
-      need(nrow(data[data$indicator == input$indicator & data$state == region(), ]), "Updating")
-    )
-    
-    abs_plot(indicator = input$indicator, 
+  create_data <- reactive({
+    df <- data %>%
+      filter(indicator == input$indicator,
+             year >= input$years,
+             state %in% c(region(), input$state),
+             age == "Total (age)",
+             gender == "Persons",
+             series_type == input$series_type) %>%
+      select(date, indicator, value, gender, age, state)
+  })
+  
+  create_plot <- reactive({
+    p <-   abs_plot(indicator = input$indicator, 
              years = input$years,
              states = c(region(), input$state),
              series_type = input$series_type,
              compare_aus = FALSE,
              plotly = TRUE)
-    
-
-    
-
   })
+  
+  output$plot <- renderPlotly({create_plot()})
+  
+  output$download_plot <- downloadHandler(
+    filename = function(){
+      paste(input$indicator, "-plot.png", sep = '')
+    },
+    content = function(file) {
+      plotly_IMAGE(create_plot(), out_file = file)
+    }
+  )
+  
+  output$download_data <- downloadHandler(
+    filename = function() {
+      paste(input$indicator, "-data.csv", sep = '')
+    },
+    content = function(file) {
+      write.csv(create_data(), file, row.names = FALSE)
+    }
+  )
 }

@@ -20,8 +20,8 @@ labourMarketDemogUI <- function(id, data) {
     sort()
   
 
-  date_min <- min(data$date)
-  date_max <- max(data$date)
+  date_min <- min(data$year)
+  date_max <- max(data$year)
   
   tabPanel(title = "Demography", plotlyOutput(ns("plot"), width='100%'),
            fluidRow(
@@ -39,16 +39,28 @@ labourMarketDemogUI <- function(id, data) {
              box(status = 'info', solidHeader = TRUE,
                  numericInput(
                    inputId = ns("years"),
-                   label = 'Select Number of Years',
-                   value = 3,
-                   min = 1,
-                   max = 42,
-                   step = 1),
+                   label = 'Select Year',
+                   value = 2015,
+                   min = date_min,
+                   max = date_max),
                  selectInput(
                    inputId = ns("demographic"),
                    label = "Select Demographic Variable",
                    choices = c("Age", "Gender")
-                 ))
+                 )),
+             fluidRow(
+               box(width = 12, title = "Download what you see", solidHeader = F,
+                   downloadButton(
+                     outputId = ns("download_plot"),
+                     label = "Download Plot",
+                     class = 'download-button'
+                   ),
+                   downloadButton(
+                     outputId = ns("download_data"),
+                     label = "Download Data",
+                     class = 'download-button'
+                   ))
+             )
            )
   )
 }
@@ -88,10 +100,18 @@ labourMarketDemog <- function(input, output, session, data, region) {
                       choices = choices())
   })
   
-
-  output$plot <- renderPlotly({
-    
-    abs_plot(indicator = input$indicator,
+  create_data <- reactive({
+    df <- data %>%
+      filter(indicator == input$indicator,
+             state == region(),
+             series_type == input$series_type,
+             gender == genders(),
+             age == ages(),
+             year >= input$years)
+  })
+  
+  create_plot <- reactive({
+    p <- abs_plot(indicator = input$indicator,
                states = region(),
                series_type = input$series_type,
                genders = genders(),
@@ -100,4 +120,27 @@ labourMarketDemog <- function(input, output, session, data, region) {
                compare_aus = FALSE,
                plotly = TRUE)
   })
+  
+
+  output$plot <- renderPlotly({create_plot()})
+  
+  output$download_plot <- downloadHandler(
+    filename = function(){
+      paste(input$indicator, "-plot.png", sep = '')
+    },
+    content = function(file) {
+      plotly_IMAGE(create_plot(), out_file = file)
+    }
+  )
+  
+  output$download_data <- downloadHandler(
+    filename = function() {
+      paste(input$indicator, "-data.csv", sep = '')
+    },
+    content = function(file) {
+      write.csv(create_data(), file, row.names = FALSE)
+    }
+  )
+  
+  
 }
