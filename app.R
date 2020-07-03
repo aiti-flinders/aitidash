@@ -124,7 +124,6 @@ emp_ind_regional = empIndComparisonUI("empInd_region", data = employment_industr
 #industry_australia = industryAustraliaUI("industry_australia", data = nat_accs)
 
 #Demographic Plots
-#pop_demo = populationDemoUI("pop_demo", data = pop_pyramid)
 
 #Analysis 
 #retail_trade_analysis = retailTradeAnalysisUI("rt_analysis", data = rt)
