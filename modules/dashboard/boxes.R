@@ -39,7 +39,7 @@ boxes <- function(input, output, session, data, indicator, region, reverse = F, 
       box_title <- names_tib[names_tib$indicator == indicator, ]$label
       box_text_current <- "Data Not Available"
       box_subtitle <- paste("For", region())
-      colour <- "yellow"
+      colour <- "red"
       icon <- "ban"
       
     } else {
@@ -60,12 +60,12 @@ boxes <- function(input, output, session, data, indicator, region, reverse = F, 
       
       if(percent == T) {
         box_text_current <- as_percent(cu)
-        box_text_yoy <- as_percent(ly)
-        box_text_mom <- as_percent(lm)
+        box_text_yoy <- str_c(ifelse(ly > 0, " +", ""), as_percent(ly))
+        box_text_mom <- str_c(ifelse(lm > 0, " +", ""), as_percent(lm))
       } else {
         box_text_current <- as_comma(cu)
-        box_text_yoy <- as_comma(ly)    
-        box_text_mom <- as_comma(lm)
+        box_text_yoy <- str_c(ifelse(ly > 0, " +", ""), as_comma(ly))
+        box_text_mom <- str_c(ifelse(lm > 0, " +", ""), as_comma(lm))
       }
       
       if(reverse == T) {
@@ -89,13 +89,14 @@ boxes <- function(input, output, session, data, indicator, region, reverse = F, 
       
     }
     
-    infoBox(fill = T, 
+    box <- infoBox(fill = T, 
             title = box_title,
             value = box_text_current,
             color = colour, 
             icon = icon(icon),
             subtitle = box_subtitle)
     
+    return(box)
   })
   
   

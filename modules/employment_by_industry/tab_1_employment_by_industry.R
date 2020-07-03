@@ -153,11 +153,10 @@ empInd <- function(input, output, session, data, region) {
           x = NULL,
           title = str_to_upper(str_c(region(), ": ", input$indicator))
         ) +
-        scale_y_continuous(expand = c(0,0.1), labels = y_labels) +
+        scale_y_continuous(expand = c(0,1), labels = y_labels) +
         scale_fill_manual(values = c(aiti_blue, aiti_grey),
                           breaks = c("fill", "NA")) + 
         coord_flip() +
-        theme(legend.position = 'none') +
         theme_aiti(base_family = "Roboto")
     } else {
       

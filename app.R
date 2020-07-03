@@ -7,66 +7,34 @@ library(shinyWidgets)
 library(plotly)
 library(reportabs)
 library(aititheme)
-theme_set(theme_bw()+ 
-            theme(
-              legend.position = 'none',
-              legend.title = element_blank(),
-              legend.background = element_blank(),
-              legend.box.background = element_rect(colour='black'),
-              legend.spacing.x = unit(0.3, 'cm'),
-              panel.grid.major.x = element_blank(),
-              panel.grid.minor.x = element_blank()
-            ))
-
-
-#Plotly Setup
+#### Preamble ####
+# Plotly Setup
 Sys.setenv("plotly_username"="hamgamb")
 Sys.setenv("plotly_api_key" = 'SDYMDyK3YM0eZrTNpyoa')
 
-#### Preamble ####
 
+# Font Setup
 dir.create("~/.fonts")
 file.copy("www/Roboto.ttf", "~/.fonts")
 system('fc-cache -f ~/.fonts')
 
+# Load Modules
+#Dashboard
 source('modules/dashboard/boxes.R')
 source('modules/dashboard/boxes_alt.R')
-# source('modules/setup.R')
-
-
-#Retail Trade
-# source("modules/retail_trade_south_australia.R")
-# source("modules/retail_trade_region.R")
-# source("modules/retail_trade_analysis.R")
-# #Labour Market
+#Labour Market
 source("modules/labour_market/tab_1_labour_market.R")
 source('modules/labour_market/tab_2_labour_market_region_comparison.R')
 source('modules/labour_market/tab_3_labour_market_demographic_comparison.R')
 source('modules/labour_market/tab_4_labour_market_analysis.R')
-#Exports
-#source('modules/exports_south_australia.R')
 #Employment by Industry
 source('modules/employment_by_industry/tab_1_employment_by_industry.R')
 source('modules/employment_by_industry/tab_2_employment_by_industry_region_comparison.R')
 source('modules/employment_by_industry/tab_3_employment_by_industry_analysis.R')
-#Population
-# source('modules/population_south_australia.R')
-# source('modules/population_region.R')
-# source('modules/population_demographic.R')
-# #Output
-# source('modules/industry_south_australia.R')
-# source('modules/industry_australia.R')
-# source('modules/industry_analysis.R')
+#Internet Vacancies
+source("modules/internet_vacancies/tab_1_ivi.R")
 
 
-
-
-#rt <- read_retail_trade()
-#pop <- read_population()
-#pop_pyramid <- read_population_pyramid()
-#exports_data <- read_exports_data() 
-# state_accs <- read_state_accounts() 
-# nat_accs <- read_national_accounts()
 
 
 
@@ -90,7 +58,7 @@ sidebar = dashboardSidebar(collapsed = FALSE,
       icon = icon("gear")
     ),
     menuItem(
-      text = "Labour Market",
+      text = "Employment Insights",
       tabName = "labour_market",
       icon = icon("briefcase")
     ),
@@ -98,6 +66,11 @@ sidebar = dashboardSidebar(collapsed = FALSE,
       text = "Employment by Industry",
       tabName = "industry",
       icon = icon('industry')
+    ),
+    menuItem(
+      text = "Internet Vacancies",
+      tabName = "internet_vacancies",
+      icon = icon('newspaper')
     ),
     radioButtons(
       inputId = "region_select",
@@ -110,25 +83,6 @@ sidebar = dashboardSidebar(collapsed = FALSE,
 
 
 
-#South Australia Plots
-#retail_trade_time_series = retailTradeUI("rt_ts", data = rt)
-emp_ind_time_series = empIndUI("empInd_ts", data = employment_industry)
-#pop_time_series = populationUI("pop_ts", data = pop)
-#exports_time_series = exportsUI("exports_ts", data = exports_data)
-#industry_time_series = industryUI('industry_ts', data = state_accs)
-
-#Regional Plots
-#retail_trade_regional = retailTradeRegionalUI("rt_region", data = rt)
-emp_ind_regional = empIndComparisonUI("empInd_region", data = employment_industry)
-#pop_region = populationRegionUI("pop_region", data = pop)
-#industry_australia = industryAustraliaUI("industry_australia", data = nat_accs)
-
-#Demographic Plots
-
-#Analysis 
-#retail_trade_analysis = retailTradeAnalysisUI("rt_analysis", data = rt)
-emp_ind_analysis = empIndAnalysisUI("empInd_analysis", data = employment_industry)
-#industry_analysis = industryAnalysisUI("industry_analysis")
 
 
 #### Dashboard Tab ####
@@ -177,52 +131,52 @@ dashboard_tab <- tabItem(
 
 
 #### Labour Market Tab ####
-labour_market_tab = tabItem(tabName = 'labour_market',
-                            fluidRow(
-                              tabBox(id = 'labour_market_tab_id',
-                                width = 12,
-                                labourMarketUI("lm_ts", data = labour_force),
-                                labourMarketRegionalUI("lm_region", data = labour_force),
-                                labourMarketDemogUI("lm_demog", data = labour_force),
-                                labourMarketAnalysisUI("lm_analysis", data = labour_force)
-                              )
-                            ))
-
-#Consumer Activity Tab
-# retail_trade_tab = tabItem(tabName = 'retail_trade',
-#                            fluidRow(
-#                              boxesUI("turnover"),
-#                              boxesUI("turnover_temp")
-#                            ),
-#                            fluidRow(
-#                              tabBox(width = 12,
-#                                     retail_trade_time_series,
-#                                     retail_trade_regional,
-#                                     retail_trade_analysis)
-#                            ))
-
-#Industry Tab
-
-emp_ind_tab = tabItem(tabName = 'industry', fluidRow(
-  tabBox(id = "employment_industry_tab_id",
-    width = 12,
-    emp_ind_time_series,
-    emp_ind_regional,
-    emp_ind_analysis
+labour_market_tab <- tabItem(
+  tabName = 'labour_market',
+  fluidRow(
+    tabBox(id = 'labour_market_tab_id',
+           width = 12,
+           labourMarketUI("lm_ts", data = labour_force),
+           labourMarketRegionalUI("lm_region", data = labour_force),
+           labourMarketDemogUI("lm_demog", data = labour_force),
+           labourMarketAnalysisUI("lm_analysis", data = labour_force)
+           )
+    )
   )
-))
 
+#Employment by Industry
+emp_ind_tab <- tabItem(
+  tabName = 'industry',
+  fluidRow(
+    tabBox(
+      id = "employment_industry_tab_id",
+      width = 12,
+      empIndUI("empInd_ts", data = employment_industry),
+      empIndComparisonUI("empInd_region", data = employment_industry),
+      empIndAnalysisUI("empInd_analysis", data = employment_industry)
+      )
+    )
+  )
+
+#IVI Tab
+internet_vacancies_tab <- tabItem(
+  tabName = "internet_vacancies", 
+  fluidRow(
+    tabBox(
+      id = "internet_vacancies_tab_id",
+      width = 12,
+      iviUI("ivi_ts", data = internet_vacancies_basic)
+    )
+  )
+)
                          
                                        
-body <- dashboardBody(
-  tags$head(
-     tags$link(rel = "stylesheet", type = 'text/css', href = 'custom.css')
-   ),
-
+body <- dashboardBody(tags$head(tags$link(rel = "stylesheet", type = 'text/css', href = 'custom.css')),
   tabItems(
     dashboard_tab,
     labour_market_tab,
-    emp_ind_tab
+    emp_ind_tab,
+    internet_vacancies_tab
   )
 )
   
@@ -252,6 +206,9 @@ server <- function(input, output) {
   callModule(empInd, "empInd_ts", data = employment_industry, region = region_selected)
   callModule(empIndComparison, "empInd_region", data = employment_industry, region = region_selected)
   callModule(empIndAnalysis, "empInd_analysis", data = employment_industry, region = region_selected)
+  
+  #IVI - Tab
+  callModule(ivi, "ivi_ts", data = internet_vacancies_basic, region = region_selected)
   
   #Employment boxes - row 1
   callModule(boxes, "employment_total", data = labour_force, region = region_selected, "Employed total", reverse = F, percent = F)

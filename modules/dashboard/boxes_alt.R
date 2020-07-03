@@ -21,7 +21,7 @@ boxesAlt <- function(input, output, session, data, indicator, region, growth = F
     "mountain", "Mining",
     "hard-hat", "Manufacturing",
     "plug", "Electricity, Gas, Water and Waste Services",
-    "plug", "Construction",
+    "hammer", "Construction",
     "warehouse", "Wholesale Trade",
     "shopping-basket", "Retail Trade",
     "utensils", "Accommodation and Food Services",
