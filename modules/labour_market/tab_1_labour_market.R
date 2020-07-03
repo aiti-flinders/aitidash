@@ -91,7 +91,7 @@ labourMarket <- function(input, output, session, data, region) {
                         unique())
   })
   
-  plot_data <- reactive({
+  create_data <- reactive({
     df <- data %>%
       filter(indicator == input$indicator,
              year >= max(.$year) - input$years,
@@ -103,29 +103,29 @@ labourMarket <- function(input, output, session, data, region) {
     
   })
   
-
-  output$plot <- renderPlotly({
-    
+  create_plot <- reactive({
     p <- abs_plot(indicator = input$indicator,
                   years = input$years,
                   state = region(),
                   series_type = input$series_type,
                   compare_aus = FALSE,
                   plotly = TRUE) 
+  })
+  
+
+  output$plot <- renderPlotly({
     
-    plotly_IMAGE(p, out_file = paste(input$indicator,"-", region(), ".png", sep = ''))
+    create_plot()
     
-    p
-    
-    
-      })
+    })
   
   output$download_plot <- downloadHandler(
     filename = function(){
       paste(input$indicator, "-", region(), ".png", sep = '')
       },
     content = function(file) {
-      file.copy(paste(input$indicator,"-", region(), ".png", sep = ''), file, overwrite = TRUE)}
+      plotly_IMAGE(create_plot(), out_file = file)
+    }
   )
   
   output$download_data <- downloadHandler(
