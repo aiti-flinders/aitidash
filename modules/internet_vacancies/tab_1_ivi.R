@@ -1,8 +1,12 @@
 iviUI <- function(id, data){
   ns <- NS(id)
   
+  occupation_groups <- data %>%
+    pull(occupation_group) %>%
+    unique() %>%
+    sort()
+  
   occupation_choices <- data %>%
-    mutate(occupation = ifelse(str_detect(occupation, "total"), "Total", occupation)) %>%
     pull(occupation) %>%
     unique() %>%
     sort()
@@ -10,13 +14,18 @@ iviUI <- function(id, data){
   tabPanel(title = uiOutput(ns("title_panel")),
            plotlyOutput(ns("plot"), width = "100%"),
            fluidRow(
-             box(status = "info", solidHeader = TRUE,
+             box(status = "info", solidHeader = FALSE,
+                 selectInput(
+                   inputId = ns("occupation_group"),
+                   label = "Select Occupation Group",
+                   choices = occupation_groups
+                 )),
+             box(status = "info", solidHeader = FALSE,
                  selectInput(
                    inputId = ns("occupation"),
                    label = "Select Occupation",
                    choices = occupation_choices
                  )),
-             box(),
              box()
            )
   )
@@ -28,11 +37,18 @@ ivi <- function(input, output, session, data, region) {
     region()
   })
   
+  observeEvent(input$occupation_group,  {
+  updateSelectInput(session, "occupation", choices = data %>%
+      filter(occupation_group == input$occupation_group) %>%
+      pull(occupation) %>%
+      unique() %>%
+      sort()
+  )})
   
   create_data <- reactive({
     df <- data %>%
       filter(region == region(),
-             anzsco_2 == 0)
+             occupation == input$occupation)
   })
   
   create_plot <- reactive({
@@ -50,12 +66,23 @@ ivi <- function(input, output, session, data, region) {
         title = plot_title
       ) + 
       scale_y_continuous(labels = comma_format()) + 
-      aiti_colour_manual(n = length(region())) +
-      theme_aiti()
+      aiti_colour_manual(n = length(input$occupation)) +
+      theme_aiti(base_family = "Roboto")
     
     ggplotly(p, tooltip = "text") %>%
-      layout(legend = list(orientation = "h", 
-                           y = -0.15))
+      layout(autosize = TRUE,
+             legend = list(orientation = "h", 
+                           y = -0.15),
+             annotations = list(
+               x = 1,
+               y = -0.20,
+               text = "Source: AITI WorkSight",
+               showarrow = FALSE,
+               xref = "paper",
+               yref = "paper",
+               xanchor = "right", 
+               yanchor ="right"
+             ))
     
   })
   
