@@ -14,7 +14,7 @@ empIndComparisonUI <- function(id, data) {
   
   tabPanel(title = "Regional Comparison", plotlyOutput(ns("plot"), width='100%'),
            fluidRow(
-             box(status = 'info',solidHeader = TRUE,
+             box(status = 'info',solidHeader = F,
                  selectInput(
                    inputId = ns("indicator"),
                    label = "Select Indicator", 
@@ -29,22 +29,22 @@ empIndComparisonUI <- function(id, data) {
                    sep = "",
                    timeFormat = "%Y"
                  )),
-             box(status='info',solidHeader = TRUE,
+             box(status='info',solidHeader = F,
                  radioButtons(
                    inputId = ns("comparison"),
                    label = "Select Comparison Region",
                    choices = region_choices)
              )),
            fluidRow(
-             box(width = 12, title = "Download what you see", solidHeader = F,
+             box(width = 12, status = "info", title = "Download what you see", solidHeader = F,
                  downloadButton(
                    outputId = ns("download_plot"),
-                   label = "Download Plot",
+                   label = "Click here to download the chart as a .png",
                    class = 'download-button'
                  ),
                  downloadButton(
                    outputId = ns("download_data"),
-                   label = "Download Data",
+                   label = "Click here to download the chart data",
                    class = 'download-button'
                  ))
            ))
@@ -114,7 +114,16 @@ empIndComparison <- function(input, output, session, data, region) {
     
     ggplotly(p, tooltip = 'text') %>%
       layout(legend = list(orientation = "h",
-                           y = -0.15)) 
+                           y = -0.15),
+             annotations = list(
+               x = 1,
+               y = -0.20,
+               text = "Source: AITI WorkSight",
+               showarrow = F,
+               xref = "paper",
+               yref = "paper",
+               xanchor = "right",
+               yanchor = "auto")) 
   })
   
   output$plot <- renderPlotly({create_plot()})

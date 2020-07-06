@@ -29,21 +29,21 @@ labourMarketUI <- function(id, data) {
   tabPanel(title = uiOutput(ns("title_panel")),
            plotlyOutput(ns("plot"), width = '100%'),
            fluidRow(
-             box(width = 4, status= 'info',solidHeader=TRUE,
+             box(width = 4, status= 'info',solidHeader = FALSE,
                  selectInput(
                    inputId = ns('indicator'), 
                    label = "Select Indicator",
                    choices = indicator_choices,
                    selected = "Unemployment rate")
                  ),
-             box(width = 4, status = "info", solidHeader = TRUE,
+             box(width = 4, status = "info", solidHeader = FALSE,
                  selectInput(
                    inputId = ns('series_type'),
                    label =  "Select Series Type", 
                    choices = series_choices,
                    selected = "Seasonally Adjusted")
                  ),
-             box(width = 4, status = "info", solidHeader = TRUE,
+             box(width = 4, status = "info", solidHeader = FALSE,
                  numericInput(
                    inputId = ns('years'),
                    label = 'Select Year',
@@ -52,15 +52,15 @@ labourMarketUI <- function(id, data) {
                    max = max_date)
                  )),
              fluidRow(
-             box(width = 12, title = "Download what you see", solidHeader = F,
+             box(width = 12, status = "info", title = "Downloads", solidHeader = FALSE,
                  downloadButton(
                    outputId = ns("download_plot"),
-                   label = "Download Plot",
+                   label = "Click here to download the chart as a .png",
                    class = 'download-button'
                    ),
                  downloadButton(
                    outputId = ns("download_data"),
-                   label = "Download Data",
+                   label = "Click here to download the chart data",
                    class = 'download-button'
                    ))
            )

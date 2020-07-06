@@ -25,7 +25,7 @@ labourMarketDemogUI <- function(id, data) {
   
   tabPanel(title = "Demography", plotlyOutput(ns("plot"), width='100%'),
            fluidRow(
-             box(status='info', solidHeader=TRUE,
+             box(status='info', solidHeader = FALSE,
                  selectInput(
                    inputId = ns('indicator'),
                    label = "Select Indicator",
@@ -36,7 +36,7 @@ labourMarketDemogUI <- function(id, data) {
                    label = "Select Series Type",
                    choices = series_choices,
                    selected = "Seasonally Adjusted")),
-             box(status = 'info', solidHeader = TRUE,
+             box(status = 'info', solidHeader = FALSE,
                  numericInput(
                    inputId = ns("years"),
                    label = 'Select Year',
@@ -49,15 +49,15 @@ labourMarketDemogUI <- function(id, data) {
                    choices = c("Age", "Gender")
                  )),
              fluidRow(
-               box(width = 12, title = "Download what you see", solidHeader = F,
+               box(width = 12, title = "Downloads", status = "info", solidHeader = FALSE,
                    downloadButton(
                      outputId = ns("download_plot"),
-                     label = "Download Plot",
+                     label = "Click here to download the chart as a .png",
                      class = 'download-button'
                    ),
                    downloadButton(
                      outputId = ns("download_data"),
-                     label = "Download Data",
+                     label = "Click here to download the chart data",
                      class = 'download-button'
                    ))
              )
@@ -98,6 +98,7 @@ labourMarketDemog <- function(input, output, session, data, region) {
                         sort())
     updateSelectInput(session, "demographic", 
                       choices = choices())
+    
   })
   
   create_data <- reactive({

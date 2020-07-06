@@ -1,34 +1,52 @@
-/* heading/text colours */
+:root {
+  --light_blue: #006eff;
+  --dark_blue: #001155;
+  --yellow: #fdd969;
+}
+
+
+/* Skin Defaults */
 .skin-blue .content-wrapper {
-  color: #001155;
-}
-
-.content {
+  color: var(--dark_blue);
+  background: white;
+}.content {
   padding-top: 0;
+  font-size: 16px;
+  font-family: Roboto;
 }
 
+/* Additional h2 Styling */
 h2 {
   margin-top: 0;
 }
 
-/* logo */ 
+h3 {
+  color: var(--dark_blue);
+  font-size: 16px;
+  font-family: Roboto;
+}
 
+
+/* Logo Styling */ 
+
+/* Logo background, and text colour */
 .skin-blue .main-header .logo {
-  background-color: #ffffff;
-  color: #001155;
+  background-color: white;
+  color: var(--dark_blue);
   
 }
-/*logo when hovered*/
+
+/* Changes to logo when hovered*/
 
 .skin-blue .main-header .logo:hover {
-  background-color: #ffffff;
-  color: #001155;
+  background-color: white;
+  color: var(--dark_blue);
 }
 
 
 /* navbar */ 
 .skin-blue .main-header .navbar {
-  background-color: #ffffff;
+  background-color: white;
 } 
 
 
@@ -36,50 +54,57 @@ h2 {
 
 /* sidebar toggle */
 .skin-blue .main-header .navbar .sidebar-toggle {
-	color: #041457;
+	color: var(--dark_blue);
 }
 
 /* Sidebar Background Colour */
 .skin-blue .main-sidebar {
-  background: #ffffff; /*white*/
+  background: white; /*white*/
 }
 
 /* Sidebar Tabs */
 .skin-blue .main-sidebar .sidebar .sidebar-menu a{
-	color: #041457;  /*text colour - dark blue */
-	
+	color: var(--dark_blue);  /*text colour - dark blue */
+	font-size: 16px;
+	font-family: Roboto;
+}
+
+.skin-blue .main-sidebar .sidebar .sidebar-menu {
+	color: var(--dark_blue);  /*text colour - dark blue */
+	font-size: 16px;
+	font-family: Roboto;
 }
 
 /*Sidebar Input*/
 
 .skin-blue .main-sidebar .sidebar .sidebar-menu label{
-	color: #041457;  /*text colour - dark blue */
+	color: var(--dark_blue);  /*text colour - dark blue */
 	
 }
 
 /*Sidebar toggle hover */
 .skin-blue .main-header .navbar .sidebar-toggle:hover{
-  background-color: #041457;
+  background-color: var(--dark_blue);
 }
 
 /* sidebar: tab selected*/
 .skin-blue .main-sidebar .sidebar .sidebar-menu .active a{
 	color: #ffffff; /*text colour - white */
-	border-color: #ffee55
+	border-color: var(--yellow)
 }
 .skin-blue .sidebar-menu > li:hover > a {
-	background: #041457;
-	border-color: #041457
+	background: var(--dark_blue);
+	border-color: var(--yellow);
 }
 .skin-blue .sidebar-menu >li.active >a {
-	background: #0077ff;
-	border-color: #ffee55
+	background: var(--light_blue);
+	border-color: var(--yellow)
 }
 
 /* sidebar: tab hovered*/
 .skin-blue .main-sidebar .sidebar .sidebar-menu a:hover{
-	background: #041457;
-	color: #ffffff
+	background: var(--dark_blue);
+	color: white
 }
 
 /*sliver on selected tab */
@@ -89,45 +114,47 @@ h2 {
 }
 
 .nav-tabs-custom .nav-tabs li.active {
-     border-top-color: #ffee55;
+     border-top-color: var(--yellow);
 }
 
-/* /*Primary status colour*/
-.box.box-solid.box-info>.box-header {
-	color:#a1a1a1;
-	background-color:#a1a1a1;
+
+.box {
+  -webkit-box-shadow: none;
 }
 
-.box.box-solid.box-info{
-	border-bottom-color:#a1a1a1;
-	border-left-color:#a1a1a1;
-	border-right-color:#a1a1a1;
-	border-top-color:#a1a1a1;
-} 
+/*Box Styling*/
+.box.box-info {
+  border-color: var(--light_blue);
+}
 
-.content-wrapper, .right-side {
-	background-color: #ffffff;
+.box-title {
+  color: var(--dark_blue);
+  font-size: 16px;
+}
+
+.box-header {
+  color: var(--dark_blue);
+  font-size: 16px; 
 }
 
 /*Info Box Colours*/
 
 .info-box {
-  border: 1px solid #000;
-	color: #ffffff;
+  border: 1px solid;
+  border-color: var(--dark_blue);
 	font-size: 16px;
 }
 
 .info-box-icon {
-  background: #000000;
+  background: white;
   background: rgba(0,0,0,0);
-  border-right: 0.5px black;
-  color: #ffffff;
+  color: white;
   
 }
 
 .info-box-text {
   font-size: 20px;
-  font-weight: 900;
+  font-weight: 800;
 }
 
 .info-box-number {
@@ -135,68 +162,59 @@ h2 {
 }
 
 .bg-green {
-  color: #001155!important;
+  color: var(--dark_blue)!important;
 	background-color: #4d94ff!important;
 }
 .bg-red {
-  color: #001155!important;
+  color: var(--dark_blue)!important;
 	background-color: #ffb24d!important;
 }
-.bg-aqua {
-	background-color: #a1a1a1!important;
-}
 
 
 
-/* Create two equal columns that floats next to each other */
-.column {
-  float: left;
-  width: 50%;
-  padding: 10px;
-  height: 300px; /* Should be removed. Only for demonstration */
-}
-
-/* Clear floats after the columns */
-.row:after {
-  content: "";
-  display: table;
-  clear: both;
-}
 
 /*Turn off plotly hoverbar */
 .modebar {
   display: none!important;
 }
 
-.sq {
-  height:15px;
-  width:15px; 
-  border: 1px solid #000;
-  border-color: #000;
-  display: inline-block;
-} 
-.orange {
-  background-color: #ff9100;
-}
-.blue {
-  background-color: #006eff;
-}
 
 .download-button {
   height: 50px;
-  color: #006eff;
+  color: #001155;
   background-color: white;
   padding: 20px;
 }
 
+/* For some reason this is needed to style the numericInput */
+.form-control {
+  border-color: var(--dark_blue);
+  color: var(--dark_blue);
+} 
+.form-control:focus {
+  border-color: var(--light_blue);
+  box-shadow: none;
+  border-radius: 0;
+}
+
+/* And this styles the selectInputs */
 .selectize-input {
-  background-color: white;
-  } .focus {
-  border-color: #006eff;
+    background-color: white;
+    border-color: var(--dark_blue);
+    border-radius: 0;
+} 
+
+.selectize-input.focus {
+    border-color: var(--light_blue);
+    border-radius: 0;
+    box-shadow: none;
+  
 }
 
 .irs-bar {
-  background: #006eff;
-  border: #006eff;
+  background: var(--light_blue);
+  border: var(--light_blue);
 }
+
+
 

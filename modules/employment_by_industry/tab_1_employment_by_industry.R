@@ -19,7 +19,7 @@ empIndUI <- function(id, data) {
   
   tabPanel(title = uiOutput(ns('title_panel')), plotlyOutput(ns("plot"), width='100%'),
            fluidRow(
-             box(status = 'info',solidHeader = TRUE,
+             box(status = 'info',solidHeader = F,
                  selectInput(
                    inputId = ns("indicator"),
                    label = "Select Indicator",
@@ -37,22 +37,22 @@ empIndUI <- function(id, data) {
                    grid = TRUE,
                    selected = date_max,
                    choices = sort(unique(data$date)))),
-             box(status = 'info', solidHeader = TRUE,
+             box(status = 'info', solidHeader = F,
                  checkboxGroupInput(
                    inputId = ns('industry'),
                    label = "Select Industry",
                    choices = industry_choices
                  )),
              fluidRow(
-               box(width = 12, title = "Download what you see", solidHeader = F,
+               box(width = 12, status = "info", title = "Downloads", solidHeader = F,
                    downloadButton(
                      outputId = ns("download_plot"),
-                     label = "Download Plot",
+                     label = "Click here to download the chart as a .png",
                      class = 'download-button'
                    ),
                    downloadButton(
                      outputId = ns("download_data"),
-                     label = "Download Data",
+                     label = "Click here to download the chart data",
                      class = 'download-button'
                    ))
              )
@@ -176,13 +176,22 @@ empInd <- function(input, output, session, data, region) {
         aititheme::aiti_colour_manual(n = length(input$industry)) +
         scale_y_continuous(labels = y_labels)  +
         scale_x_date(expand = c(0,0)) + 
-        theme_aiti(legend = 'bottom')
+        theme_aiti(legend = 'bottom', base_family = "Roboto")
       
     }
     
     ggplotly(p, tooltip = 'text') %>% 
       layout(legend = list(orientation = "h", 
-                           y = -0.15))
+                           y = -0.15),
+             annotations = list(
+               x = 1,
+               y = -0.20,
+               text = "Source: AITI WorkSight",
+               showarrow = F,
+               xref = "paper",
+               yref = "paper",
+               xanchor = "right",
+               yanchor = "auto"))
   })
   
 

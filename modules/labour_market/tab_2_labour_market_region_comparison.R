@@ -22,7 +22,7 @@ labourMarketRegionalUI <- function(id, data) {
   
   tabPanel(title = "Regional Comparison", plotlyOutput(ns("plot"), width='100%'),
            fluidRow(
-             box(status= 'info',solidHeader=TRUE,
+             box(status= 'info', solidHeader = FALSE,
                  selectInput(
                    inputId = ns('indicator'), 
                    label = "Select Indicator",
@@ -39,22 +39,22 @@ labourMarketRegionalUI <- function(id, data) {
                    value = 2015,
                    min = date_min,
                    max = date_max)),
-             box(status='info',solidHeader=TRUE,
+             box(status='info', solidHeader = FALSE,
                  checkboxGroupInput(
                    inputId = ns('state'),
                    label = "Select Comparison Region",
                    choices = state_choices))
              ),
            fluidRow(
-             box(width = 12, title = "Download what you see", solidHeader = F,
+             box(width = 12, status = "info", title = "Downloads", solidHeader = F,
                  downloadButton(
                    outputId = ns("download_plot"),
-                   label = "Download Plot",
+                   label = "Click here to download the chart as a .png",
                    class = 'download-button'
                  ),
                  downloadButton(
                    outputId = ns("download_data"),
-                   label = "Download Data",
+                   label = "Click here to download the chart data",
                    class = 'download-button'
                  ))
            )
