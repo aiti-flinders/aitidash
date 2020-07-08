@@ -40,7 +40,7 @@ source("modules/internet_vacancies/tab_1_ivi.R")
 
 #### Header Controls ####
 header <- dashboardHeader(#titleWidth = "200px",
-                          title = tags$img(src = "statz.png", height = "50px"),
+                          title = "Economic Indicators Dashboard",
                           tags$li(a(href = "http://www.flinders.edu.au/aiti",
                                     img(src = "aiti_logo.png",
                                         title = "Australian Industrial Transformation Institute", height = "17px")),
