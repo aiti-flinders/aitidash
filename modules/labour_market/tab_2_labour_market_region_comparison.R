@@ -35,7 +35,7 @@ labourMarketRegionalUI <- function(id, data) {
                    selected = "Seasonally Adjusted"),
                  numericInput(
                    inputId = ns('years'),
-                   label = 'Select Year',
+                   label = 'Select Start Year',
                    value = 2015,
                    min = date_min,
                    max = date_max)),
@@ -81,6 +81,7 @@ labourMarketRegional <- function(input, output, session, data, region) {
                         unique() %>%
                         sort())
   })
+  
 
 
   observeEvent(input$series_type, {
@@ -102,11 +103,12 @@ labourMarketRegional <- function(input, output, session, data, region) {
              age == "Total (age)",
              gender == "Persons",
              series_type == input$series_type) %>%
+      mutate(state = factor(state, levels = c(region(), input$state))) %>%
       select(date, indicator, value, gender, age, state)
   })
   
   create_plot <- reactive({
-    p <-   abs_plot(indicator = input$indicator, 
+    p <- abs_plot(indicator = input$indicator, 
              years = input$years,
              states = c(region(), input$state),
              series_type = input$series_type,
@@ -114,7 +116,12 @@ labourMarketRegional <- function(input, output, session, data, region) {
              plotly = TRUE)
   })
   
-  output$plot <- renderPlotly({create_plot()})
+  output$plot <- renderPlotly({
+    validate(
+      need(nrow(create_data()) > 0, message = FALSE)
+      )
+    create_plot()
+    })
   
   output$download_plot <- downloadHandler(
     filename = function(){

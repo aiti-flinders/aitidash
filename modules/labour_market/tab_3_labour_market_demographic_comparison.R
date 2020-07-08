@@ -12,7 +12,7 @@ labourMarketDemogUI <- function(id, data) {
                          "Unemployment rate",
                          "Underemployment rate (proportion of labour force)",
                          "Underutilisation rate",
-                         "Participation rate")
+                         "Participation rate") 
   
   series_choices <- data %>%
     pull(series_type) %>%
@@ -39,7 +39,7 @@ labourMarketDemogUI <- function(id, data) {
              box(status = 'info', solidHeader = FALSE,
                  numericInput(
                    inputId = ns("years"),
-                   label = 'Select Year',
+                   label = 'Select Start Year',
                    value = 2015,
                    min = date_min,
                    max = date_max),
@@ -99,6 +99,10 @@ labourMarketDemog <- function(input, output, session, data, region) {
     updateSelectInput(session, "demographic", 
                       choices = choices())
     
+  })
+  
+  observeEvent(input$demographic, {
+    updateSelectInput(session, "indicator", choices = indicator_choices[!indicator_choices %in% "Participation rate"])
   })
   
   create_data <- reactive({

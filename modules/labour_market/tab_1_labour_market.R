@@ -46,7 +46,7 @@ labourMarketUI <- function(id, data) {
              box(width = 4, status = "info", solidHeader = FALSE,
                  numericInput(
                    inputId = ns('years'),
-                   label = 'Select Year',
+                   label = 'Select Start Year',
                    value = 2015,
                    min = min_date,
                    max = max_date)
@@ -120,6 +120,9 @@ labourMarket <- function(input, output, session, data, region) {
   
 
   output$plot <- renderPlotly({
+    validate(
+      need(nrow(create_data()) > 0, message = FALSE)
+    )
     
     create_plot()
     
