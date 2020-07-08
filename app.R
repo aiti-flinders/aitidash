@@ -40,7 +40,7 @@ source("modules/internet_vacancies/tab_1_ivi.R")
 
 #### Header Controls ####
 header <- dashboardHeader(#titleWidth = "200px",
-                          title = "WorkSight",
+                          title = tags$img(src = "statz.png", height = "50px"),
                           tags$li(a(href = "http://www.flinders.edu.au/aiti",
                                     img(src = "aiti_logo.png",
                                         title = "Australian Industrial Transformation Institute", height = "17px")),
@@ -48,14 +48,21 @@ header <- dashboardHeader(#titleWidth = "200px",
                                     class = "dropdown"))
 
 ##### Sidebar Controls #####
-sidebar = dashboardSidebar(collapsed = FALSE,
-  #tags$style(".left-side, .main-sidebar {padding-top: 50px}"),
+sidebar <- dashboardSidebar(
+  collapsed = FALSE,
   width = '230px',
-  sidebarMenu(id = 'tabs',
+  sidebarMenu(
+    id = 'tabs',
+    menuItem(
+      text = "User Guide",
+      tabName = "user_guide",
+      icon = icon("book-reader")
+    ),
     menuItem(
       text = "Dashboard",
       tabName = 'dashboard',
-      icon = icon("gear")
+      icon = icon("gear"),
+      selected = TRUE
     ),
     menuItem(
       text = "Employment Insights",
@@ -65,13 +72,14 @@ sidebar = dashboardSidebar(collapsed = FALSE,
     menuItem(
       text = "Employment by Industry",
       tabName = "industry",
-      icon = icon('industry')
+      icon = icon('industry'),
+      badgeLabel = "new", badgeColor = "red"
     ),
-    menuItem(
-      text = "Internet Vacancies",
-      tabName = "internet_vacancies",
-      icon = icon('newspaper')
-    ),
+    # menuItem(
+    #   text = "Internet Vacancies",
+    #   tabName = "internet_vacancies",
+    #   icon = icon('newspaper')
+    # ),
     radioButtons(
       inputId = "region_select",
       label = "Select Region",
@@ -83,17 +91,52 @@ sidebar = dashboardSidebar(collapsed = FALSE,
 
 
 
-
+#### User Guide ####
+user_guide_tab <- tabItem(
+  tabName = "user_guide",
+  h2("User Guide"),
+p("Welcome to the Australian Industrial Transformation Institute's Economic Indicator Dashboard. 
+    You can navigate through the different modules by selecting them from the side menu."),
+p("Download charts you have created, and the data behind them in the Downloads section"),
+p("This dashboard is currently in beta, and may occasionally show errors to the user. The most common cause for an error is the 
+    selection of a combination of Region, Indicator, Series Type, and Date, for which data is not available. Selecting another combination
+    of variables should solve any problems."),
+p("Additional modules are currently in development, and will be added as they are completed. Please check back regularly to 
+    have access to the latest data."),
+p("For any comments, requests, or issues, please contact", a(href = 'mailto:aiti@flinders.edu.au', "aiti@flinders.edu.au")),
+  h3("Definitions"),
+p(tags$b("Indicator: "), "A time series variable, measured and collected by the ABS."),
+p(tags$b("Series Type: "), "How the observed data has been processed by the ABS."),
+p("Original: The observed, unprocessed data."),
+p("Seasonally Adjusted: Observed data processed to remove influences that are systematic and calendar related."),
+p("Trend: Observed data processed to remove calendar related, and other irregular effects, to show the long term movement of an indicator."),
+p(tags$b("Region: "), "States and Territories in Australia, or Australia itself."),
+h3("Notes on Data Availability"),
+p("Data for this dashboard is sourced from the Australian Bureau of Statistics. There is not universal coverage across regions,
+    economic indicators, or series types. Due to the impact of the Coronavirus, there is currently no Trend series available for Australia,
+    or the States, and no Seasonally Adjusted series available for the Territories."),
+h2("Dashboard"),
+p("The boxes on the Dashboard show the current value, monthly change, and yearly change for 12 key labour market indicators.
+Those shown in ",
+HTML("<b style = 'color:#64b478'>green</b>"), " represent an improvement since last month, and those shown in ",
+HTML("<b style = 'color:#ffb24d'>orange</b>"), "represent a deterioration over the previous month.",
+"The arrows show in which direction the indicator has moved over the previous month."),
+h2("Employment Insights"),
+h3("Tab 1"),
+p("This tab shows the time series of an indicator,  for a region selected in the sidebar menu."),
+h3("Regional Comparison"),
+p("This tab allows for the comparison of a given indicator across as many regions as you like. In order to compare States with Territories
+  the selected Series Type must be 'Original'"),
+h3("Demography"),
+p("This tab allows for a breakdown of a given indicator by demographic variables. Age is only available for Australia."),
+h2("Employment by Industry")
+)
 
 #### Dashboard Tab ####
 dashboard_tab <- tabItem(
   tabName = 'dashboard',
   h2("Employment Insights"),
-  HTML(
-    str_c("The boxes below show the current value, monthly change, and yearly change for 12 key labour market indicators.
-       Those shown in <span class = 'sq blue'></span> represent an improvement, 
-       and those shown in <span class = 'sq orange'></span> represent a deterioration. The arrows show in which direction the indicator has moved over the previous month.")
-    ),
+  h2(textOutput("region_selected")),
   uiOutput("release_date"),
   fluidRow(
     boxesUI('employment_total'),
@@ -170,18 +213,19 @@ internet_vacancies_tab <- tabItem(
   )
 )
                          
-                                       
+#### Body ####                                       
 body <- dashboardBody(tags$head(tags$link(rel = "stylesheet", type = 'text/css', href = 'custom.css')),
   tabItems(
+    user_guide_tab,
     dashboard_tab,
     labour_market_tab,
-    emp_ind_tab,
-    internet_vacancies_tab
+    emp_ind_tab
+    #internet_vacancies_tab
   )
 )
   
 #### UI ####
-ui <- dashboardPage(title = "AITI Dashboard",
+ui <- dashboardPage(title = "Economic Indicators Dashboard",
   header,
   sidebar,
   body
@@ -195,6 +239,9 @@ server <- function(input, output) {
   output$release_date_industry <- renderUI(str_c("This data is current as at: ", release(employment_industry, "month"), " ", release(employment_industry, "year")))
   
   region_selected <- reactive(input$region_select)
+  output$region_selected <- renderText({
+    region_selected()
+  })
 
   #Labour Market -  Tab
   callModule(labourMarket, "lm_ts", data = labour_force, region = region_selected)
@@ -208,7 +255,7 @@ server <- function(input, output) {
   callModule(empIndAnalysis, "empInd_analysis", data = employment_industry, region = region_selected)
   
   #IVI - Tab
-  callModule(ivi, "ivi_ts", data = internet_vacancies_basic, region = region_selected)
+  #callModule(ivi, "ivi_ts", data = internet_vacancies_basic, region = region_selected)
   
   #Employment boxes - row 1
   callModule(boxes, "employment_total", data = labour_force, region = region_selected, "Employed total", reverse = F, percent = F)
