@@ -19,15 +19,12 @@ empIndComparisonUI <- function(id, data) {
                    inputId = ns("indicator"),
                    label = "Select Indicator", 
                    choices = indicator_choices),
-                 sliderInput(
+                 numericInput(
                    inputId = ns('date_range'),
-                   label = "Select Year",
+                   label = "Select Comparison Year",
                    value = year(date_max), 
                    min = year(date_min),
-                   max = year(date_max),
-                   animate = T,
-                   sep = "",
-                   timeFormat = "%Y"
+                   max = year(date_max)
                  )),
              box(status='info',solidHeader = F,
                  radioButtons(
@@ -36,7 +33,7 @@ empIndComparisonUI <- function(id, data) {
                    choices = region_choices)
              )),
            fluidRow(
-             box(width = 12, status = "info", title = "Download what you see", solidHeader = F,
+             box(width = 12, status = "info", title = "Downloads", solidHeader = F,
                  downloadButton(
                    outputId = ns("download_plot"),
                    label = "Click here to download the chart as a .png",

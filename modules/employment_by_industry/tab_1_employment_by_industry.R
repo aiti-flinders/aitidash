@@ -1,6 +1,7 @@
 #Employment by industry
 
 empIndUI <- function(id, data) {
+  
   ns <- NS(id)
   
   indicator_choices <- c("Employed total",
@@ -9,17 +10,19 @@ empIndUI <- function(id, data) {
                          "Underemployed total")
   
   industry_choices <- data %>%
+    filter(industry != "Total (industry)") %>%
     pull(industry) %>%
     unique() %>%
     sort()
 
   series_choices <- sort(unique(data$series_type))
-  date_min <- min(data$date)
-  date_max <- max(data$date)
+
   
-  tabPanel(title = uiOutput(ns('title_panel')), plotlyOutput(ns("plot"), width='100%'),
+  tabPanel(width='100%',
+           title = uiOutput(ns('title_panel')), 
+           plotlyOutput(ns("plot")),
            fluidRow(
-             box(status = 'info',solidHeader = F,
+             box(status = 'info', solidHeader = F,
                  selectInput(
                    inputId = ns("indicator"),
                    label = "Select Indicator",
@@ -31,12 +34,10 @@ empIndUI <- function(id, data) {
                    choices = c("Share", "Value"),
                    selected = "Value"
                  ),
-                 sliderTextInput(
-                   inputId = ns('date_range'),
-                   label = "Select Date",
-                   grid = TRUE,
-                   selected = date_max,
-                   choices = sort(unique(data$date)))),
+                 uiOutput(ns("year_select")),
+                 uiOutput(ns("month_select"))
+                 ),
+             
              box(status = 'info', solidHeader = F,
                  checkboxGroupInput(
                    inputId = ns('industry'),
@@ -65,19 +66,48 @@ empInd <- function(input, output, session, data, region) {
   date_min <- min(data$date)
   date_max <- max(data$date)
   
+  data_months <- data %>% 
+    filter(year == 2020) %>%
+    pull(month) %>%
+    unique() %>%
+    sort()
+  
   output$title_panel <- renderText({
     region()
   })
   
+  output$year_select <- renderUI({
+    if(is.null(input$industry)) {
+    numericInput(
+      inputId = session$ns("year"),
+      label = "Select Year",
+      value = 2020,
+      min = year(date_min),
+      max = year(date_max),
+      step = 1)
+    } else {NULL}
+    
+  })
+  
+  output$month_select <- renderUI({
+    if(is.null(input$industry)) {
+      selectInput(
+        inputId = session$ns("month"),
+        label = "Select Month",
+        choices = data_months)
+    } else {NULL}
+    
+  })
+  
   current_indicator <- reactiveVal(NULL)
   
-  observeEvent(input$employment_industry_tab_id, {
-    updateSelectInput(session, "indicator", choices = data %>%
-                        filter(state == region()) %>%
-                        pull(indicator) %>%
+  observeEvent(input$year, {
+    updateSelectInput(session, "month", choices = data %>%
+                        filter(year == input$year,
+                               state == region()) %>%
+                        pull(month) %>%
                         unique() %>%
-                        sort(),
-                      selected = "Employed full-time")
+                        sort())
   })
   
   observeEvent(region(), {
@@ -92,6 +122,8 @@ empInd <- function(input, output, session, data, region) {
                         sort(), 
                       selected = "Employed total")
     
+  
+    
   })
   
   create_data <- reactive({
@@ -100,12 +132,11 @@ empInd <- function(input, output, session, data, region) {
         filter(industry != "Total (industry)",
                state == region(), 
                indicator == input$indicator) %>% 
-        group_by(date, industry) %>% 
+        group_by(date, month, year,  industry) %>% 
         summarise(value = mean(value)) %>% 
-        mutate(share = 100*value/sum(value),
-               max_share = ifelse(share == max(share), "fill", 'NA'),
-               max_value = ifelse(value == max(value), "fill", 'NA')) %>%
-        filter(date == input$date_range) %>%
+        mutate(share = 100*value/sum(value)) %>%
+        filter(year == input$year,
+               month == input$month) %>%
         arrange(desc(industry)) %>%
         mutate(industry = as_factor(industry)) 
       } else {
@@ -122,6 +153,7 @@ empInd <- function(input, output, session, data, region) {
   })
   
   create_plot <- reactive({
+    
     if(input$share == "Share") {
       y_var <- "share"
       y_labels <- percent_format(scale = 1)
@@ -144,18 +176,15 @@ empInd <- function(input, output, session, data, region) {
       
       p <- ggplot(create_data(), aes_(x = ~reorder(industry, value), 
                            y =  as.name(y_var),
-                           fill = ~max_value,
                            text = ~str_c(input$indicator, ": ", as_comma(value),
                                          " (", as_percent(share), ")"))) + 
-        geom_bar(stat='identity') + 
+        geom_bar(stat='identity', fill = aiti_blue) + 
         labs(
           y = NULL,
           x = NULL,
-          title = str_to_upper(str_c(region(), ": ", input$indicator))
+          title = str_to_upper(str_c(input$indicator, ": ", region(), " (", input$year, "-", input$month, ")"))
         ) +
-        scale_y_continuous(expand = c(0,1), labels = y_labels) +
-        scale_fill_manual(values = c(aiti_blue, aiti_grey),
-                          breaks = c("fill", "NA")) + 
+        scale_y_continuous(expand = c(0,0), labels = y_labels) +
         coord_flip() +
         theme_aiti(base_family = "Roboto")
     } else {
@@ -175,27 +204,32 @@ empInd <- function(input, output, session, data, region) {
         ) + 
         aititheme::aiti_colour_manual(n = length(input$industry)) +
         scale_y_continuous(labels = y_labels)  +
-        scale_x_date(expand = c(0,0)) + 
         theme_aiti(legend = 'bottom', base_family = "Roboto")
       
     }
-    
-    ggplotly(p, tooltip = 'text') %>% 
-      layout(legend = list(orientation = "h", 
+
+    ggplotly(p, tooltip = "text") %>%
+      layout(legend = list(orientation = "h",
                            y = -0.15),
-             annotations = list(
-               x = 1,
-               y = -0.20,
-               text = "Source: AITI WorkSight",
-               showarrow = F,
-               xref = "paper",
-               yref = "paper",
-               xanchor = "right",
-               yanchor = "auto"))
+             images = list(
+               list(source = "https://raw.githubusercontent.com/hamgamb/aitidash/master/www/statz.png",
+                    xref = "paper",
+                    yref = "paper",
+                    x = 0.90,
+                    y = -0.15,
+                    sizex = 0.2, 
+                    sizey = 0.2)
+             ))
   })
   
 
-  output$plot <- renderPlotly({create_plot()})
+  output$plot <- renderPlotly({
+    validate(
+      need(input$year, message = FALSE)
+    )
+
+    create_plot()}
+    )
   
   output$download_plot <- downloadHandler(
     filename = function(){
