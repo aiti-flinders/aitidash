@@ -49,7 +49,7 @@ boxesAlt <- function(input, output, session, data, indicator, region, growth = F
       filter(value == max(value))
     
     box_text_current <- as_comma(cu$value)
-    box_text_yoy <- as_comma(cu$growth)
+    box_text_yoy <- str_c(ifelse(cu$growth > 0, "+", ""), as_comma(cu$growth))
     
     title <- indicator
     subtitle <- str_c(box_text_current, " (", box_text_yoy, ")")
