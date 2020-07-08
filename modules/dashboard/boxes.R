@@ -74,15 +74,15 @@ boxes <- function(input, output, session, data, indicator, region, reverse = F, 
                          'red')
         
         icon <- ifelse(lm < 0,
-                       'arrow-alt-circle-down', 
-                       'arrow-alt-circle-up')
+                       'arrow-down', 
+                       'arrow-up')
       } else { 
         colour <- ifelse(lm > 0,
                          'green', 
                          'red')
         icon <- ifelse(lm > 0,
-                       'arrow-alt-circle-up', 
-                       'arrow-alt-circle-down')
+                       'arrow-up', 
+                       'arrow-down')
       }
       
       box_subtitle <- str_c("Month: ", box_text_mom,  " Year: ", box_text_yoy)
