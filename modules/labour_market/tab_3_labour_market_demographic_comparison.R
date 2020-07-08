@@ -67,6 +67,16 @@ labourMarketDemogUI <- function(id, data) {
 
 labourMarketDemog <- function(input, output, session, data, region) {
   
+  indicator_choices <- c("Employed total",
+                         "Employed full-time",
+                         "Unemployed total",
+                         "Underemployed total",
+                         "Underutilised total",
+                         "Unemployment rate",
+                         "Underemployment rate (proportion of labour force)",
+                         "Underutilisation rate",
+                         "Participation rate") 
+  
   genders <- reactive({
     if(input$demographic == "Gender") {
       genders <- c("Males", "Females")
