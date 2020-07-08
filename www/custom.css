@@ -2,6 +2,8 @@
   --light_blue: #006eff;
   --dark_blue: #001155;
   --yellow: #fdd969;
+  --arrow_green: #64b478;
+  --arrow_red: #ffb24d;
 }
 
 
@@ -22,6 +24,7 @@ h2 {
 
 h3 {
   color: var(--dark_blue);
+  margin: 5px 0 5px 0;
   font-size: 16px;
   font-family: Roboto;
 }
@@ -142,32 +145,40 @@ h3 {
 .info-box {
   border: 1px solid;
   border-color: var(--dark_blue);
-	font-size: 16px;
-}
-
-.info-box-icon {
-  background: white;
-  background: rgba(0,0,0,0);
-  color: white;
-  
+	background:white;
+	background: rgba(0,0,0,0);
+	margin-bottom: 10px;
+	-webkit-box-shadow: none;
 }
 
 .info-box-text {
   font-size: 20px;
-  font-weight: 800;
+  font-weight: 900;
 }
 
-.info-box-number {
-  font-size: 18px;
+.info-box-content {
+  color: var(--dark_blue);
+  background: white;
 }
+
+.info-box-icon {
+  border-right: 1px solid var(--dark_blue);
+  font-size: 70px;
+  height: 95px;
+  color:white;
+  background: transparent;
+}
+
+
+
 
 .bg-green {
-  color: var(--dark_blue)!important;
-	background-color: #4d94ff!important;
+	background-color: var(--arrow_green)!important;
 }
+
+
 .bg-red {
-  color: var(--dark_blue)!important;
-	background-color: #ffb24d!important;
+	background-color: var(--arrow_red)!important;
 }
 
 
@@ -181,13 +192,14 @@ h3 {
 
 .download-button {
   height: 50px;
-  color: #001155;
+  color: var(--dark_blue);
   background-color: white;
   padding: 20px;
 }
 
 /* For some reason this is needed to style the numericInput */
 .form-control {
+  font-size: 16px;
   border-color: var(--dark_blue);
   color: var(--dark_blue);
 } 
@@ -212,8 +224,8 @@ h3 {
 }
 
 .irs-bar {
-  background: var(--light_blue);
-  border: var(--light_blue);
+  background: white;
+  border: white;
 }
 
 
