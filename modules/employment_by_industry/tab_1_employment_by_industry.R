@@ -41,7 +41,7 @@ empIndUI <- function(id, data) {
              box(status = 'info', solidHeader = F,
                  checkboxGroupInput(
                    inputId = ns('industry'),
-                   label = "Select Industry",
+                   label = "Select Industry (up to 9)",
                    choices = industry_choices
                  )),
              fluidRow(
@@ -74,6 +74,12 @@ empInd <- function(input, output, session, data, region) {
   
   output$title_panel <- renderText({
     region()
+  })
+  
+  observe({
+    if (length(input$industry) > 9) {
+      updateCheckboxGroupInput(session, "industry", selected = tail(input$industry, 9))
+    }
   })
   
   output$year_select <- renderUI({
@@ -154,6 +160,10 @@ empInd <- function(input, output, session, data, region) {
   
   create_plot <- reactive({
     
+    validate(
+      need(length(input$industry < 10), message = FALSE)
+    )
+    
     if(input$share == "Share") {
       y_var <- "share"
       y_labels <- percent_format(scale = 1)
@@ -209,16 +219,18 @@ empInd <- function(input, output, session, data, region) {
     }
 
     ggplotly(p, tooltip = "text") %>%
-      layout(legend = list(orientation = "h",
+      layout(autosize = TRUE,
+             legend = list(orientation = "h",
                            y = -0.15),
-             images = list(
-               list(source = "https://raw.githubusercontent.com/hamgamb/aitidash/master/www/statz.png",
-                    xref = "paper",
-                    yref = "paper",
-                    x = 0.90,
-                    y = -0.15,
-                    sizex = 0.2, 
-                    sizey = 0.2)
+             annotations = list(
+               x = 1,
+               y = -0.2,
+               showarrow = FALSE,
+               xref = "paper",
+               yref = "paper",
+               xanchor = "right",
+               yanchor = "auto",
+               text = "Source: AITI Economic Indicators"
              ))
   })
   
@@ -228,8 +240,9 @@ empInd <- function(input, output, session, data, region) {
       need(input$year, message = FALSE)
     )
 
-    create_plot()}
-    )
+    create_plot()
+    
+    })
   
   output$download_plot <- downloadHandler(
     filename = function(){
