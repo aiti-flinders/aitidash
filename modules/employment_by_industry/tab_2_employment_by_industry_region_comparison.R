@@ -99,6 +99,7 @@ empIndComparison <- function(input, output, session, data, region) {
                      fill = input$comparison), 
                  shape = 21,
                  colour = aiti_blue) +
+      scale_y_continuous(labels = percent_format(scale = 1)) +
       scale_fill_manual(breaks = c(region(), input$comparison), values = c(aiti_yellow, aiti_blue)) + 
       coord_flip() + 
       labs(
@@ -110,17 +111,19 @@ empIndComparison <- function(input, output, session, data, region) {
     
     
     ggplotly(p, tooltip = 'text') %>%
-      layout(legend = list(orientation = "h",
+      layout(autosize = TRUE,
+             legend = list(orientation = "h",
                            y = -0.15),
              annotations = list(
                x = 1,
-               y = -0.20,
-               text = "Source: AITI WorkSight",
-               showarrow = F,
+               y = -0.2,
+               showarrow = FALSE,
                xref = "paper",
                yref = "paper",
                xanchor = "right",
-               yanchor = "auto")) 
+               yanchor = "auto",
+               text = "Source: AITI Economic Indicators"
+             ))
   })
   
   output$plot <- renderPlotly({create_plot()})
