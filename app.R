@@ -22,6 +22,7 @@ system('fc-cache -f ~/.fonts')
 #Dashboard
 source('modules/dashboard/boxes.R')
 source('modules/dashboard/boxes_alt.R')
+source("modules/dashboard/user_guide.R")
 #Labour Market
 source("modules/labour_market/tab_1_labour_market.R")
 source('modules/labour_market/tab_2_labour_market_region_comparison.R')
@@ -70,7 +71,7 @@ sidebar <- dashboardSidebar(
       icon = icon("briefcase")
     ),
     menuItem(
-      text = "Employment by Industry",
+      text = "Industry Insights",
       tabName = "industry",
       icon = icon('industry'),
       badgeLabel = "new", badgeColor = "red"
@@ -94,42 +95,8 @@ sidebar <- dashboardSidebar(
 #### User Guide ####
 user_guide_tab <- tabItem(
   tabName = "user_guide",
-  h2("User Guide"),
-p("Welcome to the Australian Industrial Transformation Institute's Economic Indicator Dashboard. 
-    You can navigate through the different modules by selecting them from the side menu."),
-p("Download charts you have created, and the data behind them in the Downloads section"),
-p("This dashboard is currently in beta, and may occasionally show errors to the user. The most common cause for an error is the 
-    selection of a combination of Region, Indicator, Series Type, and Date, for which data is not available. Selecting another combination
-    of variables should solve any problems."),
-p("Additional modules are currently in development, and will be added as they are completed. Please check back regularly to 
-    have access to the latest data."),
-p("For any comments, requests, or issues, please contact", a(href = 'mailto:aiti@flinders.edu.au', "aiti@flinders.edu.au")),
-  h3("Definitions"),
-p(tags$b("Indicator: "), "A time series variable, measured and collected by the ABS."),
-p(tags$b("Series Type: "), "How the observed data has been processed by the ABS."),
-p("Original: The observed, unprocessed data."),
-p("Seasonally Adjusted: Observed data processed to remove influences that are systematic and calendar related."),
-p("Trend: Observed data processed to remove calendar related, and other irregular effects, to show the long term movement of an indicator."),
-p(tags$b("Region: "), "States and Territories in Australia, or Australia itself."),
-h3("Notes on Data Availability"),
-p("Data for this dashboard is sourced from the Australian Bureau of Statistics. There is not universal coverage across regions,
-    economic indicators, or series types. Due to the impact of the Coronavirus, there is currently no Trend series available for Australia,
-    or the States, and no Seasonally Adjusted series available for the Territories."),
-h2("Dashboard"),
-p("The boxes on the Dashboard show the current value, monthly change, and yearly change for 12 key labour market indicators.
-Those shown in ",
-HTML("<b style = 'color:#64b478'>green</b>"), " represent an improvement since last month, and those shown in ",
-HTML("<b style = 'color:#ffb24d'>orange</b>"), "represent a deterioration over the previous month.",
-"The arrows show in which direction the indicator has moved over the previous month."),
-h2("Employment Insights"),
-h3("Tab 1"),
-p("This tab shows the time series of an indicator,  for a region selected in the sidebar menu."),
-h3("Regional Comparison"),
-p("This tab allows for the comparison of a given indicator across as many regions as you like. In order to compare States with Territories
-  the selected Series Type must be 'Original'"),
-h3("Demography"),
-p("This tab allows for a breakdown of a given indicator by demographic variables. Age is only available for Australia."),
-h2("Employment by Industry")
+  userGuideUI("user_guide")
+
 )
 
 #### Dashboard Tab ####
