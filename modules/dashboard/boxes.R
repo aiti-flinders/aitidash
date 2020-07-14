@@ -39,7 +39,7 @@ boxes <- function(input, output, session, data, indicator, region, reverse = F, 
       box_title <- names_tib[names_tib$indicator == indicator, ]$label
       box_text_current <- "Data Not Available"
       box_subtitle <- paste("For", region())
-      colour <- "red"
+      colour <- "yellow"
       icon <- "ban"
       
     } else {
@@ -59,13 +59,14 @@ boxes <- function(input, output, session, data, indicator, region, reverse = F, 
                             print = FALSE)
       
       if(percent == T) {
-        box_text_current <- as_percent(cu)
-        box_text_yoy <- str_c(ifelse(ly > 0, " +", ""), as_percent(ly))
-        box_text_mom <- str_c(ifelse(lm > 0, " +", ""), as_percent(lm))
+        box_text_yoy <- str_c(ifelse(ly > 0, "+", ""), as_percent(ly))
+        box_text_mom <- str_c(ifelse(lm > 0, "+", ""), as_percent(lm))
+        box_text_current <- str_c(as_percent(cu), " (",box_text_mom,")")
+        
       } else {
-        box_text_current <- as_comma(cu)
-        box_text_yoy <- str_c(ifelse(ly > 0, " +", ""), as_comma(ly))
-        box_text_mom <- str_c(ifelse(lm > 0, " +", ""), as_comma(lm))
+        box_text_yoy <- str_c(ifelse(ly > 0, "+", ""), as_comma(ly))
+        box_text_mom <- str_c(ifelse(lm > 0, "+", ""), as_comma(lm))
+        box_text_current <- str_c(as_comma(cu), " (",box_text_mom,")")
       }
       
       if(reverse == T) {
@@ -85,7 +86,7 @@ boxes <- function(input, output, session, data, indicator, region, reverse = F, 
                        'arrow-down')
       }
       
-      box_subtitle <- str_c("Month: ", box_text_mom,  " Year: ", box_text_yoy)
+      box_subtitle <- str_c("Change over year: ", box_text_yoy)
       
     }
     
