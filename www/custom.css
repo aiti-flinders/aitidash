@@ -2,6 +2,7 @@
   --light_blue: #006eff;
   --dark_blue: #001155;
   --yellow: #fdd969;
+  --grey: #b2b2b2;
   --arrow_green: #64b478;
   --arrow_red: #ffb24d;
 }
@@ -181,6 +182,9 @@ h3 {
 	background-color: var(--arrow_red)!important;
 }
 
+.bg-yellow {
+  background-color: var(--grey)!important;
+}
 
 
 
