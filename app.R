@@ -55,15 +55,15 @@ sidebar <- dashboardSidebar(
   sidebarMenu(
     id = 'tabs',
     menuItem(
-      text = "User Guide",
-      tabName = "user_guide",
-      icon = icon("book-reader")
-    ),
-    menuItem(
       text = "Dashboard",
       tabName = 'dashboard',
       icon = icon("gear"),
       selected = TRUE
+    ),   
+    menuItem(
+      text = "User Guide",
+      tabName = "user_guide",
+      icon = icon("book-reader")
     ),
     menuItem(
       text = "Employment Insights",
@@ -98,42 +98,64 @@ user_guide_tab <- tabItem(
   userGuideUI("user_guide")
 
 )
-
+lf_next_release <- abs_next_release("6202.0")
+lf_release_date <- abs_release_date("6202.0")
+industry_next_release <- abs_next_release("6291.0.55.003")
+industry_release_date <- abs_release_date("6291.0.55.003")
 #### Dashboard Tab ####
 dashboard_tab <- tabItem(
   tabName = 'dashboard',
   h2("Employment Insights"),
   h2(textOutput("region_selected")),
-  uiOutput("release_date"),
+  p(str_c("This data is current as of ", release(labour_force, "month"), " ", release(labour_force, "year"),".")),
+  p(str_c("Data for ", 
+          lf_next_release, 
+          " will be available on ", 
+          weekdays(lf_release_date), ", the ", day(lf_release_date), "th of ", month(lf_release_date, abbr = F, label = T), ".")),
+  fluidRow( 
+    boxesUI('unemployment_rate'),    
+    boxesUI('unemployed')
+  ),
   fluidRow(
-    boxesUI('employment_total'),
+    boxesUI('employment_total'), 
+    boxesUI('participation_rate')
+  ),
+  fluidRow(
     boxesUI('employment_ft'),
     boxesUI('employment_pt')
   ),
-  fluidRow(
-    boxesUI('unemployed'),
+  fluidRow(    
     boxesUI('underemployed'),
     boxesUI('underutilised')
+
   ),
-  fluidRow(
-    boxesUI('unemployment_rate'),
+  fluidRow(    
     boxesUI('underemployment_rate'),
     boxesUI('underutilisation_rate')
   ),
   fluidRow(
     boxesUI('hours_worked_total'),
-    boxesUI('participation_rate'),
     boxesUI('labour_force_total')
   ),
   h2("Industry Insights"),
   HTML(
-    str_c("The boxes below show which industry employs the most people overall, full-time, and part-time. Each box displays the industry name, the number of people employed, and the monthly change. ")
+    str_c("The boxes below show which industry employs the most people overall, full-time, and part-time. 
+          Each box displays the industry name, the number of people employed, and the yearly change. ")
   ),
-  uiOutput("release_date_industry"),
+  p(str_c("This data is current as at: ", release(employment_industry, "month"), " ", release(employment_industry, "year"))),
+  p(str_c("Data for ", 
+          industry_next_release, 
+          " will be available on ", 
+          weekdays(industry_release_date), ", the ", day(industry_release_date), "th of ", month(industry_release_date, abbr = F, label = T), ".")),
+    
   fluidRow(
     boxesAltUI("industry_total"),
-    boxesAltUI("industry_ft"),
-    boxesAltUI("industry_pt")
+    boxesAltUI("industry_ft")
+
+  ),
+  fluidRow(
+    boxesAltUI("industry_pt"),
+    boxesAltUI("industry_under")
   )
 )
 
@@ -202,9 +224,7 @@ ui <- dashboardPage(title = "Economic Indicators Dashboard",
 #### Server ####
 server <- function(input, output) {
   
-  output$release_date <- renderUI(str_c("This data is current as at: ", release(labour_force, "month"), " ", release(labour_force, "year")))
-  output$release_date_industry <- renderUI(str_c("This data is current as at: ", release(employment_industry, "month"), " ", release(employment_industry, "year")))
-  
+
   region_selected <- reactive(input$region_select)
   output$region_selected <- renderText({
     region_selected()
@@ -248,6 +268,7 @@ server <- function(input, output) {
   callModule(boxesAlt, "industry_total", data = employment_industry, region = region_selected,  "Employed total")
   callModule(boxesAlt, "industry_ft", data = employment_industry, region = region_selected, "Employed full-time")
   callModule(boxesAlt, "industry_pt", data = employment_industry, region = region_selected, "Employed part-time")
+  callModule(boxesAlt, "industry_under", data = employment_industry, region = region_selected, "Underemployed total")
   
 
   
