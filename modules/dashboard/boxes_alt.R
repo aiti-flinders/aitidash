@@ -5,7 +5,7 @@
 boxesAltUI <- function(id) {
   ns <- NS(id)
   
-  infoBoxOutput(ns('box'), width = 4)
+  infoBoxOutput(ns('box'), width = 6)
   
   
   
@@ -38,33 +38,55 @@ boxesAlt <- function(input, output, session, data, indicator, region, growth = F
     "user", "Other Services")
   
   output$box <- renderInfoBox({
-    ly <-
-      last_value(data, list(indicator = indicator, state = region()), print = FALSE) %>%
-      pull(value)
     
-    cu <-
-      current(data, list(indicator = indicator, state = region()), print = FALSE) %>%
-      mutate(growth = value - ly,
-             growth_pct = (value - ly) / ly) %>%
-      filter(value == max(value))
+    val <- nrow(data[data$indicator == indicator & data$state == region(), ])
     
-    box_text_current <- as_comma(cu$value)
-    box_text_yoy <- str_c(ifelse(cu$growth > 0, "+", ""), as_comma(cu$growth))
-    
-    title <- indicator
-    subtitle <- str_c(box_text_current, " (", box_text_yoy, ")")
-    ind <- cu$industry
-    color <- ifelse(cu$growth > 0, 'green', 'red')
-    icon <- icon_tib %>% filter(industry ==  ind) %>% pull(icon)
-    
-    infoBox(
-      fill = T,
-      title = title,
-      value =  ind,
-      subtitle = subtitle,
-      color = color,
-      icon = icon(icon)
-    )
+    if (val == 0) {
+      box_title <- indicator
+      box_value <- "Data Not Available"
+      box_subtitle <- paste("For", region())
+      colour <- "yellow"
+      icon <- "ban"
+    } else {
+      
+      box_title <- indicator
+      
+      ly <- last_value(data, list(indicator = indicator, state = region()), print = FALSE) %>%
+        pull(value)
+      
+      cu <- current(data, list(indicator = indicator, state = region()), print = FALSE) %>%
+        mutate(growth = value - ly,
+               growth_pct = (value - ly) / ly) %>%
+        filter(value == max(value))
+      
+      box_text_current <- as_comma(cu$value)
+      box_text_yoy <- str_c(ifelse(cu$growth > 0, "+", ""), as_comma(cu$growth))
+      
+      box_subtitle <- str_c(box_text_current, " (", box_text_yoy, ")")
+      
+      box_value <- cu$industry
+      
+      colour <- case_when(
+        cu$growth >0 & indicator != "Underemployed total" ~ "green",
+        TRUE ~'red'
+        )
+      
+      icon <- icon_tib %>% 
+        filter(industry ==  box_value) %>% 
+        pull(icon)
+      
+    }
+      
+      box <- infoBox(width = 6,
+                     fill = T,
+                     title = box_title,
+                     value =  box_value,
+                     subtitle = box_subtitle,
+                     color = colour,
+                     icon = icon(icon))
+      
+      return(box)
+
   })
 }
 
