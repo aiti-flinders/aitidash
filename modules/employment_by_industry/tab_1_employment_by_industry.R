@@ -100,7 +100,8 @@ empInd <- function(input, output, session, data, region) {
       selectInput(
         inputId = session$ns("month"),
         label = "Select Month",
-        choices = data_months)
+        choices = data_months, 
+        selected = last(data_months))
     } else {NULL}
     
   })
