@@ -3,7 +3,7 @@
 boxesUI <- function(id) {
   ns <- NS(id)
   
-  infoBoxOutput(ns('box'), width = 4)
+  infoBoxOutput(ns('box'), width = 6)
   
   
   
@@ -90,7 +90,8 @@ boxes <- function(input, output, session, data, indicator, region, reverse = F, 
       
     }
     
-    box <- infoBox(fill = T, 
+    box <- infoBox(width = 6, 
+                   fill = T, 
             title = box_title,
             value = box_text_current,
             color = colour, 
