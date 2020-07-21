@@ -7,6 +7,16 @@
   --arrow_red: #ffb24d;
 }
 
+@font-face {
+    font-family: 'Roboto';
+    src: url('Roboto.woff2') format('woff2'),
+         url('Roboto.woff') format('woff'),
+         url('Roboto.tff') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
 
 /* Skin Defaults */
 .skin-blue .content-wrapper {
@@ -15,7 +25,7 @@
 }.content {
   padding-top: 0;
   font-size: 16px;
-  font-family: Roboto;
+  font-family: Roboto, arial, serif
 }
 
 /* Additional h2 Styling */
