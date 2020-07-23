@@ -3,10 +3,12 @@ library(lubridate)
 library(scales)
 library(shiny)
 library(shinydashboard)
-library(shinyWidgets)
 library(plotly)
 library(reportabs)
 library(aititheme)
+library(leaflet)
+library(sf)
+
 #### Preamble ####
 # Plotly Setup
 Sys.setenv("plotly_username"="hamgamb")
@@ -18,6 +20,8 @@ dir.create("~/.fonts")
 file.copy("www/Roboto.ttf", "~/.fonts")
 system('fc-cache -f ~/.fonts')
 
+
+
 # Load Modules
 #Dashboard
 source('modules/dashboard/boxes.R')
@@ -28,18 +32,23 @@ source("modules/labour_market/tab_1_labour_market.R")
 source('modules/labour_market/tab_2_labour_market_region_comparison.R')
 source('modules/labour_market/tab_3_labour_market_demographic_comparison.R')
 source('modules/labour_market/tab_4_labour_market_analysis.R')
+source("modules/labour_market/tab_5_small_area_maps.R")
+
 #Employment by Industry
 source('modules/employment_by_industry/tab_1_employment_by_industry.R')
 source('modules/employment_by_industry/tab_2_employment_by_industry_region_comparison.R')
 source('modules/employment_by_industry/tab_3_employment_by_industry_analysis.R')
 #Internet Vacancies
 source("modules/internet_vacancies/tab_1_ivi.R")
+#Small Area Unemployment
+
 
 
 
 
 
 #### Header Controls ####
+
 header <- dashboardHeader(#titleWidth = "200px",
                           title = "Economic Indicators Dashboard",
                           tags$li(a(href = "http://www.flinders.edu.au/aiti",
@@ -170,11 +179,13 @@ labour_market_tab <- tabItem(
            width = 12,
            labourMarketUI("lm_ts", data = labour_force),
            labourMarketRegionalUI("lm_region", data = labour_force),
-           labourMarketDemogUI("lm_demog", data = labour_force),
+           labourMarketDemogUI("lm_demog", data = labour_force),  
+           labourMarketSmallAreaUI("lm_salm", data = salm),
            labourMarketAnalysisUI("lm_analysis", data = labour_force)
-           )
     )
   )
+)
+
 
 #Employment by Industry
 emp_ind_tab <- tabItem(
@@ -203,7 +214,9 @@ internet_vacancies_tab <- tabItem(
 )
                          
 #### Body ####                                       
-body <- dashboardBody(tags$head(tags$link(rel = "stylesheet", type = 'text/css', href = 'custom.css')),
+body <- dashboardBody(
+  tags$head(includeHTML(("www/google-analytics.html"))),
+  tags$head(tags$link(rel = "stylesheet", type = 'text/css', href = 'custom.css')),
   tabItems(
     user_guide_tab,
     dashboard_tab,
@@ -233,7 +246,8 @@ server <- function(input, output) {
   #Labour Market -  Tab
   callModule(labourMarket, "lm_ts", data = labour_force, region = region_selected)
   callModule(labourMarketRegional, "lm_region", data = labour_force, region = region_selected)
-  callModule(labourMarketDemog, "lm_demog", data = labour_force, region = region_selected)
+  callModule(labourMarketDemog, "lm_demog", data = labour_force, region = region_selected) 
+  callModule(labourMarketSmallArea, "lm_salm", data = salm, region = region_selected)
   callModule(labourMarketAnalysis, "lm_analysis", data = labour_force, region = region_selected)
 
   #Employment by Industry - Tab
@@ -244,6 +258,8 @@ server <- function(input, output) {
   #IVI - Tab
   #callModule(ivi, "ivi_ts", data = internet_vacancies_basic, region = region_selected)
   
+  #SALM - Tab
+
   #Employment boxes - row 1
   callModule(boxes, "employment_total", data = labour_force, region = region_selected, "Employed total", reverse = F, percent = F)
   callModule(boxes, "employment_ft", data = labour_force, region = region_selected, "Employed full-time", reverse = F, percent = F)
