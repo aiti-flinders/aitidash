@@ -1,6 +1,9 @@
 
 labourMarketSmallAreaUI <- function(id, data) {
   ns <- NS(id)
+  
+  date_select <- unique(data$date)
+  date_select_name <- zoo::as.yearmon(date_select)
 
   
   tabPanel(title = "Small Area Unemployment Rates",
@@ -10,7 +13,7 @@ labourMarketSmallAreaUI <- function(id, data) {
                selectInput(
                    inputId = ns("date"),
                    label = "Select Date",
-                   choices = unique(data$date),
+                   choices = setNames(date_select, date_select_name),
                    selected = max(data$date)
                  )
              )
@@ -66,7 +69,7 @@ labourMarketSmallArea <- function(input, output, session, data, region) {
           dashArray = "",
           fillOpacity = 0.7,
           bringToFront = TRUE),
-        label = ~str_c(sa2_name_2016,": ", value)) %>%
+        label = ~str_c(sa2_name_2016,": ", value, "%")) %>%
       addLegend(
         "bottomright", 
         pal = pal, 
