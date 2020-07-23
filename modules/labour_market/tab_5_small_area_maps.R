@@ -20,11 +20,7 @@ labourMarketSmallAreaUI <- function(id, data) {
 
 labourMarketSmallArea <- function(input, output, session, data, region) {  
   
-
-
-  
-  output$map <- renderLeaflet({
-    
+  create_data <- reactive({
     df <- data %>%
       filter(indicator == "Smoothed unemployment rate (%)",
              date == input$date) 
@@ -32,31 +28,42 @@ labourMarketSmallArea <- function(input, output, session, data, region) {
     if (region() != "Australia") {
       df <- df %>%
         filter(state_name_2016 == region())
-    }
+    }  
     
-    pal <- colorBin("viridis", df$value, 10, pretty = TRUE)
+    })
+  
+  create_plot <- reactive({
     
-    leaflet(df) %>%
-        addTiles() %>% 
-        addPolygons(
-          fillColor = ~pal(value),
-          weight = 1,
-          opacity = 0.5,
-          color = 'white',
+    pal <- colorBin("viridis", create_data()$value, 8, pretty = TRUE)
+    
+    leaflet(create_data()) %>%
+      addTiles() %>% 
+      addPolygons(
+        fillColor = ~pal(value),
+        weight = 1,
+        opacity = 0.5,
+        color = 'white',
+        dashArray = "",
+        fillOpacity = 0.7,
+        highlight = highlightOptions(
+          weight = 2,
+          color = aiti_blue,
           dashArray = "",
           fillOpacity = 0.7,
-          highlight = highlightOptions(
-            weight = 2,
-            color = aiti_blue,
-            dashArray = "",
-            fillOpacity = 0.7,
-            bringToFront = TRUE)) %>%
+          bringToFront = TRUE)) %>%
       addLegend(
         "bottomright", 
         pal = pal, 
-        values = df$value, 
+        values = create_data()$value, 
         title = "Unemployment Rate (%)")
-    })
+    
+  })
+
+
+  
+  output$map <- renderLeaflet({
+    create_plot()
+  })
   
 
 
