@@ -7,6 +7,7 @@ library(plotly)
 library(reportabs)
 library(aititheme)
 library(leaflet)
+library(mapview)
 library(sf)
 
 #### Preamble ####
@@ -78,7 +79,7 @@ sidebar <- dashboardSidebar(
       text = "Employment Insights",
       tabName = "labour_market",
       icon = icon("briefcase")
-    ),
+      ),
     menuItem(
       text = "Industry Insights",
       tabName = "industry",
