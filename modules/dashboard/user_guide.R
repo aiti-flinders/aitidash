@@ -38,6 +38,11 @@ Those shown in ",
   the selected Series Type must be 'Original'"),
   h3("Demography"),
   p("This tab allows for a breakdown of a given indicator by demographic variables. Age is only available for Australia."),
+  h3("Small Area Unemployment Rates"),
+  p("This tab shows smoothed unemployment rates for all SA2 Statistical Areas in Australia, or only those in a region if a region
+    is selected using data from the Small Area Labour Markets publication produced by the Department of Employment. The download button 
+    on this page will download the map as it is visible to you. However please not that there may be some delays if attempting to download
+    a map with all SA2 Statistical Areas shown."),
   h2("Industry Insights"),
   h3("Tab 1"),
   p("This tab shows the breakdown of employment by industry for the region selected in the sidebar menu, for a given year, and month. 
