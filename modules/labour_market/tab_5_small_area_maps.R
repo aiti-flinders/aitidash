@@ -65,7 +65,8 @@ labourMarketSmallArea <- function(input, output, session, data, region) {
           color = aiti_blue,
           dashArray = "",
           fillOpacity = 0.7,
-          bringToFront = TRUE)) %>%
+          bringToFront = TRUE),
+        label = ~str_c(sa2_name_2016,": ", value)) %>%
       addLegend(
         "bottomright", 
         pal = pal, 
