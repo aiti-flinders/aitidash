@@ -9,11 +9,12 @@
 
 @font-face {
     font-family: 'Roboto';
-    src: url('Roboto.woff2') format('woff2'),
+    src: url('Roboto.eot');
+    src: url('Roboto.eot?#iefix') format('embedded-opentype'),
          url('Roboto.woff') format('woff'),
-         url('Roboto.tff') format('truetype');
-    font-weight: normal;
-    font-style: normal;
+         url('Roboto.ttf') format('truetype'),
+         url('Roboto.svg#svgFontName') format('svg');
+
 
 }
 
