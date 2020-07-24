@@ -61,7 +61,12 @@ labourMarketRegionalUI <- function(id, data) {
            )
 } 
 
-labourMarketRegional <- function(input, output, session, data, region) {
+labourMarketRegionalServer <- function(id, data, region) {
+  moduleServer(
+   
+     id,
+
+    function(input, output, session) {
   
   current_selection <- reactiveVal(NULL)
   
@@ -140,4 +145,6 @@ labourMarketRegional <- function(input, output, session, data, region) {
       write.csv(create_data(), file, row.names = FALSE)
     }
   )
+    }
+)
 }
