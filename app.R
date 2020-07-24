@@ -241,8 +241,7 @@ server <- function(input, output) {
   #Labour Market -  Tab
   labourMarketServer("lm_ts", data = labour_force, region = region_selected)
   labourMarketRegionalServer("lm_region", data = labour_force, region = region_selected)
-  callModule(labourMarketDemog, "lm_demog", data = labour_force, region = region_selected) 
-  #callModule(labourMarketSmallArea, "lm_salm", data = salm, region = region_selected)
+  labourMarketDemogServer("lm_demog", data = labour_force, region = region_selected) 
   callModule(labourMarketAnalysis, "lm_analysis", data = labour_force, region = region_selected)
 
   #Employment by Industry - Tab

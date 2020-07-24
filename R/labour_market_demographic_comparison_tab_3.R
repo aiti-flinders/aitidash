@@ -65,7 +65,10 @@ labourMarketDemogUI <- function(id, data) {
   )
 }
 
-labourMarketDemog <- function(input, output, session, data, region) {
+labourMarketDemogServer <- function(id, data, region) {
+  moduleServer(
+    id,
+    function(input, output, session) { 
   
   indicator_choices <- c("Employed total",
                          "Employed full-time",
@@ -156,6 +159,10 @@ labourMarketDemog <- function(input, output, session, data, region) {
       write.csv(create_data(), file, row.names = FALSE)
     }
   )
-  
-  
+    }
+  )
 }
+  
+  
+
+  
