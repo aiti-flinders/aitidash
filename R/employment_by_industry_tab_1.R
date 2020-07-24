@@ -66,11 +66,18 @@ empInd <- function(input, output, session, data, region) {
   date_min <- min(data$date)
   date_max <- max(data$date)
   
-  data_months <- data %>% 
-    filter(year == 2020) %>%
-    pull(month) %>%
-    unique() %>%
-    sort()
+  data_months <- reactive({
+    
+    validate(
+      need(input$year, message = FALSE)
+    )
+
+    data %>% 
+      filter(year == input$year) %>%
+      pull(month) %>%
+      unique() %>%
+      sort()
+  })
   
   output$title_panel <- renderText({
     region()
@@ -100,8 +107,8 @@ empInd <- function(input, output, session, data, region) {
       selectInput(
         inputId = session$ns("month"),
         label = "Select Month",
-        choices = data_months, 
-        selected = last(data_months))
+        choices = data_months(), 
+        selected = last(data_months()))
     } else {NULL}
     
   })
@@ -109,12 +116,7 @@ empInd <- function(input, output, session, data, region) {
   current_indicator <- reactiveVal(NULL)
   
   observeEvent(input$year, {
-    updateSelectInput(session, "month", choices = data %>%
-                        filter(year == input$year,
-                               state == region()) %>%
-                        pull(month) %>%
-                        unique() %>%
-                        sort())
+    updateSelectInput(session, "month", choices = data_months(), selected = last(data_months()))
   })
   
   observeEvent(region(), {
@@ -238,7 +240,8 @@ empInd <- function(input, output, session, data, region) {
 
   output$plot <- renderPlotly({
     validate(
-      need(input$year, message = FALSE)
+      need(input$year, message = FALSE),
+      need(input$month, message = FALSE)
     )
 
     create_plot()

@@ -26,7 +26,19 @@ iviUI <- function(id, data){
                    label = "Select Occupation",
                    choices = occupation_choices
                  )),
-             box()
+             fluidRow(
+               box(width = 12, status = "info", title = "Downloads", solidHeader = FALSE,
+                   downloadButton(
+                     outputId = ns("download_plot"),
+                     label = "Click here to download the chart as a .png",
+                     class = 'download-button'
+                   ),
+                   downloadButton(
+                     outputId = ns("download_data"),
+                     label = "Click here to download the chart data",
+                     class = 'download-button'
+                   ))
+             )
            )
   )
 }
@@ -53,7 +65,7 @@ ivi <- function(input, output, session, data, region) {
   
   create_plot <- reactive({
     
-    plot_title <- str_to_upper(str_c(region(),": ", "Internet Vacancies"))
+    plot_title <- str_to_upper(str_c(region(),": ", "Internet Vacancies (", input$occupation, ")"))
     p <- ggplot(create_data(), aes(x = date, 
                                    y = vacancies,
                                    text = str_c("Date: ", format(date, "%Y-%b"),
@@ -89,4 +101,22 @@ ivi <- function(input, output, session, data, region) {
   output$plot <- renderPlotly({
     create_plot()
   })
+  
+  output$download_plot <- downloadHandler(
+    filename = function(){
+      paste(input$indicator, "-plot.png", sep = '')
+    },
+    content = function(file) {
+      plotly_IMAGE(create_plot(), out_file = file)
+    }
+  )
+  
+  output$download_data <- downloadHandler(
+    filename = function() {
+      paste(input$indicator, "-data.csv", sep = '')
+    },
+    content = function(file) {
+      write.csv(create_data(), file, row.names = FALSE)
+    }
+  )
 }
