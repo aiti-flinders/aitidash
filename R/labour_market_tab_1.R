@@ -70,9 +70,13 @@ labourMarketUI <- function(id, data) {
 
 
 
-labourMarket <- function(input, output, session, data, region) {
+labourMarketServer <- function(id, data, region) {
   
-
+  moduleServer(
+    id,
+    function(input, output, session) {
+  
+  
   output$title_panel = renderText({
     region()
   })
@@ -145,8 +149,10 @@ labourMarket <- function(input, output, session, data, region) {
       write.csv(create_data(), file, row.names = FALSE)
     }
   )
-  
-
-
+    }
+  )
 }
+
+
+
 

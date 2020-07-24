@@ -239,7 +239,7 @@ server <- function(input, output) {
   })
 
   #Labour Market -  Tab
-  callModule(labourMarket, "lm_ts", data = labour_force, region = region_selected)
+  labourMarketServer("lm_ts", data = labour_force, region = region_selected)
   callModule(labourMarketRegional, "lm_region", data = labour_force, region = region_selected)
   callModule(labourMarketDemog, "lm_demog", data = labour_force, region = region_selected) 
   #callModule(labourMarketSmallArea, "lm_salm", data = salm, region = region_selected)
