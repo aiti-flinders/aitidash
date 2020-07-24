@@ -6,9 +6,9 @@ library(shinydashboard)
 library(plotly)
 library(reportabs)
 library(aititheme)
-library(leaflet)
-library(mapview)
-library(sf)
+# library(leaflet)
+# library(mapview)
+# library(sf)
 
 #### Preamble ####
 # Plotly Setup
@@ -20,30 +20,6 @@ Sys.setenv("plotly_api_key" = 'SDYMDyK3YM0eZrTNpyoa')
 dir.create("~/.fonts")
 file.copy("www/Roboto.ttf", "~/.fonts")
 system('fc-cache -f ~/.fonts')
-
-
-
-# Load Modules
-#Dashboard
-source('modules/dashboard/boxes.R')
-source('modules/dashboard/boxes_alt.R')
-source("modules/dashboard/user_guide.R")
-#Labour Market
-source("modules/labour_market/tab_1_labour_market.R")
-source('modules/labour_market/tab_2_labour_market_region_comparison.R')
-source('modules/labour_market/tab_3_labour_market_demographic_comparison.R')
-source('modules/labour_market/tab_4_labour_market_analysis.R')
-source("modules/labour_market/tab_5_small_area_maps.R")
-
-#Employment by Industry
-source('modules/employment_by_industry/tab_1_employment_by_industry.R')
-source('modules/employment_by_industry/tab_2_employment_by_industry_region_comparison.R')
-source('modules/employment_by_industry/tab_3_employment_by_industry_analysis.R')
-#Internet Vacancies
-source("modules/internet_vacancies/tab_1_ivi.R")
-#Small Area Unemployment
-
-
 
 
 
@@ -65,9 +41,9 @@ sidebar <- dashboardSidebar(
   sidebarMenu(
     id = 'tabs',
     menuItem(
-      text = "Dashboard",
+      text = "Summary",
       tabName = 'dashboard',
-      icon = icon("gear"),
+      icon = icon("chart-bar"),
       selected = TRUE
     ),   
     menuItem(
@@ -77,20 +53,38 @@ sidebar <- dashboardSidebar(
     ),
     menuItem(
       text = "Employment Insights",
-      tabName = "labour_market",
-      icon = icon("briefcase")
+      tabName = "employment",
+      icon = icon("briefcase"),
+      menuItem(text = "Labour Force",
+                  tabName = "labour_market",
+                  icon = icon("chart-line")),
+      menuItem(text = "Internet Vacancies",
+                  tabName = "internet_vacancies",
+                  icon = icon("newspaper"))
       ),
     menuItem(
       text = "Industry Insights",
-      tabName = "industry",
+      tabName = "industry_insights",
       icon = icon('industry'),
-      badgeLabel = "new", badgeColor = "red"
+      menuItem(text = "Industry Employment",
+                  tabName = "industry",
+                  icon = icon("city")),
+      menuItem(text = "Industry Value Add",
+               tabName = "industry_va",
+               icon = icon("plus"))
+      ),
+    menuItem(
+      text = "Economic Complexity",
+      tabName = "economic_complexity",
+      icon = icon("cog"),
+      menuItem(text = "Product Indicators",
+               tabName = "ec_products",
+               icon = icon("cube")),
+      menuItem(text = "Country Indicators",
+               tabName = "ec_countries",
+               icon = icon("globe-asia"))
     ),
-    # menuItem(
-    #   text = "Internet Vacancies",
-    #   tabName = "internet_vacancies",
-    #   icon = icon('newspaper')
-    # ),
+    
     radioButtons(
       inputId = "region_select",
       label = "Select Region",
@@ -181,7 +175,7 @@ labour_market_tab <- tabItem(
            labourMarketUI("lm_ts", data = labour_force),
            labourMarketRegionalUI("lm_region", data = labour_force),
            labourMarketDemogUI("lm_demog", data = labour_force),  
-           labourMarketSmallAreaUI("lm_salm", data = salm),
+           #labourMarketSmallAreaUI("lm_salm", data = salm),
            labourMarketAnalysisUI("lm_analysis", data = labour_force)
     )
   )
@@ -222,8 +216,8 @@ body <- dashboardBody(
     user_guide_tab,
     dashboard_tab,
     labour_market_tab,
-    emp_ind_tab
-    #internet_vacancies_tab
+    emp_ind_tab,
+    internet_vacancies_tab
   )
 )
   
@@ -248,7 +242,7 @@ server <- function(input, output) {
   callModule(labourMarket, "lm_ts", data = labour_force, region = region_selected)
   callModule(labourMarketRegional, "lm_region", data = labour_force, region = region_selected)
   callModule(labourMarketDemog, "lm_demog", data = labour_force, region = region_selected) 
-  callModule(labourMarketSmallArea, "lm_salm", data = salm, region = region_selected)
+  #callModule(labourMarketSmallArea, "lm_salm", data = salm, region = region_selected)
   callModule(labourMarketAnalysis, "lm_analysis", data = labour_force, region = region_selected)
 
   #Employment by Industry - Tab
@@ -257,7 +251,7 @@ server <- function(input, output) {
   callModule(empIndAnalysis, "empInd_analysis", data = employment_industry, region = region_selected)
   
   #IVI - Tab
-  #callModule(ivi, "ivi_ts", data = internet_vacancies_basic, region = region_selected)
+  callModule(ivi, "ivi_ts", data = internet_vacancies_basic, region = region_selected)
   
   #SALM - Tab
 
