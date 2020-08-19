@@ -5,14 +5,15 @@ library(shiny)
 library(shinydashboard)
 library(plotly)
 library(reportabs)
+library(aitidata)
+library(absmapsdata)
 library(aititheme)
-# library(leaflet)
-# library(mapview)
-# library(sf)
+library(leaflet)
+library(sf)
 
 #### Preamble ####
 # Plotly Setup
-Sys.setenv("plotly_username"="hamgamb")
+Sys.setenv("plotly_username" = "hamgamb")
 Sys.setenv("plotly_api_key" = 'SDYMDyK3YM0eZrTNpyoa')
 
 
@@ -22,7 +23,7 @@ file.copy("www/Roboto.ttf", "~/.fonts")
 system('fc-cache -f ~/.fonts')
 
 
-
+source("modules/labour_market/tab_5_small_area_maps.R")
 
 #### Header Controls ####
 
@@ -60,8 +61,7 @@ sidebar <- dashboardSidebar(
                   icon = icon("chart-line")),
       menuItem(text = "Internet Vacancies",
                   tabName = "internet_vacancies",
-                  icon = icon("newspaper"))
-      ),
+                  icon = icon("newspaper"))),
     menuItem(
       text = "Industry Insights",
       tabName = "industry_insights",
@@ -71,8 +71,7 @@ sidebar <- dashboardSidebar(
                   icon = icon("city")),
       menuItem(text = "Industry Value Add",
                tabName = "industry_va",
-               icon = icon("plus"))
-      ),
+               icon = icon("plus"))),
     menuItem(
       text = "Economic Complexity",
       tabName = "economic_complexity",
@@ -175,7 +174,7 @@ labour_market_tab <- tabItem(
            labourMarketUI("lm_ts", data = labour_force),
            labourMarketRegionalUI("lm_region", data = labour_force),
            labourMarketDemogUI("lm_demog", data = labour_force),  
-           #labourMarketSmallAreaUI("lm_salm", data = salm),
+           labourMarketSmallAreaUI("lm_salm", data = small_area_labour_market),
            labourMarketAnalysisUI("lm_analysis", data = labour_force)
     )
   )
@@ -241,7 +240,8 @@ server <- function(input, output) {
   #Labour Market -  Tab
   labourMarketServer("lm_ts", data = labour_force, region = region_selected)
   labourMarketRegionalServer("lm_region", data = labour_force, region = region_selected)
-  labourMarketDemogServer("lm_demog", data = labour_force, region = region_selected) 
+  labourMarketDemogServer("lm_demog", data = labour_force, region = region_selected)
+  callModule(labourMarketSmallArea, "lm_salm", data = small_area_labour_market, region = region_selected)
   callModule(labourMarketAnalysis, "lm_analysis", data = labour_force, region = region_selected)
 
   #Employment by Industry - Tab
