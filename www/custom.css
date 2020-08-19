@@ -64,63 +64,53 @@ h3 {
   background-color: white;
 } 
 
-
-/* SIDEBAR STYLE */
-
 /* sidebar toggle */
 .skin-blue .main-header .navbar .sidebar-toggle {
 	color: var(--dark_blue);
 }
+
+
+/* SIDEBAR STYLE */
 
 /* Sidebar Background Colour */
 .skin-blue .main-sidebar {
   background: white; /*white*/
 }
 
-/* Sidebar Tabs */
-.skin-blue .main-sidebar .sidebar .sidebar-menu a{
-	color: var(--dark_blue);  /*text colour - dark blue */
-	font-size: 16px;
-	font-family: Roboto;
+/* What colour text, background, and border on hover/active */
+.skin-blue .sidebar-menu>li.active>a,
+.skin-blue .sidebar-menu>li:hover>a {
+  color: white;
+  background: var(--light_blue);
+  border-left-color: var(--yellow);
 }
 
-.skin-blue .main-sidebar .sidebar .sidebar-menu {
-	color: var(--dark_blue);  /*text colour - dark blue */
-	font-size: 16px;
-	font-family: Roboto;
+/* What colour text, background, not active */
+.skin-blue .sidebar a{
+  color: var(--dark_blue);
+  font-size: 16px;
+  font: Roboto;
+}
+/* background, text colour of submenu */
+.skin-blue .sidebar-menu>li>.treeview-menu{
+  background: white;
+  color: var(--dark_blue);
 }
 
-/*Sidebar Input*/
-
-.skin-blue .main-sidebar .sidebar .sidebar-menu label{
-	color: var(--dark_blue);  /*text colour - dark blue */
-	
+.skin-blue .treeview-menu>li>a {
+  color:var(--dark_blue);
+  
 }
 
-/*Sidebar toggle hover */
-.skin-blue .main-header .navbar .sidebar-toggle:hover{
-  background-color: var(--dark_blue);
+.skin-blue .treeview-menu>li.active>a,
+.skin-blue .treeview-menu>li>a:hover {
+  background: var(--light_blue);
+  border-left-color: var(--yellow);
 }
 
-/* sidebar: tab selected*/
-.skin-blue .main-sidebar .sidebar .sidebar-menu .active a{
-	color: #ffffff; /*text colour - white */
-	border-color: var(--yellow)
-}
-.skin-blue .sidebar-menu > li:hover > a {
-	background: var(--dark_blue);
-	border-color: var(--yellow);
-}
-.skin-blue .sidebar-menu >li.active >a {
-	background: var(--light_blue);
-	border-color: var(--yellow)
-}
 
-/* sidebar: tab hovered*/
-.skin-blue .main-sidebar .sidebar .sidebar-menu a:hover{
-	background: var(--dark_blue);
-	color: white
-}
+
+
 
 /*sliver on selected tab */
 .nav-tabs-custom .nav-tabs li.active:hover a, .nav-tabs-custom .nav-tabs li.active a {
@@ -242,6 +232,7 @@ h3 {
   background: white;
   border: white;
 }
+
 
 
 
