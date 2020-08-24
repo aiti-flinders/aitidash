@@ -20,7 +20,7 @@ empIndUI <- function(id, data) {
   
   tabPanel(width='100%',
            title = uiOutput(ns('title_panel')), 
-           plotlyOutput(ns("plot")),
+           plotlyOutput(ns("plot"), height = "600px"),
            fluidRow(
              box(status = 'info', solidHeader = F,
                  selectInput(
@@ -34,8 +34,7 @@ empIndUI <- function(id, data) {
                    choices = c("Share", "Value"),
                    selected = "Value"
                  ),
-                 uiOutput(ns("year_select")),
-                 uiOutput(ns("month_select"))
+                 uiOutput(ns("date"))
                  ),
              
              box(status = 'info', solidHeader = F,
@@ -66,18 +65,6 @@ empInd <- function(input, output, session, data, region) {
   date_min <- min(data$date)
   date_max <- max(data$date)
   
-  data_months <- reactive({
-    
-    validate(
-      need(input$year, message = FALSE)
-    )
-
-    data %>% 
-      filter(year == input$year) %>%
-      pull(month) %>%
-      unique() %>%
-      sort()
-  })
   
   output$title_panel <- renderText({
     region()
@@ -89,36 +76,22 @@ empInd <- function(input, output, session, data, region) {
     }
   })
   
-  output$year_select <- renderUI({
+  
+  
+  output$date <- renderUI({
     if(is.null(input$industry)) {
-    numericInput(
-      inputId = session$ns("year"),
-      label = "Select Year",
-      value = 2020,
-      min = year(date_min),
-      max = year(date_max),
-      step = 1)
-    } else {NULL}
-    
+      sliderTextInput(
+        inputId = session$ns("date"),
+        label = "Select Date",
+        choices = zoo::as.yearqtr(sort(unique(data$date))),
+        selected = zoo::as.yearqtr(date_max))
+    }
   })
   
-  output$month_select <- renderUI({
-    if(is.null(input$industry)) {
-      selectInput(
-        inputId = session$ns("month"),
-        label = "Select Month",
-        choices = data_months(), 
-        selected = last(data_months()))
-    } else {NULL}
-    
-  })
-  
+
   current_indicator <- reactiveVal(NULL)
   
-  observeEvent(input$year, {
-    updateSelectInput(session, "month", choices = data_months(), selected = last(data_months()))
-  })
-  
+
   observeEvent(region(), {
     
     current_indicator(input$indicator)
@@ -141,11 +114,10 @@ empInd <- function(input, output, session, data, region) {
         filter(industry != "Total (industry)",
                state == region(), 
                indicator == input$indicator) %>% 
-        group_by(date, month, year,  industry) %>% 
+        group_by(date, industry) %>% 
         summarise(value = mean(value)) %>% 
         mutate(share = 100*value/sum(value)) %>%
-        filter(year == input$year,
-               month == input$month) %>%
+        filter(date == as.Date(zoo::as.yearqtr(input$date)) + months(1)) %>%
         arrange(desc(industry)) %>%
         mutate(industry = as_factor(industry)) 
       } else {
@@ -195,7 +167,7 @@ empInd <- function(input, output, session, data, region) {
         labs(
           y = NULL,
           x = NULL,
-          title = str_to_upper(str_c(input$indicator, ": ", region(), " (", input$year, "-", input$month, ")"))
+          title = str_to_upper(str_c(input$indicator, ": ", region(), " (", input$date, ")"))
         ) +
         scale_y_continuous(expand = c(0,0), labels = y_labels) +
         coord_flip() +
@@ -227,7 +199,7 @@ empInd <- function(input, output, session, data, region) {
                            y = -0.15),
              annotations = list(
                x = 1,
-               y = -0.2,
+               y = -0.4,
                showarrow = FALSE,
                xref = "paper",
                yref = "paper",
@@ -240,8 +212,7 @@ empInd <- function(input, output, session, data, region) {
 
   output$plot <- renderPlotly({
     validate(
-      need(input$year, message = FALSE),
-      need(input$month, message = FALSE)
+      need(input$date, message = FALSE)
     )
 
     create_plot()

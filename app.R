@@ -3,6 +3,7 @@ library(lubridate)
 library(scales)
 library(shiny)
 library(shinydashboard)
+library(shinyWidgets)
 library(plotly)
 library(reportabs)
 library(aitidata)
@@ -82,6 +83,12 @@ sidebar <- dashboardSidebar(
       menuItem(text = "Country Indicators",
                tabName = "ec_countries",
                icon = icon("globe-asia"))
+    ),
+    menuItem(
+      text = "COVID-19",
+      tabName = "covid_19",
+      icon = icon("virus"), 
+      badgeLabel = "new!"
     ),
     
     radioButtons(
@@ -174,7 +181,7 @@ labour_market_tab <- tabItem(
            labourMarketUI("lm_ts", data = labour_force),
            labourMarketRegionalUI("lm_region", data = labour_force),
            labourMarketDemogUI("lm_demog", data = labour_force),  
-           labourMarketSmallAreaUI("lm_salm", data = small_area_labour_market),
+           #labourMarketSmallAreaUI("lm_salm", data = small_area_labour_market),
            labourMarketAnalysisUI("lm_analysis", data = labour_force)
     )
   )
@@ -206,6 +213,18 @@ internet_vacancies_tab <- tabItem(
     )
   )
 )
+
+#COVID Tab
+covid_19_tab <- tabItem(
+  tabName = "covid_19",
+  fluidRow(
+    tabBox(
+      id = "covid_tab_id",
+      width = 12,
+      covidUI("covid_map", data = covid_data)
+    )
+  )
+)
                          
 #### Body ####                                       
 body <- dashboardBody(
@@ -216,7 +235,8 @@ body <- dashboardBody(
     dashboard_tab,
     labour_market_tab,
     emp_ind_tab,
-    internet_vacancies_tab
+    internet_vacancies_tab,
+    covid_19_tab
   )
 )
   
@@ -234,7 +254,7 @@ server <- function(input, output) {
 
   region_selected <- reactive(input$region_select)
   output$region_selected <- renderText({
-    region_selected()
+    region_selected() 
   })
 
   #Labour Market -  Tab
@@ -252,7 +272,8 @@ server <- function(input, output) {
   #IVI - Tab
   callModule(ivi, "ivi_ts", data = internet_vacancies_basic, region = region_selected)
   
-  #SALM - Tab
+  #COVID - Tab
+  covidServer("covid_map", data = covid_data, region = region_selected)
 
   #Employment boxes - row 1
   callModule(boxes, "employment_total", data = labour_force, region = region_selected, "Employed total", reverse = F, percent = F)
