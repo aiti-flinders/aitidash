@@ -161,6 +161,7 @@ h3 {
 
 .info-box-content {
   color: var(--dark_blue);
+  text-align: left;
   background: white;
 }
 
@@ -229,10 +230,19 @@ h3 {
   
 }
 
-.irs-bar {
-  background: white;
-  border: white;
+/* Sliders */
+
+/* Leaflet */
+
+.legend {
+  color: var(--dark_blue);
+  text-align: left;
 }
+
+
+
+
+
 
 
 
