@@ -12,7 +12,7 @@ empIndComparisonUI <- function(id, data) {
   date_min <- min(data$date)
   date_max <- max(data$date)
   
-  tabPanel(title = "Regional Comparison", plotlyOutput(ns("plot"), width='100%'),
+  tabPanel(title = "Regional Comparison", plotlyOutput(ns("plot"), width='100%', height = "600px"),
            fluidRow(
              box(status = 'info',solidHeader = F,
                  selectInput(
@@ -71,9 +71,9 @@ empIndComparison <- function(input, output, session, data, region) {
       filter(state %in% c(region(), input$comparison),
              year == input$date_range) %>%
       select(-value) %>% 
-      spread(key = state, value = share) %>%
+      tidyr::pivot_wider(names_from = state, values_from = share) %>%
       arrange(!!as.name(region())) %>%
-      mutate(industry = as_factor(industry)) 
+      mutate(industry = forcats::as_factor(industry)) 
   })
   
   create_plot <- reactive({
@@ -85,7 +85,7 @@ empIndComparison <- function(input, output, session, data, region) {
                    colour = aiti_darkblue) + 
       geom_point(aes(x = industry, 
                      y = !!as.name(region()),
-                     text = str_c(region(),
+                     text = paste0(region(),
                                   "<br>",industry, 
                                   "<br>", as_percent(!!as.name(region()))),
                      fill = region()),
@@ -93,7 +93,7 @@ empIndComparison <- function(input, output, session, data, region) {
                  colour = aiti_yellow) +
       geom_point(aes(x = industry, 
                      y = !!as.name(input$comparison),
-                     text = str_c(input$comparison, 
+                     text = paste0(input$comparison, 
                                   "<br>", industry,
                                   "<br>", as_percent(!!as.name(input$comparison))),
                      fill = input$comparison), 
@@ -105,7 +105,7 @@ empIndComparison <- function(input, output, session, data, region) {
       labs(
         y = NULL,
         x = NULL,
-        title = str_to_upper(str_c("share of industry employment: ", region(), " & ", input$comparison, " (", input$date_range, ")"))
+        title = toupper(paste0("share of industry employment: ", region(), " & ", input$comparison, " (", input$date_range, ")"))
       ) +
       theme_aiti(legend = 'bottom', base_family = "Roboto")
     

@@ -62,7 +62,9 @@ labourMarketUI <- function(id, data) {
                    outputId = ns("download_data"),
                    label = "Click here to download the chart data",
                    class = 'download-button'
-                   ))
+                   ),
+                 uiOutput(inline = TRUE, ns("download_report_button"))
+                 )
            )
            
   )
@@ -147,6 +149,30 @@ labourMarketServer <- function(id, data, region) {
     },
     content = function(file) {
       write.csv(create_data(), file, row.names = FALSE)
+    }
+  )
+  
+  report_url <- reactive({
+    paste0("https://www.flinders.edu.au/content/dam/documents/research/aiti/monthly-employment-insights/",
+                      str_to_lower(str_replace_all(region(), " ", "-")),
+                      ".pdf")
+  })
+  
+  output$download_report_button <- renderUI({
+    if(region() != "Australia")
+    downloadButton(
+      outputId = session$ns("download_report"),
+      label = paste("Download the Monthly Report for ", region()),
+      class = "download-button"
+    )
+  })
+  
+  output$download_report <- downloadHandler(
+    filename = function() {
+      paste0("AITI Labour Market Brief - ", region(), ".pdf")
+    },
+    content = function(file) {
+      download.file(report_url(), file, mode = "wb")
     }
   )
     }

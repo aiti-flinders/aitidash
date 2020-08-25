@@ -119,7 +119,7 @@ empInd <- function(input, output, session, data, region) {
         mutate(share = 100*value/sum(value)) %>%
         filter(date == as.Date(zoo::as.yearqtr(input$date)) + months(1)) %>%
         arrange(desc(industry)) %>%
-        mutate(industry = as_factor(industry)) 
+        mutate(industry = forcats::as_factor(industry)) 
       } else {
         df <- data %>% 
       filter(state == region(), 
@@ -148,10 +148,10 @@ empInd <- function(input, output, session, data, region) {
     }
     
     if(length(input$industry) > 1) {
-      plot_title <- str_to_upper(str_c(region(), ": ", input$indicator, " (Multiple industries)"))
+      plot_title <- toupper(paste0(region(), ": ", input$indicator, " (Multiple industries)"))
       
     } else {
-      plot_title <- str_to_upper(str_c(region(), ": ", input$indicator, " (", input$industry, ")"))
+      plot_title <- toupper(paste0(region(), ": ", input$indicator, " (", input$industry, ")"))
       
     }
     
@@ -161,13 +161,13 @@ empInd <- function(input, output, session, data, region) {
       
       p <- ggplot(create_data(), aes_(x = ~reorder(industry, value), 
                            y =  as.name(y_var),
-                           text = ~str_c(input$indicator, ": ", as_comma(value),
+                           text = ~paste0(input$indicator, ": ", as_comma(value),
                                          " (", as_percent(share), ")"))) + 
         geom_bar(stat='identity', fill = aiti_blue) + 
         labs(
           y = NULL,
           x = NULL,
-          title = str_to_upper(str_c(input$indicator, ": ", region(), " (", input$date, ")"))
+          title = toupper(paste0(input$indicator, ": ", region(), " (", input$date, ")"))
         ) +
         scale_y_continuous(expand = c(0,0), labels = y_labels) +
         coord_flip() +
@@ -177,7 +177,7 @@ empInd <- function(input, output, session, data, region) {
         p <- ggplot(create_data(), aes_(x = ~date, 
                            y = as.name(y_var),
                            colour = ~industry, 
-                           text = ~str_c("Date: ", format(date, "%Y-%b"),
+                           text = ~paste0("Date: ", format(date, "%Y-%b"),
                                          "<br>",industry, ": ", as_comma(value),
                                          " (", as_percent(share), ")"),
                            group = ~industry)) + 

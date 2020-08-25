@@ -60,9 +60,9 @@ boxesAlt <- function(input, output, session, data, indicator, region, growth = F
         filter(value == max(value))
       
       box_text_current <- as_comma(cu$value)
-      box_text_yoy <- str_c(ifelse(cu$growth > 0, "+", ""), as_comma(cu$growth))
+      box_text_yoy <- paste0(ifelse(cu$growth > 0, "+", ""), as_comma(cu$growth))
       
-      box_subtitle <- str_c(box_text_current, " (", box_text_yoy, ")")
+      box_subtitle <- paste0(box_text_current, " (", box_text_yoy, ")")
       
       box_value <- cu$industry
       
