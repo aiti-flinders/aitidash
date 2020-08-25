@@ -1,6 +1,7 @@
-library(tidyverse)
+library(dplyr)
 library(lubridate)
 library(scales)
+library(zoo)
 library(shiny)
 library(shinydashboard)
 library(shinyWidgets)
@@ -8,9 +9,10 @@ library(plotly)
 library(reportabs)
 library(aitidata)
 library(absmapsdata)
+library(sf)
 library(aititheme)
 library(leaflet)
-library(sf)
+library(mapview)
 
 #### Preamble ####
 # Plotly Setup
@@ -24,7 +26,6 @@ file.copy("www/Roboto.ttf", "~/.fonts")
 system('fc-cache -f ~/.fonts')
 
 
-source("modules/labour_market/tab_5_small_area_maps.R")
 
 #### Header Controls ####
 
@@ -59,31 +60,31 @@ sidebar <- dashboardSidebar(
       icon = icon("briefcase"),
       menuItem(text = "Labour Force",
                   tabName = "labour_market",
-                  icon = icon("chart-line")),
-      menuItem(text = "Internet Vacancies",
-                  tabName = "internet_vacancies",
-                  icon = icon("newspaper"))),
+                  icon = icon("chart-line"))),
+      # menuItem(text = "Internet Vacancies",
+      #             tabName = "internet_vacancies",
+      #             icon = icon("newspaper"))),
     menuItem(
       text = "Industry Insights",
       tabName = "industry_insights",
       icon = icon('industry'),
       menuItem(text = "Industry Employment",
                   tabName = "industry",
-                  icon = icon("city")),
-      menuItem(text = "Industry Value Add",
-               tabName = "industry_va",
-               icon = icon("plus"))),
-    menuItem(
-      text = "Economic Complexity",
-      tabName = "economic_complexity",
-      icon = icon("cog"),
-      menuItem(text = "Product Indicators",
-               tabName = "ec_products",
-               icon = icon("cube")),
-      menuItem(text = "Country Indicators",
-               tabName = "ec_countries",
-               icon = icon("globe-asia"))
-    ),
+                  icon = icon("city"))),
+      # menuItem(text = "Industry Value Add",
+      #          tabName = "industry_va",
+      #          icon = icon("plus"))),
+    # menuItem(
+    #   text = "Economic Complexity",
+    #   tabName = "economic_complexity",
+    #   icon = icon("cog"),
+    #   menuItem(text = "Product Indicators",
+    #            tabName = "ec_products",
+    #            icon = icon("cube")),
+    #   menuItem(text = "Country Indicators",
+    #            tabName = "ec_countries",
+    #            icon = icon("globe-asia"))
+    # ),
     menuItem(
       text = "COVID-19",
       tabName = "covid_19",
@@ -105,8 +106,13 @@ sidebar <- dashboardSidebar(
 #### User Guide ####
 user_guide_tab <- tabItem(
   tabName = "user_guide",
-  userGuideUI("user_guide")
-
+  fluidRow(
+    tabBox(id = "user_guide_tab_id",
+           width = 12,
+           userGuideUI("user_guide"),
+           specificInstructionsUI("specific_instructions")
+    )
+)
 )
 lf_next_release <- abs_next_release("6202.0")
 lf_release_date <- abs_release_date("6202.0")
@@ -117,8 +123,8 @@ dashboard_tab <- tabItem(
   tabName = 'dashboard',
   h2("Employment Insights"),
   h2(textOutput("region_selected")),
-  p(str_c("This data is current as of ", release(labour_force, "month"), " ", release(labour_force, "year"),".")),
-  p(str_c("Data for ", 
+  p(paste0("This data is current as of ", release(labour_force, "month"), " ", release(labour_force, "year"),".")),
+  p(paste0("Data for ", 
           lf_next_release, 
           " will be available on ", 
           weekdays(lf_release_date), ", the ", day(lf_release_date), "th of ", month(lf_release_date, abbr = F, label = T), ".")),
@@ -149,11 +155,11 @@ dashboard_tab <- tabItem(
   ),
   h2("Industry Insights"),
   HTML(
-    str_c("The boxes below show which industry employs the most people overall, full-time, and part-time. 
+    paste0("The boxes below show which industry employs the most people overall, full-time, and part-time. 
           Each box displays the industry name, the number of people employed, and the yearly change. ")
   ),
-  p(str_c("This data is current as at: ", release(employment_industry, "month"), " ", release(employment_industry, "year"))),
-  p(str_c("Data for ", 
+  p(paste0("This data is current as at: ", release(employment_industry, "month"), " ", release(employment_industry, "year"))),
+  p(paste0("Data for ", 
           industry_next_release, 
           " will be available on ", 
           weekdays(industry_release_date), ", the ", day(industry_release_date), "th of ", month(industry_release_date, abbr = F, label = T), ".")),
@@ -180,9 +186,9 @@ labour_market_tab <- tabItem(
            width = 12,
            labourMarketUI("lm_ts", data = labour_force),
            labourMarketRegionalUI("lm_region", data = labour_force),
-           labourMarketDemogUI("lm_demog", data = labour_force),  
+           labourMarketDemogUI("lm_demog", data = labour_force)
            #labourMarketSmallAreaUI("lm_salm", data = small_area_labour_market),
-           labourMarketAnalysisUI("lm_analysis", data = labour_force)
+           #labourMarketAnalysisUI("lm_analysis", data = labour_force)
     )
   )
 )
@@ -196,8 +202,8 @@ emp_ind_tab <- tabItem(
       id = "employment_industry_tab_id",
       width = 12,
       empIndUI("empInd_ts", data = employment_industry),
-      empIndComparisonUI("empInd_region", data = employment_industry),
-      empIndAnalysisUI("empInd_analysis", data = employment_industry)
+      empIndComparisonUI("empInd_region", data = employment_industry)
+      #empIndAnalysisUI("empInd_analysis", data = employment_industry)
       )
     )
   )
@@ -206,6 +212,7 @@ emp_ind_tab <- tabItem(
 internet_vacancies_tab <- tabItem(
   tabName = "internet_vacancies", 
   fluidRow(
+    
     tabBox(
       id = "internet_vacancies_tab_id",
       width = 12,
@@ -261,8 +268,8 @@ server <- function(input, output) {
   labourMarketServer("lm_ts", data = labour_force, region = region_selected)
   labourMarketRegionalServer("lm_region", data = labour_force, region = region_selected)
   labourMarketDemogServer("lm_demog", data = labour_force, region = region_selected)
-  callModule(labourMarketSmallArea, "lm_salm", data = small_area_labour_market, region = region_selected)
-  callModule(labourMarketAnalysis, "lm_analysis", data = labour_force, region = region_selected)
+  # callModule(labourMarketSmallArea, "lm_salm", data = small_area_labour_market, region = region_selected)
+  #callModule(labourMarketAnalysis, "lm_analysis", data = labour_force, region = region_selected)
 
   #Employment by Industry - Tab
   callModule(empInd, "empInd_ts", data = employment_industry, region = region_selected)
