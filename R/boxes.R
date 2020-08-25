@@ -3,7 +3,8 @@
 boxesUI <- function(id) {
   ns <- NS(id)
   
-  infoBoxOutput(ns('box'), width = 6)
+  shinycssloaders::withSpinner(infoBoxOutput(ns('box'), width = 6), 
+                                             image = "https://github.com/hamgamb/aitidash/blob/master/www/aiti_spinner.gif?raw=true")
   
   
   
@@ -59,14 +60,14 @@ boxes <- function(input, output, session, data, indicator, region, reverse = F, 
                             print = FALSE)
       
       if(percent == T) {
-        box_text_yoy <- str_c(ifelse(ly > 0, "+", ""), as_percent(ly))
-        box_text_mom <- str_c(ifelse(lm > 0, "+", ""), as_percent(lm))
-        box_text_current <- str_c(as_percent(cu), " (",box_text_mom,")")
+        box_text_yoy <- paste0(ifelse(ly > 0, "+", ""), as_percent(ly))
+        box_text_mom <- paste0(ifelse(lm > 0, "+", ""), as_percent(lm))
+        box_text_current <- paste0(as_percent(cu), " (",box_text_mom,")")
         
       } else {
-        box_text_yoy <- str_c(ifelse(ly > 0, "+", ""), as_comma(ly))
-        box_text_mom <- str_c(ifelse(lm > 0, "+", ""), as_comma(lm))
-        box_text_current <- str_c(as_comma(cu), " (",box_text_mom,")")
+        box_text_yoy <- paste0(ifelse(ly > 0, "+", ""), as_comma(ly))
+        box_text_mom <- paste0(ifelse(lm > 0, "+", ""), as_comma(lm))
+        box_text_current <- paste0(as_comma(cu), " (",box_text_mom,")")
       }
       
       if(reverse == T) {
@@ -86,7 +87,7 @@ boxes <- function(input, output, session, data, indicator, region, reverse = F, 
                        'arrow-down')
       }
       
-      box_subtitle <- str_c("Change over year: ", box_text_yoy)
+      box_subtitle <- paste0("Change over year: ", box_text_yoy)
       
     }
     
