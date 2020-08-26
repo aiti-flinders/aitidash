@@ -60,10 +60,10 @@ sidebar <- dashboardSidebar(
       icon = icon("briefcase"),
       menuItem(text = "Labour Force",
                   tabName = "labour_market",
-                  icon = icon("chart-line"))),
-      # menuItem(text = "Internet Vacancies",
-      #             tabName = "internet_vacancies",
-      #             icon = icon("newspaper"))),
+                  icon = icon("chart-line")),
+      menuItem(text = "Internet Vacancies",
+                  tabName = "internet_vacancies",
+                  icon = icon("newspaper"))),
     menuItem(
       text = "Industry Insights",
       tabName = "industry_insights",
@@ -89,7 +89,15 @@ sidebar <- dashboardSidebar(
       text = "COVID-19",
       tabName = "covid_19",
       icon = icon("virus"), 
-      badgeLabel = "new!"
+      menuItem(text = "Maps",
+               tabName = "covid_map",
+               icon = icon("map"),
+               badgeLabel = "new!"
+               ),
+      menuItem(text = "Payroll Jobs",
+               tabName = "covid_payroll",
+               icon = icon("chart-line")
+               )
     ),
     
     radioButtons(
@@ -121,10 +129,12 @@ industry_release_date <- abs_release_date("6291.0.55.003")
 #### Dashboard Tab ####
 dashboard_tab <- tabItem(
   tabName = 'dashboard',
+  # fluidPage(width = 12,
+  #           DashboardUI("dashboard"))
   h2("Employment Insights"),
   h2(textOutput("region_selected")),
   p(paste0("This data is current as of ", release(labour_force, "month"), " ", release(labour_force, "year"),".")),
-  p(paste0("Data for ", 
+  p(paste0("Data for ",  
           lf_next_release, 
           " will be available on ", 
           weekdays(lf_release_date), ", the ", day(lf_release_date), "th of ", month(lf_release_date, abbr = F, label = T), ".")),
@@ -216,20 +226,35 @@ internet_vacancies_tab <- tabItem(
     tabBox(
       id = "internet_vacancies_tab_id",
       width = 12,
-      iviUI("ivi_ts", data = internet_vacancies_index)
+      iviUI("ivi_ts", data = internet_vacancies_index),
+      iviComparisonUI("ivi_comparison", data = internet_vacancies_index),
+      iviTreeUI("ivi_treemap", data = internet_vacancies_index)
     )
   )
 )
 
 #COVID Tab
-covid_19_tab <- tabItem(
-  tabName = "covid_19",
+covid_map_tab <- tabItem(
+  tabName = "covid_map",
   fluidRow(
     tabBox(
-      id = "covid_tab_id",
+      id = "covid_map_tab_id",
       width = 12,
-      covidUI("covid_map", data = covid_data),
-      covidDemographicUI("covid_demog", data = payroll_index)
+      covidUI("covid_map", data = covid_data)
+    )
+  )
+)
+
+covid_payroll_tab <- tabItem(
+  tabName = "covid_payroll",
+  fluidRow(
+    tabBox(
+      id = "covid_payroll_tab_id",
+      width = 12,
+      covidRegionUI("covid_region", data = payroll_index),
+      covidDemographicUI("covid_demog", data = payroll_index),
+      covidIndustryUI("covid_industry", data = payroll_index)
+      
     )
   )
 )
@@ -244,7 +269,8 @@ body <- dashboardBody(
     labour_market_tab,
     emp_ind_tab,
     internet_vacancies_tab,
-    covid_19_tab
+    covid_map_tab,
+    covid_payroll_tab 
   )
 )
   
@@ -279,10 +305,14 @@ server <- function(input, output) {
   
   #IVI - Tab
   callModule(ivi, "ivi_ts", data = internet_vacancies_index, region = region_selected)
+  iviComparisonServer("ivi_comparison", data = internet_vacancies_index, region = region_selected)
+  iviTreeServer("ivi_treemap", data = internet_vacancies_index, region = region_selected)
   
   #COVID - Tab
   covidServer("covid_map", data = covid_data, region = region_selected)
+  covidRegionServer("covid_region", data = payroll_index, region = region_selected)
   covidDemographicServer("covid_demog", data = payroll_index, region = region_selected)
+  covidIndustryServer("covid_industry", data = payroll_index, region = region_selected)
 
   #Employment boxes - row 1
   callModule(boxes, "employment_total", data = labour_force, region = region_selected, "Employed total", reverse = F, percent = F)
