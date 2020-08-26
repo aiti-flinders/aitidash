@@ -65,10 +65,10 @@ ivi <- function(input, output, session, data, region) {
   
   create_plot <- reactive({
     
-    plot_title <- str_to_upper(str_c(region(),": ", "Internet Vacancies (", input$occupation, ")"))
+    plot_title <- toupper(paste0(region(),": ", "Internet Vacancies (", input$occupation, ")"))
     p <- ggplot(create_data(), aes(x = date, 
                                    y = vacancies,
-                                   text = str_c("Date: ", format(date, "%Y-%b"),
+                                   text = paste0("Date: ", format(date, "%Y-%b"),
                                                 "<br>", input$occupation, ": ", as_comma(vacancies)),
                                    group = occupation)) +
       geom_line() +

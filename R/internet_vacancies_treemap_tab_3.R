@@ -83,10 +83,10 @@ iviTreeServer <- function(id, data,region) {
                   "<b>%{customdata}</b><br>",
                   "%{label}</br>",
                   "Vacancies: %{value:,.0f}</br>", 
-                  "Share of all vacancies: %{hovertext.0%}", 
+                  "Share of all vacancies: %{hovertext:1f}%", 
                   "<extra></extra>")) %>%
           layout(title = list(
-            text = paste("Top 10 Demanded Occupations - ", region(), " (",input$date, ")"),
+            text = paste0("Top 10 Demanded Occupations - ", region(), " (",input$date, ")"),
             font = list(
               family = "Roboto"
               )

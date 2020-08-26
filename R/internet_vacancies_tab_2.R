@@ -98,13 +98,13 @@ iviComparisonServer <- function(id, data, region) {
       create_plot <- reactive({
     
     
-        plot_title <- str_to_upper(str_c("Internet Vacancies: ", 
-                                         str_c(region(), collapse = " & "), 
+        plot_title <- toupper(paste0("Internet Vacancies: ", 
+                                         paste0(region(), collapse = " & "), 
                                          " (", input$occupation_group, ")",
                                          " (", input$occupation, ")"))
         p <- ggplot(create_data(),
                     aes(x = date, y = index, group = 1, colour = region,
-                        text = str_c(
+                        text = paste0(
                           region(), 
                           "<br>Date: ", format(date, "%Y-%b"),
                           "<br>Occupation Group: ", input$occupation_group,
