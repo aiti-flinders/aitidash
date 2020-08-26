@@ -115,9 +115,10 @@ empInd <- function(input, output, session, data, region) {
                state == region(), 
                indicator == input$indicator) %>% 
         group_by(date, industry) %>% 
-        summarise(value = mean(value)) %>% 
+        summarise(value = mean(value), .group = "keep") %>% 
         mutate(share = 100*value/sum(value)) %>%
         filter(date == as.Date(zoo::as.yearqtr(input$date)) + months(1)) %>%
+        ungroup() %>%
         arrange(desc(industry)) %>%
         mutate(industry = forcats::as_factor(industry)) 
       } else {
@@ -126,7 +127,7 @@ empInd <- function(input, output, session, data, region) {
              indicator == input$indicator,
              series_type == "Original",
              gender == "Persons") %>%
-      group_by(date) %>%
+      group_by(date, .group = "keep") %>%
       mutate(share = 100*value/sum(value)) %>%
       ungroup() %>%
       filter(industry %in% input$industry)
@@ -171,7 +172,7 @@ empInd <- function(input, output, session, data, region) {
         ) +
         scale_y_continuous(expand = c(0,0), labels = y_labels) +
         coord_flip() +
-        theme_aiti(base_family = "Roboto")
+        theme_aiti(base_family = "Roboto", legend = "bottom")
     } else {
       
         p <- ggplot(create_data(), aes_(x = ~date, 
@@ -199,7 +200,7 @@ empInd <- function(input, output, session, data, region) {
                            y = -0.15),
              annotations = list(
                x = 1,
-               y = -0.4,
+               y = -0.2,
                showarrow = FALSE,
                xref = "paper",
                yref = "paper",
