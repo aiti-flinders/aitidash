@@ -71,11 +71,18 @@ covidServer <- function(id, data, region) {
           })
       
       observe({
-        if(region() != "Australian Capital Territory") return()
+        if(region() != "Australian Capital Territory") {
+          updateSelectInput(session, "indicator", choices = c("JobKeeper Applications (SA2)" = "jobkeeper_apps",
+                                                                         "JobKeeper Rate (% Businesses) (SA2)" = "jobkeeper_proportion",
+                                                                         "JobSeeker Payments (SA2)" = "jobseeker_payment",
+                                                                         "JobSeeker Rate (% Labour Force) (SA2)" = "jobseeker_proportion", 
+                                                                         "Payroll Jobs Index (SA4)" = "payroll_index"))
+        } else {
         updateSelectInput(session, "indicator", choices = c("JobKeeper Applications (SA2)" = "jobkeeper_apps",
                                                             "JobKeeper Rate (% Businesses) (SA2)" = "jobkeeper_proportion",
                                                             "JobSeeker Payments (SA2)" = "jobseeker_payment",
                                                             "JobSeeker Rate (% Labour Force) (SA2)" = "jobseeker_proportion"))
+        }
       })
       
       
@@ -115,7 +122,8 @@ covidServer <- function(id, data, region) {
           df <- data %>% 
             filter(state_name_2016 == region(),
                    indicator == input$indicator) %>% 
-            mutate(value_label = ifelse(grepl("proportion", indicator), as_percent(value), formatC(value, digits = 2, format = "f", big.mark = ","))) %>% 
+            mutate(value_label = ifelse(grepl("proportion", indicator), as_percent(value), as_comma(value)),
+                   value_label = ifelse(indicator == "payroll_index", as_comma(value, digits = 2), value_label)) %>% 
             left_join(join, by = c(join_by, "state_name_2016")) %>%
             rename(label = all_of(label_name)) %>%
             st_as_sf() 
@@ -124,7 +132,8 @@ covidServer <- function(id, data, region) {
           
           df <- data %>% 
             filter(indicator == input$indicator) %>% 
-            mutate(value_label = ifelse(grepl("proportion", indicator), as_percent(value), formatC(value, digits = 2, format = "f", big.mark = ","))) %>% 
+            mutate(value_label = ifelse(grepl("proportion", indicator), as_percent(value), as_comma(value)),
+                   value_label = ifelse(indicator == "payroll_index", as_comma(value, digits = 2), value_label)) %>% 
             left_join(join, by = c(join_by, "state_name_2016")) %>%
             rename(label = all_of(label_name)) %>%
             st_as_sf() 
