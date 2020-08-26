@@ -60,8 +60,8 @@ boxes <- function(input, output, session, data, indicator, region, reverse = F, 
                             print = FALSE)
       
       if(percent == T) {
-        box_text_yoy <- paste0(ifelse(ly > 0, "+", ""), as_percent(ly))
-        box_text_mom <- paste0(ifelse(lm > 0, "+", ""), as_percent(lm))
+        box_text_yoy <- paste0(ifelse(ly > 0, "+", ""), as_percentage_point(ly))
+        box_text_mom <- paste0(ifelse(lm > 0, "+", ""), as_percentage_point(lm))
         box_text_current <- paste0(as_percent(cu), " (",box_text_mom,")")
         
       } else {
