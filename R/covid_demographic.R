@@ -1,13 +1,17 @@
-covidDemoUI <- function(id, data) {
+covidDemographicUI <- function(id, data) {
   ns <- NS(id)
+  
+  tabPanel("Demographics")
+  
 }
 
-covidServer <- function(id, data, region) {
+covidDemographicServer <- function(id, data, region) {
   
   moduleServer(
     id,
     function(input, output, session) {
       
+
     }
   )
 }

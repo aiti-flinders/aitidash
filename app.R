@@ -7,7 +7,7 @@ library(shinydashboard)
 library(shinyWidgets)
 library(plotly)
 library(reportabs)
-library(aitidata)
+library(daitir)
 library(absmapsdata)
 library(sf)
 library(aititheme)
@@ -216,7 +216,7 @@ internet_vacancies_tab <- tabItem(
     tabBox(
       id = "internet_vacancies_tab_id",
       width = 12,
-      iviUI("ivi_ts", data = internet_vacancies_basic)
+      iviUI("ivi_ts", data = internet_vacancies_index)
     )
   )
 )
@@ -228,7 +228,8 @@ covid_19_tab <- tabItem(
     tabBox(
       id = "covid_tab_id",
       width = 12,
-      covidUI("covid_map", data = covid_data)
+      covidUI("covid_map", data = covid_data),
+      covidDemographicUI("covid_demog", data = payroll_index)
     )
   )
 )
@@ -277,10 +278,11 @@ server <- function(input, output) {
   callModule(empIndAnalysis, "empInd_analysis", data = employment_industry, region = region_selected)
   
   #IVI - Tab
-  callModule(ivi, "ivi_ts", data = internet_vacancies_basic, region = region_selected)
+  callModule(ivi, "ivi_ts", data = internet_vacancies_index, region = region_selected)
   
   #COVID - Tab
   covidServer("covid_map", data = covid_data, region = region_selected)
+  covidDemographicServer("covid_demog", data = payroll_index, region = region_selected)
 
   #Employment boxes - row 1
   callModule(boxes, "employment_total", data = labour_force, region = region_selected, "Employed total", reverse = F, percent = F)

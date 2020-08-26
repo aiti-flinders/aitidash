@@ -154,7 +154,7 @@ labourMarketServer <- function(id, data, region) {
   
   report_url <- reactive({
     paste0("https://www.flinders.edu.au/content/dam/documents/research/aiti/monthly-employment-insights/",
-                      str_to_lower(str_replace_all(region(), " ", "-")),
+                      tolower(gsub(x = region(), pattern = " ", replacement = "-")),
                       ".pdf")
   })
   
