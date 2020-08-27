@@ -13,6 +13,8 @@ library(sf)
 library(aititheme)
 library(leaflet)
 library(mapview)
+if (is.null(suppressMessages(webshot:::find_phantom()))) { webshot::install_phantomjs() }
+
 
 #### Preamble ####
 # Plotly Setup

@@ -25,6 +25,4 @@ every quarter when the ABS Detailed Labour Force Survey is released. Check back 
   h2("Notes on Data Availability"),
   p("Data for this dashboard is sourced from the Australian Bureau of Statistics. There is not universal coverage across regions,
     economic indicators, or series types. Due to the impact of the Coronavirus, there is currently no Seasonally Adjusted Series available for the Territories.")))
-
-  
 }

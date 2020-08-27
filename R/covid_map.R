@@ -200,7 +200,7 @@ covidServer <- function(id, data, region) {
           paste(region(), "-map.png", sep = '')
         },
         content = function(file) {
-         mapshot(user_map(), file = file, cliprect = "viewport", selfcontained = FALSE)
+         mapview::mapshot(user_map(), file = file, cliprect = "viewport", selfcontained = FALSE)
         }
       )
       
