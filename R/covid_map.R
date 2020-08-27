@@ -18,12 +18,16 @@ covidUI <- function(id, data) {
                    label = "Select Indicator",
                    choices = indicator_choices,
                    selected = "covid_impact"
-                   ),
-                 uiOutput(ns("date"))
+                   )
+                 ),
+             box(width = 8, status = "info", solidHeader = FALSE,
+                 uiOutput(
+                   ns("date")
+                   )
                  )
              ),
            fluidRow(
-             box(width = 12, status = "info", title = "Downloads", solidHeader = FALSE,
+             box(width = 12, status = "info",  solidHeader = FALSE, title = "Downloads",
                  downloadButton(
                    outputId = ns("download_plot"),
                    label = "Click here to download the chart as a .png",

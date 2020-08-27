@@ -12,6 +12,7 @@ covidRegionUI <- function(id, data) {
                    label = "Select Facet Variable",
                    choices = c("Gender" = "gender", 
                                "Age" = "age",
+                               "Industry" = "industry",
                                "None" = "none"),
                    selected = "none"
                  )),
@@ -54,7 +55,12 @@ covidRegionServer <- function(id, data, region) {
             filter(industry == "All Industries",
                    age == "All ages",
                    state %in% c(region(), input$state))
-        } else {
+        } else if (input$facet == "industry") {
+          df <- data %>%
+            filter(age == "All ages",
+                   gender == "Persons", 
+                   state %in% c(region(), input$state))
+          } else {
           df <- data %>%
             filter(industry == "All Industries",
                    gender == "Persons",
@@ -95,7 +101,7 @@ covidRegionServer <- function(id, data, region) {
          
         if(input$facet != "none") {
           p <- p + 
-            facet_wrap(~get(input$facet)~., nrow = 2, ncol = 4) +
+            facet_wrap(~get(input$facet)~., nrow = 5, ncol = 4) +
             scale_x_date(date_breaks = "2 months", date_labels = "%b") +
             labs(x = NULL,
                  title = plot_title)

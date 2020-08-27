@@ -7,7 +7,8 @@ labourMarketSmallAreaUI <- function(id, data) {
 
   
   tabPanel(title = "Small Area Labour Force",
-           leafletOutput(ns("map"), width = "100%", height = "600px"),
+           withSpinner(leafletOutput(ns("map"), width = "100%", height = "600px"),
+                       image = "https://raw.githubusercontent.com/hamgamb/aitidash/master/www/aiti_spinner.gif"),
            fluidRow(
              box(status = 'info', solidHeader = FALSE,
                sliderTextInput(
@@ -48,6 +49,7 @@ labourMarketSmallAreaServer <- function(id, data, region) {
     df <- data %>%
       filter(indicator == input$indicator,
              date == as.Date(as.yearqtr(input$date)) + months(2)) %>%
+      mutate(value_label = ifelse(grepl("%", indicator), as_percent(value), as_comma(value))) %>%
       left_join(sa22016) %>%
       st_as_sf()
     } else {
@@ -55,6 +57,7 @@ labourMarketSmallAreaServer <- function(id, data, region) {
         filter(indicator == input$indicator,
                date == as.Date(as.yearqtr(input$date)) + months(2),
                state_name_2016 == region()) %>%
+        mutate(value_label = ifelse(grepl("%", indicator), as_percent(value), as_comma(value))) %>%
         left_join(sa22016) %>%
         st_as_sf()
     }
@@ -72,7 +75,7 @@ labourMarketSmallAreaServer <- function(id, data, region) {
     
     annodate <- tags$div(
       HTML(
-        format(as.Date(as.yearqtr(input$date)) + months(2), "%B %d %Y")
+        format(as.Date(as.yearqtr(input$date)) + months(2), "%B %Y")
         )
     )
     
@@ -93,7 +96,7 @@ labourMarketSmallAreaServer <- function(id, data, region) {
           dashArray = "",
           fillOpacity = 0.7,
           bringToFront = TRUE),
-        label = ~paste0(sa2_name_2016,": ", value, "%")) %>%
+        label = ~paste0(sa2_name_2016,": ", value_label)) %>%
       addLegend(
         "bottomright", 
         pal = pal, 

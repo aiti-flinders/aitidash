@@ -15,16 +15,10 @@ labourMarketUI <- function(id, data) {
                          "Underutilisation rate",
                          "Participation rate")
 
-  series_choices <- data %>%
-    pull(series_type) %>%
-    unique() %>%
-    sort()
+  series_choices <- sort(unique(data$series_type))
   
   min_date <- min(data$year)
   max_date <- max(data$year)
-  
-  
-  
   
   tabPanel(title = uiOutput(ns("title_panel")),
            plotlyOutput(ns("plot"), width = '100%'),
@@ -52,21 +46,20 @@ labourMarketUI <- function(id, data) {
                    max = max_date)
                  )),
              fluidRow(
-             box(width = 12, status = "info", title = "Downloads", solidHeader = FALSE,
-                 downloadButton(
-                   outputId = ns("download_plot"),
-                   label = "Click here to download the chart as a .png",
-                   class = 'download-button'
+               box(width = 12, status = "info", solidHeader = FALSE,  title = "Downloads",
+                   downloadButton(
+                     outputId = ns("download_plot"),
+                     label = "Click here to download the chart as a .png",
+                     class = 'download-button'
                    ),
-                 downloadButton(
-                   outputId = ns("download_data"),
-                   label = "Click here to download the chart data",
-                   class = 'download-button'
+                   downloadButton(
+                     outputId = ns("download_data"),
+                     label = "Click here to download the chart data",
+                     class = 'download-button'
                    ),
-                 uiOutput(inline = TRUE, ns("download_report_button"))
+                   uiOutput(inline = TRUE, ns("download_report_button"))
                  )
-           )
-           
+             )
   )
 }
 
@@ -137,7 +130,7 @@ labourMarketServer <- function(id, data, region) {
   output$download_plot <- downloadHandler(
     filename = function(){
       paste(input$indicator, "-plot.png", sep = '')
-      },
+    },
     content = function(file) {
       plotly_IMAGE(create_plot(), out_file = file)
     }
@@ -151,6 +144,8 @@ labourMarketServer <- function(id, data, region) {
       write.csv(create_data(), file, row.names = FALSE)
     }
   )
+  
+
   
   report_url <- reactive({
     paste0("https://www.flinders.edu.au/content/dam/documents/research/aiti/monthly-employment-insights/",

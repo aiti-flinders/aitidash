@@ -9,9 +9,9 @@ library(shinycssloaders)
 library(plotly)
 library(reportabs)
 library(daitir)
+library(aititheme)
 library(absmapsdata)
 library(sf)
-library(aititheme)
 library(leaflet)
 library(mapview)
 
@@ -44,76 +44,9 @@ header <- dashboardHeader(
 ##### Sidebar Controls #####
 sidebar <- dashboardSidebar(
   collapsed = FALSE,
-  width = '230px',
-  sidebarMenu(
-    id = 'tabs',
-    menuItem(
-      text = "Summary",
-      tabName = 'dashboard',
-      icon = icon("chart-bar"),
-      selected = TRUE
-    ),   
-    menuItem(
-      text = "User Guide",
-      tabName = "user_guide",
-      icon = icon("book-reader")
-    ),
-    menuItem(
-      text = "Employment Insights",
-      tabName = "employment",
-      icon = icon("briefcase"),
-      menuItem(text = "Labour Force",
-                  tabName = "labour_market",
-                  icon = icon("chart-line")),
-      menuItem(text = "Internet Vacancies",
-                  tabName = "internet_vacancies",
-                  icon = icon("newspaper"))),
-    menuItem(
-      text = "Industry Insights",
-      tabName = "industry_insights",
-      icon = icon('industry'),
-      menuItem(text = "Industry Employment",
-                  tabName = "industry",
-                  icon = icon("city"))),
-      # menuItem(text = "Industry Value Add",
-      #          tabName = "industry_va",
-      #          icon = icon("plus"))),
-    # menuItem(
-    #   text = "Economic Complexity",
-    #   tabName = "economic_complexity",
-    #   icon = icon("cog"),
-    #   menuItem(text = "Product Indicators",
-    #            tabName = "ec_products",
-    #            icon = icon("cube")),
-    #   menuItem(text = "Country Indicators",
-    #            tabName = "ec_countries",
-    #            icon = icon("globe-asia"))
-    # ),
-    menuItem(
-      text = "COVID-19",
-      tabName = "covid_19",
-      icon = icon("virus"), 
-      menuItem(text = "Maps",
-               tabName = "covid_map",
-               icon = icon("map"),
-               badgeLabel = "new!"
-               ),
-      menuItem(text = "Payroll Jobs",
-               tabName = "covid_payroll",
-               icon = icon("chart-line")
-               )
-    ),
-    
-    radioButtons(
-      inputId = "region_select",
-      label = "Select Region",
-      choices = c("Australia","New South Wales", "Victoria", "Queensland", "South Australia", "Western Australia", "Tasmania", "Northern Territory", "Australian Capital Territory"),
-      selected = "Australia"
-    )
-  )
+  width = '230px',    
+  sidebarUI("sidebar")
 )
-
-
 
 #### User Guide ####
 user_guide_tab <- tabItem(
@@ -124,16 +57,15 @@ user_guide_tab <- tabItem(
       width = 12,
       userGuideUI("user_guide"),
       specificInstructionsUI("specific_instructions")
-      )
     )
+  )
 )
 
 #### Dashboard Tab ####
 dashboard_tab <- tabItem(
   tabName = 'dashboard',
   dashboardUI("dashboard")
-  )
-  
+)
 
 #### Labour Market Tab ####
 labour_market_tab <- tabItem(
@@ -146,11 +78,10 @@ labour_market_tab <- tabItem(
       labourMarketRegionalUI("lm_region", data = labour_force),
       labourMarketDemogUI("lm_demog", data = labour_force),
       labourMarketSmallAreaUI("lm_salm", data = small_area_labour_market)
-           #labourMarketAnalysisUI("lm_analysis", data = labour_force)
+      #labourMarketAnalysisUI("lm_analysis", data = labour_force)
     )
   )
 )
-
 
 #Employment by Industry
 emp_ind_tab <- tabItem(
@@ -162,15 +93,14 @@ emp_ind_tab <- tabItem(
       empIndUI("empInd_ts", data = employment_industry),
       empIndComparisonUI("empInd_region", data = employment_industry)
       #empIndAnalysisUI("empInd_analysis", data = employment_industry)
-      )
     )
   )
+)
 
 #IVI Tab
 internet_vacancies_tab <- tabItem(
   tabName = "internet_vacancies", 
   fluidRow(
-    
     tabBox(
       id = "internet_vacancies_tab_id",
       width = 12,
@@ -223,24 +153,20 @@ body <- dashboardBody(
 )
   
 #### UI ####
-ui <- dashboardPage(title = "Economic Indicators Dashboard",
+ui <- dashboardPage(
+  title = "Economic Indicators Dashboard",
   header,
   sidebar,
   body
-  
 )
 
 #### Server ####
 server <- function(input, output) {
-  
-
   region_selected <- reactive(input$region_select)
   output$region_selected <- renderText({
-    region_selected() 
+    region_selected()
   })
   
-  #Dashboard Tab
-
   #Labour Market -  Tab
   labourMarketServer("lm_ts", data = labour_force, region = region_selected)
   labourMarketRegionalServer("lm_region", data = labour_force, region = region_selected)
@@ -265,35 +191,30 @@ server <- function(input, output) {
   covidIndustryServer("covid_industry", data = payroll_index, region = region_selected)
 
   #Employment boxes - row 1
-  callModule(boxes, "employment_total", data = labour_force, region = region_selected, "Employed total", reverse = F, percent = F)
-  callModule(boxes, "employment_ft", data = labour_force, region = region_selected, "Employed full-time", reverse = F, percent = F)
-  callModule(boxes, "employment_pt", data = labour_force, region = region_selected, "Employed part-time", reverse = F, percent = F)
+  boxesServer("employment_total", data = labour_force, region = region_selected, "Employed total", reverse = F, percent = F)
+  boxesServer("employment_ft", data = labour_force, region = region_selected, "Employed full-time", reverse = F, percent = F)
+  boxesServer("employment_pt", data = labour_force, region = region_selected, "Employed part-time", reverse = F, percent = F)
 
   #Labour underutilisation (number) boxes - row 2
-  callModule(boxes, "unemployed", data = labour_force, region = region_selected, "Unemployed total", reverse = T, percent = F)
-  callModule(boxes, "underemployed", data = labour_force, region = region_selected, "Underemployed total", reverse = T, percent = F)
-  callModule(boxes, "underutilised", data = labour_force, region = region_selected, "Underutilised total", reverse = T, percent = F)
+  boxesServer("unemployed", data = labour_force, region = region_selected, "Unemployed total", reverse = T, percent = F)
+  boxesServer("underemployed", data = labour_force, region = region_selected, "Underemployed total", reverse = T, percent = F)
+  boxesServer("underutilised", data = labour_force, region = region_selected, "Underutilised total", reverse = T, percent = F)
   
   #Labour underutilisation rates - row 3
-  callModule(boxes, "unemployment_rate", data = labour_force, region = region_selected, "Unemployment rate", reverse = T, percent = T)
-  callModule(boxes, "underemployment_rate", data = labour_force, region = region_selected, "Underemployment rate (proportion of labour force)", reverse = T, percent = T)
-  callModule(boxes, "underutilisation_rate", data = labour_force, region = region_selected, "Underutilisation rate", reverse = T, percent = T)
+  boxesServer("unemployment_rate", data = labour_force, region = region_selected, "Unemployment rate", reverse = T, percent = T)
+  boxesServer("underemployment_rate", data = labour_force, region = region_selected, "Underemployment rate (proportion of labour force)", reverse = T, percent = T)
+  boxesServer("underutilisation_rate", data = labour_force, region = region_selected, "Underutilisation rate", reverse = T, percent = T)
 
-  callModule(boxes, "hours_worked_total", data = labour_force, region = region_selected, "Monthly hours worked in all jobs")
-  callModule(boxes, "participation_rate", data = labour_force, region = region_selected, "Participation rate", percent = TRUE)
-  callModule(boxes, "labour_force_total", data = labour_force, region = region_selected, "Labour force total")
+  boxesServer("hours_worked_total", data = labour_force, region = region_selected, "Monthly hours worked in all jobs")
+  boxesServer("participation_rate", data = labour_force, region = region_selected, "Participation rate", percent = TRUE)
+  boxesServer("labour_force_total", data = labour_force, region = region_selected, "Labour force total")
   
 
   #Industry Employment 
-  callModule(boxesAlt, "industry_total", data = employment_industry, region = region_selected,  "Employed total")
-  callModule(boxesAlt, "industry_ft", data = employment_industry, region = region_selected, "Employed full-time")
-  callModule(boxesAlt, "industry_pt", data = employment_industry, region = region_selected, "Employed part-time")
-  callModule(boxesAlt, "industry_under", data = employment_industry, region = region_selected, "Underemployed total")
-  
-
-  
-  # 
-
+  boxesAltServer("industry_total", data = employment_industry, region = region_selected,  "Employed total")
+  boxesAltServer("industry_ft", data = employment_industry, region = region_selected, "Employed full-time")
+  boxesAltServer("industry_pt", data = employment_industry, region = region_selected, "Employed part-time")
+  boxesAltServer("industry_under", data = employment_industry, region = region_selected, "Underemployed total")
   
 
   # callModule(retailTrade, "rt_ts", data = rt)
