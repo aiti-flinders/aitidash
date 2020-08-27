@@ -83,7 +83,7 @@ covidDemographicServer <- function(id, data, region) {
                  annotations = list(
                    x = 1,
                    y = -0.20,
-                   text = "Source: AITI WorkSight",
+                   text = "Source: AITI Economic Indicators",
                    showarrow = FALSE,
                    xref = "paper",
                    yref = "paper",
