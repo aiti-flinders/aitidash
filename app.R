@@ -5,6 +5,7 @@ library(zoo)
 library(shiny)
 library(shinydashboard)
 library(shinyWidgets)
+library(shinycssloaders)
 library(plotly)
 library(reportabs)
 library(daitir)
@@ -13,31 +14,32 @@ library(sf)
 library(aititheme)
 library(leaflet)
 library(mapview)
-if (is.null(suppressMessages(webshot:::find_phantom()))) { webshot::install_phantomjs() }
-
 
 #### Preamble ####
 # Plotly Setup
 Sys.setenv("plotly_username" = "hamgamb")
 Sys.setenv("plotly_api_key" = 'SDYMDyK3YM0eZrTNpyoa')
 
+# phantom_js install
+if (is.null(suppressMessages(webshot:::find_phantom()))) { webshot::install_phantomjs() }
 
 # Font Setup
 dir.create("~/.fonts")
 file.copy("www/Roboto.ttf", "~/.fonts")
 system('fc-cache -f ~/.fonts')
 
-
-
 #### Header Controls ####
-
-header <- dashboardHeader(#titleWidth = "200px",
-                          title = "Economic Indicators Dashboard",
-                          tags$li(a(href = "http://www.flinders.edu.au/aiti",
-                                    img(src = "aiti_logo.png",
-                                        title = "Australian Industrial Transformation Institute", height = "17px")),
-                                  
-                                    class = "dropdown"))
+header <- dashboardHeader(
+  title = "Economic Indicators Dashboard",
+  tags$li(
+    a(href = "http://www.flinders.edu.au/aiti",
+      img(
+        src = "aiti_logo.png", 
+        title = "Australian Industrial Transformation Institute", 
+        height = "17px")
+    ),
+    class = "dropdown")
+)
 
 ##### Sidebar Controls #####
 sidebar <- dashboardSidebar(
@@ -117,89 +119,33 @@ sidebar <- dashboardSidebar(
 user_guide_tab <- tabItem(
   tabName = "user_guide",
   fluidRow(
-    tabBox(id = "user_guide_tab_id",
-           width = 12,
-           userGuideUI("user_guide"),
-           specificInstructionsUI("specific_instructions")
+    tabBox(
+      id = "user_guide_tab_id",
+      width = 12,
+      userGuideUI("user_guide"),
+      specificInstructionsUI("specific_instructions")
+      )
     )
 )
-)
-lf_next_release <- abs_next_release("6202.0")
-lf_release_date <- abs_release_date("6202.0")
-industry_next_release <- abs_next_release("6291.0.55.003")
-industry_release_date <- abs_release_date("6291.0.55.003")
+
 #### Dashboard Tab ####
 dashboard_tab <- tabItem(
   tabName = 'dashboard',
-  # fluidPage(width = 12,
-  #           DashboardUI("dashboard"))
-  h2("Employment Insights"),
-  h2(textOutput("region_selected")),
-  p(paste0("This data is current as of ", release(labour_force, "month"), " ", release(labour_force, "year"),".")),
-  p(paste0("Data for ",  
-          lf_next_release, 
-          " will be available on ", 
-          weekdays(lf_release_date), ", the ", day(lf_release_date), "th of ", month(lf_release_date, abbr = F, label = T), ".")),
-  fluidRow( 
-    boxesUI('unemployment_rate'),    
-    boxesUI('unemployed')
-  ),
-  fluidRow(
-    boxesUI('employment_total'), 
-    boxesUI('participation_rate')
-  ),
-  fluidRow(
-    boxesUI('employment_ft'),
-    boxesUI('employment_pt')
-  ),
-  fluidRow(    
-    boxesUI('underemployed'),
-    boxesUI('underutilised')
-
-  ),
-  fluidRow(    
-    boxesUI('underemployment_rate'),
-    boxesUI('underutilisation_rate')
-  ),
-  fluidRow(
-    boxesUI('hours_worked_total'),
-    boxesUI('labour_force_total')
-  ),
-  h2("Industry Insights"),
-  HTML(
-    paste0("The boxes below show which industry employs the most people overall, full-time, and part-time. 
-          Each box displays the industry name, the number of people employed, and the yearly change. ")
-  ),
-  p(paste0("This data is current as at: ", release(employment_industry, "month"), " ", release(employment_industry, "year"))),
-  p(paste0("Data for ", 
-          industry_next_release, 
-          " will be available on ", 
-          weekdays(industry_release_date), ", the ", day(industry_release_date), "th of ", month(industry_release_date, abbr = F, label = T), ".")),
-    
-  fluidRow(
-    boxesAltUI("industry_total"),
-    boxesAltUI("industry_ft")
-
-  ),
-  fluidRow(
-    boxesAltUI("industry_pt"),
-    boxesAltUI("industry_under")
+  dashboardUI("dashboard")
   )
-)
-
-                     
-
+  
 
 #### Labour Market Tab ####
 labour_market_tab <- tabItem(
   tabName = 'labour_market',
   fluidRow(
-    tabBox(id = 'labour_market_tab_id',
-           width = 12,
-           labourMarketUI("lm_ts", data = labour_force),
-           labourMarketRegionalUI("lm_region", data = labour_force),
-           labourMarketDemogUI("lm_demog", data = labour_force)
-           #labourMarketSmallAreaUI("lm_salm", data = small_area_labour_market),
+    tabBox(
+      id = 'labour_market_tab_id',
+      width = 12,
+      labourMarketUI("lm_ts", data = labour_force),
+      labourMarketRegionalUI("lm_region", data = labour_force),
+      labourMarketDemogUI("lm_demog", data = labour_force),
+      labourMarketSmallAreaUI("lm_salm", data = small_area_labour_market)
            #labourMarketAnalysisUI("lm_analysis", data = labour_force)
     )
   )
@@ -292,12 +238,14 @@ server <- function(input, output) {
   output$region_selected <- renderText({
     region_selected() 
   })
+  
+  #Dashboard Tab
 
   #Labour Market -  Tab
   labourMarketServer("lm_ts", data = labour_force, region = region_selected)
   labourMarketRegionalServer("lm_region", data = labour_force, region = region_selected)
   labourMarketDemogServer("lm_demog", data = labour_force, region = region_selected)
-  # callModule(labourMarketSmallArea, "lm_salm", data = small_area_labour_market, region = region_selected)
+  labourMarketSmallAreaServer("lm_salm", data = small_area_labour_market, region = region_selected)
   #callModule(labourMarketAnalysis, "lm_analysis", data = labour_force, region = region_selected)
 
   #Employment by Industry - Tab
