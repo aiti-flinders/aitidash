@@ -4,7 +4,7 @@ covidRegionUI <- function(id, data) {
   state_choices <- sort(unique(data$state))
   
   tabPanel(title = "Regional Comparison",
-           plotlyOutput(ns("plot"), width = "100%", height = "600px"),
+           withSpinner(plotlyOutput(ns("plot"), width = "100%", height = "600px"), image = "https://raw.githubusercontent.com/hamgamb/aitidash/master/www/aiti_spinner.gif"),
            fluidRow(
              box(status = "info", solidHeader = FALSE,
                  selectInput(
@@ -89,6 +89,7 @@ covidRegionServer <- function(id, data, region) {
           geom_line() +
           geom_point(shape = 1, size = 1) + 
           theme_aiti(legend = "bottom", base_family = "Roboto") +
+          theme(strip.background = element_blank()) + 
           aiti_colour_manual(n = length(input$state) + 1) 
       
          
@@ -97,7 +98,7 @@ covidRegionServer <- function(id, data, region) {
             facet_wrap(~get(input$facet)~., nrow = 2, ncol = 4) +
             scale_x_date(date_breaks = "2 months", date_labels = "%b") +
             labs(x = NULL,
-                 y = NULL)
+                 title = plot_title)
         } else {
           p <- p + 
             scale_x_date(date_breaks = "1 month", date_labels = "%b") +

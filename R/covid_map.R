@@ -9,7 +9,7 @@ covidUI <- function(id, data) {
                          "Payroll Jobs Index (SA4)" = "payroll_index")
   
   tabPanel(title = uiOutput(ns("title_panel")),
-           shinycssloaders::withSpinner(leafletOutput(ns("map"), width = "100%", height = "600px"), 
+           withSpinner(leafletOutput(ns("map"), width = "100%", height = "600px"), 
                                         image = "https://github.com/hamgamb/aitidash/blob/master/www/aiti_spinner.gif?raw=true"),
            fluidRow(
              box(width = 4, status = "info", solidHeader = FALSE,
@@ -62,9 +62,9 @@ covidServer <- function(id, data, region) {
             inputId = session$ns("date"),
             label = "Select Date", 
             choices = data %>% filter(indicator != "payroll_index") %>%
-              pull(date) %>% unique() %>% zoo::as.yearmon(date),
+              pull(date) %>% unique() %>% as.yearmon(date),
             selected = data %>% filter(indicator != "payroll_index") %>%
-              pull(date) %>% unique() %>% zoo::as.yearmon(date) %>% max()
+              pull(date) %>% unique() %>% as.yearmon(date) %>% max()
           )
         }
           
@@ -111,7 +111,7 @@ covidServer <- function(id, data, region) {
         else {
           data <- data %>%
             select(-sa4_code_2016) %>%
-            filter(date == as.Date(zoo::as.yearmon(input$date)))
+            filter(date == as.Date(as.yearmon(input$date)))
           label_name <- 'sa2_name_2016'
           join <- sa22016 
           join_by <- "sa2_main_2016"
@@ -156,7 +156,7 @@ covidServer <- function(id, data, region) {
         
         if (input$indicator == "payroll_index") {
           annodate <- tags$div(HTML(format(as.Date("2020-03-14") + weeks(input$date), "%B %d %Y")))
-        } else { annodate <- tags$div(HTML(format(zoo::as.yearmon(input$date), "%B %Y"))) }
+        } else { annodate <- tags$div(HTML(format(as.yearmon(input$date), "%B %Y"))) }
           
               
         leaflet(create_data()) %>%

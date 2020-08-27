@@ -3,8 +3,10 @@
 boxesUI <- function(id) {
   ns <- NS(id)
   
-  shinycssloaders::withSpinner(infoBoxOutput(ns('box'), width = 6), 
-                                             image = "https://github.com/hamgamb/aitidash/blob/master/www/aiti_spinner.gif?raw=true")
+  withSpinner(
+    infoBoxOutput(ns('box'), width = 6), 
+    image = "https://github.com/hamgamb/aitidash/blob/master/www/aiti_spinner.gif?raw=true"
+    )
   
   
   
