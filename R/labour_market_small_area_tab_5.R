@@ -2,21 +2,27 @@
 labourMarketSmallAreaUI <- function(id, data) {
   ns <- NS(id)
   
-  date_select <- unique(data$date)
-  date_select_name <- zoo::as.yearmon(date_select)
+  date_select <- as.yearqtr(unique(data$date))
+  indicator_select <- unique(data$indicator)
 
   
-  tabPanel(title = "Small Area Unemployment Rates",
+  tabPanel(title = "Small Area Labour Force",
            leafletOutput(ns("map"), width = "100%", height = "600px"),
            fluidRow(
              box(status = 'info', solidHeader = FALSE,
-               selectInput(
+               sliderTextInput(
                    inputId = ns("date"),
                    label = "Select Date",
-                   choices = setNames(date_select, date_select_name),
-                   selected = max(data$date)
+                   choices = date_select,
+                   selected = max(date_select)
                  )
-             )
+             ),
+             box(status = "info", solidHeader = FALSE,
+                 selectInput(
+                   inputId = ns("indicator"),
+                   label = "Select Indicator",
+                   choices = indicator_select
+                 ))
             ),
            fluidRow(
              box(width = 12, status = "info", title = "Downloads", solidHeader = FALSE,
@@ -26,38 +32,56 @@ labourMarketSmallAreaUI <- function(id, data) {
                    class = 'download-button'
                  )
            )
-           ),
-           fluidRow(
-             verbatimTextOutput(outputId = ns("text"))
            )
   )
 }
 
-labourMarketSmallArea <- function(input, output, session, data, region) {  
+labourMarketSmallAreaServer <- function(id, data, region) {
+  moduleServer(
+    id,
+    function(input, output, session) {
 
   
   create_data <- reactive({
     
     if (region() == "Australia") {
     df <- data %>%
-      filter(indicator == "Smoothed unemployment rate (%)",
-             date == input$date) 
+      filter(indicator == input$indicator,
+             date == as.Date(as.yearqtr(input$date)) + months(2)) %>%
+      left_join(sa22016) %>%
+      st_as_sf()
     } else {
       df <- data %>%
-        filter(indicator == "Smoothed unemployment rate (%)",
-               date == input$date,
-               state_name_2016 == region())
+        filter(indicator == input$indicator,
+               date == as.Date(as.yearqtr(input$date)) + months(2),
+               state_name_2016 == region()) %>%
+        left_join(sa22016) %>%
+        st_as_sf()
     }
   })
   
   create_plot <- reactive({
     
-    pal <- colorBin("viridis", create_data()$value, 8, pretty = TRUE)
+    pal_domain <- create_data()[create_data()$indicator == input$indicator, ]$value
+    
+    legend_title <- case_when(
+      input$indicator == "Smoothed unemployment rate (%)" ~ "Unemployment Rate (%)",
+      input$indicator == "Smoothed labour force (persons)" ~ "Labour Force",
+      input$indicator == "Smoothed unemployment (persons)" ~ "Unemployment"
+    )
+    
+    annodate <- tags$div(
+      HTML(
+        format(as.Date(as.yearqtr(input$date)) + months(2), "%B %d %Y")
+        )
+    )
+    
+    pal <- colorBin("Blues", pal_domain, 6, pretty = TRUE, na.color = aiti_grey)
     
     leaflet(create_data()) %>%
       addTiles() %>% 
       addPolygons(
-        fillColor = ~pal(value),
+        fillColor = ~pal(pal_domain),
         weight = 1,
         opacity = 0.5,
         color = 'white',
@@ -69,12 +93,13 @@ labourMarketSmallArea <- function(input, output, session, data, region) {
           dashArray = "",
           fillOpacity = 0.7,
           bringToFront = TRUE),
-        label = ~str_c(sa2_name_2016,": ", value, "%")) %>%
+        label = ~paste0(sa2_name_2016,": ", value, "%")) %>%
       addLegend(
         "bottomright", 
         pal = pal, 
-        values = create_data()$value, 
-        title = "Unemployment Rate (%)")
+        values = pal_domain, 
+        title = legend_title) %>%
+      addControl(annodate, position = "topright")
     
   })
 
@@ -93,7 +118,7 @@ labourMarketSmallArea <- function(input, output, session, data, region) {
   
   output$download_plot <- downloadHandler(
     filename = function(){
-      paste(region(), "-map.png", sep = '')
+      paste(region(), "map.png", sep = '-')
     },
     content = function(file) {
       mapview::mapshot(user_map(), file = file, cliprect = "viewport", selfcontained = FALSE)
@@ -102,14 +127,13 @@ labourMarketSmallArea <- function(input, output, session, data, region) {
   
   output$download_data <- downloadHandler(
     filename = function() {
-      paste(input$indicator, "-data.csv", sep = '')
+      paste(input$indicator, "data.csv", sep = '-')
     },
     content = function(file) {
       write.csv(create_data(), file, row.names = FALSE)
     }
   )
   
-
-
-
+    }
+)
 }
