@@ -1,4 +1,5 @@
 library(dplyr)
+library(forcats)
 library(lubridate)
 library(scales)
 library(zoo)
@@ -32,14 +33,15 @@ system('fc-cache -f ~/.fonts')
 header <- dashboardHeader(
   title = "Economic Indicators Dashboard",
   tags$li(
-    a(href = "http://www.flinders.edu.au/aiti",
+    #a(href = "http://www.flinders.edu.au/aiti",
       img(
         src = "aiti_logo.png", 
         title = "Australian Industrial Transformation Institute", 
-        height = "17px")
-    ),
+        height = "17px"
+        ),
     class = "dropdown")
-)
+    )
+
 
 ##### Sidebar Controls #####
 sidebar <- dashboardSidebar(

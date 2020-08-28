@@ -68,7 +68,10 @@ covidIndustryServer <- function(id, data, region) {
               distinct(date) %>% 
               mutate(index = week(date) - week(as.Date("2020-03-14"))) %>%
               pull(index),
-            selected = 0)
+            selected = data %>% 
+              distinct(date) %>% 
+              mutate(index = week(date) - week(as.Date("2020-03-14"))) %>%
+              pull(index) %>% max())
         }
       })
       
