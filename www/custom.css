@@ -116,13 +116,19 @@ h3 {
 
 
 /*sliver on selected tab */
-.nav-tabs-custom .nav-tabs li.active:hover a, .nav-tabs-custom .nav-tabs li.active a {
+.nav-tabs-custom .nav-tabs li.active:hover a, 
+.nav-tabs-custom .nav-tabs li.active a {
      background-color: transparent;
      border-color: transparent;
+     color: var(--dark_blue);
 }
 
 .nav-tabs-custom .nav-tabs li.active {
      border-top-color: var(--yellow);
+}
+
+.nav-tabs-custom>.nav-tabs>li>a {
+  color: var(--dark_blue)!important;
 }
 
 
@@ -233,6 +239,26 @@ h3 {
 }
 
 /* Sliders */
+
+.irs-bar {
+  background: var(--light_blue);
+  border-top: 1px solid var(--light_blue);
+  border-bottom: 1px solid var(--light_blue);
+  
+}
+
+.irs-min, .irs-max {
+  color: var(--dark_blue);
+}
+
+.irs-from, .irs-to, .irs-single {
+  background: var(--light_blue);
+}
+
+.irs-bar-edge {
+  border: 1px solid var(--light_blue);
+  background: var(--light_blue);
+}
 
 /* Leaflet */
 
