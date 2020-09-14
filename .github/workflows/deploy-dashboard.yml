@@ -17,6 +17,8 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+        with: 
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - uses: r-lib/actions/setup-r@master
       - name: Install packages
         run: |
@@ -28,5 +30,5 @@ jobs:
       - name: Push to shiny.io
         run: |
           Rscript -e "rsconnect::setAccountInfo(name='aiti', token='${SHINYAPPS_TOKEN}', secret='${SHINYAPPS_SECRET}')"
-          Rscript -e "rsconnect::deployApp(appName = 'db-dev')
+          Rscript -e "rsconnect::deployApp(appName = 'db-dev')"
      
