@@ -1,0 +1,32 @@
+name: deploy-dashboard
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  schedule:
+    - cron: '30 2 * * MON-FRI'
+  push:
+    branches: [ master ]
+
+
+jobs:
+  deploy-dashboard:
+    runs-on: windows-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - uses: r-lib/actions/setup-r@master
+      - name: Install packages
+        run: |
+          Rscript -e "install.packages(c('remotes', 'dplyr', 'forcats', 'lubridate', 'scales', 'zoo', 'shiny', 'shinydashboard', 'shinyWidgets', 'shinycssloaders', 'plotly', 'sf', 'leaflet', 'mapview', 'rsconnect'), type = 'binary')"
+          Rscript -e "remotes::install_github('hamgamb/reportabs', dependencies = FALSE)"
+          Rscript -e "remotes::install_github('hamgamb/daitir', dependencies = FALSE)"
+          Rscript -e "remotes::install_github('hamgamb/aititheme', dependencies = FALSE)"
+          Rscript -e "remotes::install_github('wfmackey/absmapsdata', dependencies = FALSE)"
+      - name: Push to shiny.io
+        run: |
+          Rscript -e "rsconnect::setAccountInfo(name='aiti', token='${SHINYAPPS_TOKEN}', secret='${SHINYAPPS_SECRET}')"
+          Rscript -e "rsconnect::deployApp(appName = 'db-dev')
+     
