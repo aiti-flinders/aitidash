@@ -20,7 +20,9 @@ jobs:
   
       - uses: r-lib/actions/setup-r@master
       - name: Install packages
-        run: Rscript -e "remotes::install_github('hamgamb/aititheme', dependencies = FALSE, auth_token =  ${{ secrets.PERSONAL_ACCESS_TOKEN }} )"
+        run: |
+        Rscript -e "install.packages(c('remotes', 'ggplot2', type = 'binary')"
+        Rscript -e "remotes::install_github('hamgamb/aititheme', dependencies = FALSE, auth_token =  ${{ secrets.PERSONAL_ACCESS_TOKEN }} )"
 
             
 
