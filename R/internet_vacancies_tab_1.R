@@ -59,7 +59,7 @@ ivi <- function(input, output, session, data, region) {
   
   create_data <- reactive({
     df <- data %>%
-      filter(region == region(),
+      filter(state == region(),
              occupation == input$occupation)
   })
   
@@ -67,9 +67,9 @@ ivi <- function(input, output, session, data, region) {
     
     plot_title <- toupper(paste0(region(),": ", "Internet Vacancies (", input$occupation, ")"))
     p <- ggplot(create_data(), aes(x = date, 
-                                   y = vacancies,
+                                   y = value,
                                    text = paste0("Date: ", format(date, "%Y-%b"),
-                                                "<br>", input$occupation, ": ", as_comma(vacancies)),
+                                                "<br>", input$occupation, ": ", as_comma(value)),
                                    group = occupation)) +
       geom_line() +
       labs(

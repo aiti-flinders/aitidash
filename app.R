@@ -92,8 +92,8 @@ emp_ind_tab <- tabItem(
     tabBox(
       id = "employment_industry_tab_id",
       width = 12,
-      empIndUI("empInd_ts", data = employment_industry),
-      empIndComparisonUI("empInd_region", data = employment_industry)
+      empIndUI("empInd_ts", data = employment_by_industry),
+      empIndComparisonUI("empInd_region", data = employment_by_industry)
       #empIndAnalysisUI("empInd_analysis", data = employment_industry)
     )
   )
@@ -177,9 +177,9 @@ server <- function(input, output) {
   #callModule(labourMarketAnalysis, "lm_analysis", data = labour_force, region = region_selected)
 
   #Employment by Industry - Tab
-  callModule(empInd, "empInd_ts", data = employment_industry, region = region_selected)
-  callModule(empIndComparison, "empInd_region", data = employment_industry, region = region_selected)
-  callModule(empIndAnalysis, "empInd_analysis", data = employment_industry, region = region_selected)
+  callModule(empInd, "empInd_ts", data = employment_by_industry, region = region_selected)
+  callModule(empIndComparison, "empInd_region", data = employment_by_industry, region = region_selected)
+  callModule(empIndAnalysis, "empInd_analysis", data = employment_by_industry, region = region_selected)
   
   #IVI - Tab
   callModule(ivi, "ivi_ts", data = internet_vacancies_index, region = region_selected)
@@ -213,10 +213,10 @@ server <- function(input, output) {
   
 
   #Industry Employment 
-  boxesAltServer("industry_total", data = employment_industry, region = region_selected,  "Employed total")
-  boxesAltServer("industry_ft", data = employment_industry, region = region_selected, "Employed full-time")
-  boxesAltServer("industry_pt", data = employment_industry, region = region_selected, "Employed part-time")
-  boxesAltServer("industry_under", data = employment_industry, region = region_selected, "Underemployed total")
+  boxesAltServer("industry_total", data = employment_by_industry, region = region_selected,  "Employed total")
+  boxesAltServer("industry_ft", data = employment_by_industry, region = region_selected, "Employed full-time")
+  boxesAltServer("industry_pt", data = employment_by_industry, region = region_selected, "Employed part-time")
+  boxesAltServer("industry_under", data = employment_by_industry, region = region_selected, "Underemployed total")
   
 
   # callModule(retailTrade, "rt_ts", data = rt)

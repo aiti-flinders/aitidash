@@ -2,9 +2,9 @@ dashboardUI <- function(id, data) {
   ns <- NS(id)
   
   lf_next_release <- abs_next_release("6202.0")
-  lf_release_date <- abs_release_date("6202.0")
+  lf_release_date <- abs_current_release("6202.0")
   industry_next_release <- abs_next_release("6291.0.55.003")
-  industry_release_date <- abs_release_date("6291.0.55.003")
+  industry_release_date <- abs_current_release("6291.0.55.003")
   
   fluidPage(
   h2("Employment Insights"),
@@ -44,7 +44,7 @@ dashboardUI <- function(id, data) {
     paste0("The boxes below show which industry employs the most people overall, full-time, and part-time. 
           Each box displays the industry name, the number of people employed, and the yearly change. ")
   ),
-  p(paste0("This data is current as at: ", release(employment_industry, "month"), " ", release(employment_industry, "year"))),
+  p(paste0("This data is current as at: ", release(employment_by_industry, "month"), " ", release(employment_by_industry, "year"))),
   p(paste0("Data for ", 
            industry_next_release, 
            " will be available on ", 

@@ -1,7 +1,7 @@
 iviComparisonUI <- function(id, data) {
   ns <- NS(id)
   
-  state_choices <- sort(unique(data$region))
+  state_choices <- sort(unique(data$state))
   
   
   tabPanel("Regional Comparison",
@@ -47,7 +47,7 @@ iviComparisonServer <- function(id, data, region) {
         )
         data %>%
           filter(occupation_group == input$occupation_group, 
-                 region == region()) %>%
+                 state == region()) %>%
           pull(occupation) %>%
           unique() %>%
           sort()
@@ -75,8 +75,8 @@ iviComparisonServer <- function(id, data, region) {
       
       observeEvent(region(), {
         updateCheckboxGroupInput(session, "state", choices = data %>% 
-                                   filter(region !=region()) %>% 
-                                   pull(region) %>% 
+                                   filter(state != region()) %>% 
+                                   pull(state) %>% 
                                    unique() %>%
                                    sort(), label = "Select Comparison region")
       })
@@ -89,9 +89,9 @@ iviComparisonServer <- function(id, data, region) {
         df <- data %>%
           filter(occupation == input$occupation,
                  occupation_group == input$occupation_group,
-                 region %in% c(region(), input$state)) %>%
-          group_by(occupation, occupation_group, region) %>%
-          mutate(index = 100*vacancies/vacancies[1]) %>%
+                 state %in% c(region(), input$state)) %>%
+          group_by(occupation, occupation_group, state) %>%
+          mutate(index = 100*value/value[1]) %>%
           ungroup()
       })
       
@@ -103,13 +103,13 @@ iviComparisonServer <- function(id, data, region) {
                                          " (", input$occupation_group, ")",
                                          " (", input$occupation, ")"))
         p <- ggplot(create_data(),
-                    aes(x = date, y = index, group = 1, colour = region,
+                    aes(x = date, y = index, group = 1, colour = state,
                         text = paste0(
                           region(), 
                           "<br>Date: ", format(date, "%Y-%b"),
                           "<br>Occupation Group: ", input$occupation_group,
                           "<br>Occupation: ", input$occupation,
-                          "<br>Vacancies: ", as_comma(vacancies)))) + 
+                          "<br>Vacancies: ", as_comma(value)))) + 
           geom_line() + 
           labs(
             x = NULL,

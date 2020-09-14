@@ -115,7 +115,7 @@ empInd <- function(input, output, session, data, region) {
                state == region(), 
                indicator == input$indicator) %>% 
         group_by(date, industry) %>% 
-        summarise(value = mean(value), .groups = "keep") %>% 
+        summarise(value = mean(value), .groups = 'drop_last') %>% 
         mutate(share = 100*value/sum(value)) %>%
         filter(date == as.Date(zoo::as.yearqtr(input$date)) + months(1)) %>%
         ungroup() %>%
@@ -127,7 +127,7 @@ empInd <- function(input, output, session, data, region) {
              indicator == input$indicator,
              series_type == "Original",
              gender == "Persons") %>%
-      group_by(date, .group = "keep") %>%
+      group_by(date) %>%
       mutate(share = 100*value/sum(value)) %>%
       ungroup() %>%
       filter(industry %in% input$industry)

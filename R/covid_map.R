@@ -2,7 +2,7 @@ covidUI <- function(id, data) {
   ns <- NS(id)
   
   
-  indicator_choices <- c("JobKeeper Applications (SA2)" = "jobkeeper_apps",
+  indicator_choices <- c("JobKeeper Applications (SA2)" = "jobkeeper_applications",
                          "JobKeeper Rate (% Businesses) (SA2)" = "jobkeeper_proportion",
                          "JobSeeker Payments (SA2)" = "jobseeker_payment",
                          "JobSeeker Rate (% Labour Force) (SA2)" = "jobseeker_proportion", 
@@ -65,9 +65,9 @@ covidServer <- function(id, data, region) {
           sliderTextInput(
             inputId = session$ns("date"),
             label = "Select Date", 
-            choices = data %>% filter(indicator != "payroll_index") %>%
+            choices = data %>% filter(indicator == input$indicator, !is.na(value)) %>%
               pull(date) %>% unique() %>% as.yearmon(date),
-            selected = data %>% filter(indicator != "payroll_index") %>%
+            selected = data %>% filter(indicator == input$indicator, !is.na(value)) %>%
               pull(date) %>% unique() %>% as.yearmon(date) %>% max()
           )
         }
@@ -76,13 +76,13 @@ covidServer <- function(id, data, region) {
       
       observe({
         if(region() != "Australian Capital Territory") {
-          updateSelectInput(session, "indicator", choices = c("JobKeeper Applications (SA2)" = "jobkeeper_apps",
+          updateSelectInput(session, "indicator", choices = c("JobKeeper Applications (SA2)" = "jobkeeper_applications",
                                                                          "JobKeeper Rate (% Businesses) (SA2)" = "jobkeeper_proportion",
                                                                          "JobSeeker Payments (SA2)" = "jobseeker_payment",
                                                                          "JobSeeker Rate (% Labour Force) (SA2)" = "jobseeker_proportion", 
                                                                          "Payroll Jobs Index (SA4)" = "payroll_index"))
         } else {
-        updateSelectInput(session, "indicator", choices = c("JobKeeper Applications (SA2)" = "jobkeeper_apps",
+        updateSelectInput(session, "indicator", choices = c("JobKeeper Applications (SA2)" = "jobkeeper_applications",
                                                             "JobKeeper Rate (% Businesses) (SA2)" = "jobkeeper_proportion",
                                                             "JobSeeker Payments (SA2)" = "jobseeker_payment",
                                                             "JobSeeker Rate (% Labour Force) (SA2)" = "jobseeker_proportion"))
@@ -90,7 +90,7 @@ covidServer <- function(id, data, region) {
       })
       
       
-      indicator_choices <- c("JobKeeper Applications (SA2)" = "jobkeeper_apps",
+      indicator_choices <- c("JobKeeper Applications (SA2)" = "jobkeeper_applications",
                              "JobKeeper Rate (% Businesses) (SA2)" = "jobkeeper_proportion",
                              "JobSeeker Payments (SA2)" = "jobseeker_payment",
                              "JobSeeker Rate (% Labour Force) (SA2)" = "jobseeker_proportion", 
@@ -104,8 +104,8 @@ covidServer <- function(id, data, region) {
         
         if (input$indicator == "payroll_index") {
           data <- data %>%
-            select(-sa2_main_2016) %>%
-            filter(date == as.Date("2020-03-14") + weeks(input$date))
+            filter(statistical_area == "sa4",
+                   date == as.Date("2020-03-14") + weeks(input$date))
           
           label_name <-  'sa4_name_2016'
           join <- sa42016
@@ -114,8 +114,8 @@ covidServer <- function(id, data, region) {
           } 
         else {
           data <- data %>%
-            select(-sa4_code_2016) %>%
-            filter(date == as.Date(as.yearmon(input$date)))
+            filter(statistical_area == "sa2",
+                   date == as.Date(as.yearmon(input$date)))
           label_name <- 'sa2_name_2016'
           join <- sa22016 
           join_by <- "sa2_main_2016"
@@ -124,11 +124,11 @@ covidServer <- function(id, data, region) {
         if (region() != "Australia") {
         
           df <- data %>% 
-            filter(state_name_2016 == region(),
+            filter(state == region(),
                    indicator == input$indicator) %>% 
             mutate(value_label = ifelse(grepl("proportion", indicator), as_percent(value), as_comma(value)),
                    value_label = ifelse(indicator == "payroll_index", as_comma(value, digits = 2), value_label)) %>% 
-            left_join(join, by = c(join_by, "state_name_2016")) %>%
+            left_join(join, by = c("statistical_area_code" = join_by, "state" = "state_name_2016")) %>%
             rename(label = all_of(label_name)) %>%
             st_as_sf() 
           
@@ -138,7 +138,7 @@ covidServer <- function(id, data, region) {
             filter(indicator == input$indicator) %>% 
             mutate(value_label = ifelse(grepl("proportion", indicator), as_percent(value), as_comma(value)),
                    value_label = ifelse(indicator == "payroll_index", as_comma(value, digits = 2), value_label)) %>% 
-            left_join(join, by = c(join_by, "state_name_2016")) %>%
+            left_join(join, by = c("statistical_area_code" = join_by, "state" = "state_name_2016")) %>%
             rename(label = all_of(label_name)) %>%
             st_as_sf() 
         } 

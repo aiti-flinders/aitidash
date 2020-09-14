@@ -27,17 +27,17 @@ iviTreeServer <- function(id, data,region) {
       
       create_data <- reactive({
         df <- data %>%
-          filter(region == region(),
+          filter(state == region(),
                  date == as.Date(as.yearmon(input$date)),
                  nchar(anzsco_2) == 2) %>%
-          mutate(vacancies_share = 100*vacancies/sum(vacancies)) %>% 
+          mutate(value_share = 100*value/sum(value)) %>% 
           # mutate(across(where(is.character), ~str_to_title(.x)),
           #        occupation = ifelse(str_detect(occupation, "Total"),
           #                            trimws(str_split(occupation, pattern = "[(]", simplify = TRUE)),
           #                            occupation),
           #        parents = ifelse(occupation == occupation_group, "", occupation_group)) %>%
           # filter(occupation != "Total") %>%
-          top_n(n = 10, wt = vacancies)
+          top_n(n = 10, wt = value)
     
       })
       
@@ -58,9 +58,9 @@ iviTreeServer <- function(id, data,region) {
         plot_ly(create_data(), 
                 labels = ~occupation,
                 customdata = ~occupation_group,
-                hovertext = ~vacancies_share,
+                hovertext = ~value_share,
                 parents = NA, 
-                values = ~vacancies,
+                values = ~value,
                 type = "treemap",
                 tiling = list(packing = "binary"), 
                 textfont = list(
