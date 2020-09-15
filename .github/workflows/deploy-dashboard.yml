@@ -16,15 +16,16 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-  
+      - uses: actions/checkout@v2  
       - uses: r-lib/actions/setup-r@master
       - name: Install packages
+        env:
+          GITHUB_PAT = ${{secrets.PERSONAL_ACCESS_TOKEN}}
         run: |
           Rscript -e "install.packages(c('remotes', 'ggplot2'), type = 'binary')"
-          Rscript -e "remotes::install_github('hamgamb/aititheme', dependencies = FALSE, auth_token =  ${{ secrets.PERSONAL_ACCESS_TOKEN }} )"
+          Rscript -e "remotes::install_github('hamgamb/aititheme', dependencies = FALSE)"
       - name: Push to shiny.io
         run: |
-          Rscript -e "rsconnect::setAccountInfo(name='aiti', token='${SHINYAPPS_TOKEN}', secret='${SHINYAPPS_SECRET}')"
+          Rscript -e "rsconnect::setAccountInfo(name='aiti', token=${{secrets.SHINYAPPS_TOKEN}}, secret=${{secrets.SHINYAPPS_SECRET}})"
           Rscript -e "rsconnect::deployApp(appName = 'db-dev')"
      
