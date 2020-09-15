@@ -5,6 +5,9 @@ name: deploy-dashboard
 on:
   schedule:
     - cron: '0 2 * * MON-FRI'
+  push: 
+    branches: 
+      master
 
 
 
