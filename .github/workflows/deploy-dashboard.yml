@@ -5,8 +5,7 @@ name: deploy-dashboard
 on:
   schedule:
     - cron: '0 2 * * MON-FRI'
-  push:
-    branches: [ master ]
+
 
 
 jobs:
@@ -16,7 +15,6 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2  
       - uses: r-lib/actions/setup-r@master
       - name: Install packages
         env: 
@@ -32,5 +30,5 @@ jobs:
       - name: Push to shiny.io
         run: |
           Rscript -e "rsconnect::setAccountInfo(name='aiti', token=${{secrets.SHINYAPPS_TOKEN}}, secret=${{secrets.SHINYAPPS_SECRET}})"
-          Rscript -e "rsconnect::deployApp(appName = 'db-dev')"
+          Rscript -e "rsconnect::deployApp(appName = 'WorkSight')"
      
