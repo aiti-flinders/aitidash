@@ -27,8 +27,8 @@ jobs:
           Rscript -e "install.packages(c('stringdist', 'rvest', 'stringr', 'xml2', 'remotes', 'rsconnect', 'dplyr', 'forcats', 'lubridate', 'scales', 'zoo', 'shiny', 'shinydashboard', 'shinyWidgets', 'shinycssloaders', 'plotly', 'sf', 'leaflet', 'mapview', 'ggplot2'), type = 'binary')"
           Rscript -e "remotes::install_github('MattCowgill/strayr', dependencies = FALSE)"
           Rscript -e "remotes::install_github('hamgamb/aititheme', dependencies = FALSE)"
-          Rscript -e "remotes::install_github('hamgamb/daitir', dependencies = FALSE)"
           Rscript -e "remotes::install_github('hamgamb/reportabs', dependencies = FALSE)"
+          Rscript -e "remotes::install_github('hamgamb/daitir', dependencies = FALSE)"
           Rscript -e "remotes::install_github('wfmackey/absmapsdata', dependencies = FALSE)"
         
       - name: Push to shiny.io
