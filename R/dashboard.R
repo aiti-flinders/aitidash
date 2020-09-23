@@ -1,8 +1,8 @@
 dashboardUI <- function(id, data) {
   ns <- NS(id)
   
-  lf_next_release <- abs_next_release("6202.0")
-  industry_next_release <- abs_next_release("6291.0.55.001")
+  lf_next_release <- abs_next_release("labour-force-australia")
+  industry_next_release <- abs_next_release("labour-force-australia-detailed")
 
   fluidPage(
   h2("Employment Insights"),

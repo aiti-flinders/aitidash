@@ -4,13 +4,14 @@ covidUI <- function(id, data) {
   
   indicator_choices <- c("JobKeeper Applications (SA2)" = "jobkeeper_applications",
                          "JobKeeper Rate (% Businesses) (SA2)" = "jobkeeper_proportion",
+                         "JobKeeper Applications Growth (SA2)" = "jobkeeper_growth",
                          "JobSeeker Payments (SA2)" = "jobseeker_payment",
                          "JobSeeker Rate (% Labour Force) (SA2)" = "jobseeker_proportion", 
-                         "Payroll Jobs Index (SA4)" = "payroll_index")
+                         "Payroll Jobs Index (SA3)" = "payroll_index")
   
   tabPanel(title = uiOutput(ns("title_panel")),
            withSpinner(leafletOutput(ns("map"), width = "100%", height = "600px"), 
-                                        image = "https://github.com/hamgamb/aitidash/blob/master/www/aiti_spinner.gif?raw=true"),
+                       image = "https://github.com/hamgamb/aitidash/blob/master/www/aiti_spinner.gif?raw=true"),
            fluidRow(
              box(width = 4, status = "info", solidHeader = FALSE,
                  selectInput(
@@ -18,14 +19,14 @@ covidUI <- function(id, data) {
                    label = "Select Indicator",
                    choices = indicator_choices,
                    selected = "covid_impact"
-                   )
-                 ),
+                 )
+             ),
              box(width = 8, status = "info", solidHeader = FALSE,
                  uiOutput(
                    ns("date")
-                   )
                  )
-             ),
+             )
+           ),
            fluidRow(
              box(width = 12, status = "info",  solidHeader = FALSE, title = "Downloads",
                  downloadButton(
@@ -36,7 +37,7 @@ covidUI <- function(id, data) {
              )
            )
   )
-  }
+}
 
 covidServer <- function(id, data, region) {
   
@@ -51,52 +52,55 @@ covidServer <- function(id, data, region) {
       output$date <- renderUI({
         
         if(input$indicator == "payroll_index") {
-        sliderTextInput(
-          inputId = session$ns("date"),
-          label = "Weeks Since 100th COVID-19 Case (Mar 14th 2020)", 
-          choices = data %>% 
-            filter(indicator == "payroll_index") %>% 
-            distinct(date) %>% 
-            mutate(index = week(date) - week(as.Date("2020-03-14"))) %>%
-            pull(index),
-          selected = 0
-        ) } else {
-          
           sliderTextInput(
             inputId = session$ns("date"),
-            label = "Select Date", 
-            choices = data %>% filter(indicator == input$indicator, !is.na(value)) %>%
-              pull(date) %>% unique() %>% as.yearmon(date),
-            selected = data %>% filter(indicator == input$indicator, !is.na(value)) %>%
-              pull(date) %>% unique() %>% as.yearmon(date) %>% max()
-          )
-        }
-          
-          })
+            label = "Weeks Since 100th COVID-19 Case (Mar 14th 2020)", 
+            choices = data %>% 
+              filter(indicator == "payroll_index") %>% 
+              distinct(date) %>% 
+              mutate(index = week(date) - week(as.Date("2020-03-14"))) %>%
+              pull(index),
+            selected = 0
+          ) } else {
+            
+            sliderTextInput(
+              inputId = session$ns("date"),
+              label = "Select Date", 
+              choices = data %>% filter(indicator == input$indicator, !is.na(value)) %>%
+                pull(date) %>% unique() %>% as.yearmon(date),
+              selected = data %>% filter(indicator == input$indicator, !is.na(value)) %>%
+                pull(date) %>% unique() %>% as.yearmon(date) %>% max()
+            )
+          }
+        
+      })
       
       observe({
         if(region() != "Australian Capital Territory") {
           updateSelectInput(session, "indicator", choices = c("JobKeeper Applications (SA2)" = "jobkeeper_applications",
-                                                                         "JobKeeper Rate (% Businesses) (SA2)" = "jobkeeper_proportion",
-                                                                         "JobSeeker Payments (SA2)" = "jobseeker_payment",
-                                                                         "JobSeeker Rate (% Labour Force) (SA2)" = "jobseeker_proportion", 
-                                                                         "Payroll Jobs Index (SA4)" = "payroll_index"))
+                                                              "JobKeeper Rate (% Businesses) (SA2)" = "jobkeeper_proportion",
+                                                              "JobKeeper Applications Growth (SA2)" = "jobkeeper_growth",
+                                                              "JobSeeker Payments (SA2)" = "jobseeker_payment",
+                                                              "JobSeeker Rate (% Labour Force) (SA2)" = "jobseeker_proportion", 
+                                                              "Payroll Jobs Index (SA3)" = "payroll_index"))
         } else {
-        updateSelectInput(session, "indicator", choices = c("JobKeeper Applications (SA2)" = "jobkeeper_applications",
-                                                            "JobKeeper Rate (% Businesses) (SA2)" = "jobkeeper_proportion",
-                                                            "JobSeeker Payments (SA2)" = "jobseeker_payment",
-                                                            "JobSeeker Rate (% Labour Force) (SA2)" = "jobseeker_proportion"))
+          updateSelectInput(session, "indicator", choices = c("JobKeeper Applications (SA2)" = "jobkeeper_applications",
+                                                              "JobKeeper Rate (% Businesses) (SA2)" = "jobkeeper_proportion",
+                                                              "JobKeeper Applications Growth (SA2)" = "jobkeeper_growth",
+                                                              "JobSeeker Payments (SA2)" = "jobseeker_payment",
+                                                              "JobSeeker Rate (% Labour Force) (SA2)" = "jobseeker_proportion"))
         }
       })
       
       
       indicator_choices <- c("JobKeeper Applications (SA2)" = "jobkeeper_applications",
                              "JobKeeper Rate (% Businesses) (SA2)" = "jobkeeper_proportion",
+                             "JobKeeper Applications Growth (SA2)" = "jobkeeper_growth",
                              "JobSeeker Payments (SA2)" = "jobseeker_payment",
                              "JobSeeker Rate (% Labour Force) (SA2)" = "jobseeker_proportion", 
-                             "Payroll Jobs Index (SA4)" = "payroll_index"
-                             )
-    
+                             "Payroll Jobs Index (SA3)" = "payroll_index"
+      )
+      
       
       create_data <- reactive({
         
@@ -104,31 +108,31 @@ covidServer <- function(id, data, region) {
         
         if (input$indicator == "payroll_index") {
           data <- data %>%
-            filter(statistical_area == "sa4",
+            filter(!is.na(sa3_code_2016),
                    date == as.Date("2020-03-14") + weeks(input$date))
           
-          label_name <-  'sa4_name_2016'
-          join <- sa42016
-          join_by <- "sa4_code_2016"
-
-          } 
+          label_name <-  'sa3_name_2016'
+          join <- sa32016
+          join_by <- "sa3_code_2016"
+          
+        } 
         else {
           data <- data %>%
-            filter(statistical_area == "sa2",
+            filter(!is.na(sa2_main_2016),
                    date == as.Date(as.yearmon(input$date)))
           label_name <- 'sa2_name_2016'
           join <- sa22016 
           join_by <- "sa2_main_2016"
-          }
+        }
         
         if (region() != "Australia") {
-        
+          
           df <- data %>% 
             filter(state == region(),
                    indicator == input$indicator) %>% 
             mutate(value_label = ifelse(grepl("proportion", indicator), as_percent(value), as_comma(value)),
                    value_label = ifelse(indicator == "payroll_index", as_comma(value, digits = 2), value_label)) %>% 
-            left_join(join, by = c("statistical_area_code" = join_by, "state" = "state_name_2016")) %>%
+            left_join(join, by = c("state" = "state_name_2016", join_by)) %>%
             rename(label = all_of(label_name)) %>%
             st_as_sf() 
           
@@ -149,20 +153,19 @@ covidServer <- function(id, data, region) {
       create_plot <- reactive({
         
         pal_domain <- create_data() %>%
-          filter(indicator == input$indicator) %>%
           pull(value)
         
         legend_title <- names(indicator_choices)[indicator_choices == input$indicator]
         
-      
+        
         pal <- colorBin("Blues", pal_domain, 6, pretty = TRUE, na.color = aiti_grey)
-       
+        
         
         if (input$indicator == "payroll_index") {
           annodate <- tags$div(HTML(format(as.Date("2020-03-14") + weeks(input$date), "%B %d %Y")))
         } else { annodate <- tags$div(HTML(format(as.yearmon(input$date), "%B %Y"))) }
-          
-              
+        
+        
         leaflet(create_data()) %>%
           addTiles() %>%
           addPolygons(
@@ -185,7 +188,7 @@ covidServer <- function(id, data, region) {
             values = pal_domain,
             title = legend_title) %>%
           addControl(annodate, position = "topright")
-
+        
       })
       
       output$map <- renderLeaflet({
@@ -204,14 +207,9 @@ covidServer <- function(id, data, region) {
           paste(region(), "-map.png", sep = '')
         },
         content = function(file) {
-         mapview::mapshot(user_map(), file = file, cliprect = "viewport", selfcontained = FALSE)
+          mapview::mapshot(user_map(), file = file, cliprect = "viewport", selfcontained = FALSE)
         }
       )
-      
-   
-      
-      
-      
     }
   )
 }
