@@ -11,7 +11,7 @@ dashboardUI <- function(id, data) {
   p(paste0("Data for ",
            release(labour_force, "month", plus = 1),
            " will be available on ",
-           weekdays(lf_next_release), ", the ", day(lf_next_release), "th of ", month(lf_next_release, abbr = F, label = T), ".")),
+           weekdays(lf_next_release), ", the ", scales::ordinal(day(lf_next_release)), " ", month(lf_next_release, abbr = F, label = T), ".")),
   fluidRow( 
     boxesUI('unemployment_rate'),
     boxesUI('unemployed')
@@ -46,7 +46,7 @@ dashboardUI <- function(id, data) {
   p(paste0("Data for ",
            release(employment_by_industry, "month", plus = 3),
            " will be available on ",
-           weekdays(industry_next_release), ", the ", day(industry_next_release), "nd of ", month(industry_next_release, abbr = F, label = T), ".")),
+           weekdays(industry_next_release), ", the ", scales::ordinal(day(industry_next_release))," ", month(industry_next_release, abbr = F, label = T), ".")),
 
   fluidRow(
     boxesAltUI("industry_total"),
