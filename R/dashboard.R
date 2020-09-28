@@ -44,9 +44,9 @@ dashboardUI <- function(id, data) {
   ),
   p(paste0("This data is current as at: ", release(employment_by_industry, "month"), " ", release(employment_by_industry, "year"))),
   p(paste0("Data for ",
-           release(employment_by_industry, "month"),
+           release(employment_by_industry, "month", plus = 3),
            " will be available on ",
-           weekdays(industry_next_release), ", the ", day(industry_next_release), "th of ", month(industry_next_release, abbr = F, label = T), ".")),
+           weekdays(industry_next_release), ", the ", day(industry_next_release), "nd of ", month(industry_next_release, abbr = F, label = T), ".")),
 
   fluidRow(
     boxesAltUI("industry_total"),
