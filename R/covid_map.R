@@ -142,7 +142,7 @@ covidServer <- function(id, data, region) {
             filter(indicator == input$indicator) %>% 
             mutate(value_label = ifelse(grepl("proportion", indicator), as_percent(value), as_comma(value)),
                    value_label = ifelse(indicator == "payroll_index", as_comma(value, digits = 2), value_label)) %>% 
-            left_join(join, by = c("statistical_area_code" = join_by, "state" = "state_name_2016")) %>%
+            left_join(join, by = c(join_by, "state" = "state_name_2016")) %>%
             rename(label = all_of(label_name)) %>%
             st_as_sf() 
         } 
