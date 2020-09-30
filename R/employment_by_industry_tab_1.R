@@ -125,6 +125,7 @@ empInd <- function(input, output, session, data, region) {
         df <- data %>% 
       filter(state == region(), 
              indicator == input$indicator,
+             industry != "Total (industry)",
              series_type == "Original",
              gender == "Persons") %>%
       group_by(date) %>%

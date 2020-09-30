@@ -19,12 +19,11 @@ empIndComparisonUI <- function(id, data) {
                    inputId = ns("indicator"),
                    label = "Select Indicator", 
                    choices = indicator_choices),
-                 numericInput(
-                   inputId = ns('date_range'),
-                   label = "Select Comparison Year",
-                   value = year(date_max), 
-                   min = year(date_min),
-                   max = year(date_max)
+                 sliderTextInput(
+                   inputId = ns("date"),
+                   label = "Select Date",
+                   choices = zoo::as.yearqtr(sort(unique(data$date))),
+                   selected = zoo::as.yearqtr(date_max)
                  )),
              box(status='info',solidHeader = F,
                  radioButtons(
@@ -64,12 +63,12 @@ empIndComparison <- function(input, output, session, data, region) {
     df <- data %>%
       filter(indicator == input$indicator,
              industry != "Total (industry)") %>% 
-      group_by(year, state, industry) %>% 
+      group_by(date, state, industry) %>% 
       summarise(value = mean(value)) %>% 
       mutate(share = 100*value/sum(value)) %>%
       ungroup() %>%
       filter(state %in% c(region(), input$comparison),
-             year == input$date_range) %>%
+             date == as.Date(zoo::as.yearqtr(input$date)) + months(1)) %>%
       select(-value) %>% 
       tidyr::pivot_wider(names_from = state, values_from = share) %>%
       arrange(!!as.name(region())) %>%
@@ -105,7 +104,7 @@ empIndComparison <- function(input, output, session, data, region) {
       labs(
         y = NULL,
         x = NULL,
-        title = toupper(paste0("share of industry employment: ", region(), " & ", input$comparison, " (", input$date_range, ")"))
+        title = toupper(paste0("share of industry employment: ", region(), " & ", input$comparison, " (", input$date, ")"))
       ) +
       theme_aiti(legend = 'bottom', base_family = "Roboto")
     
