@@ -24,7 +24,7 @@ jobs:
         env: 
           GITHUB_PAT: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
-          Rscript -e "install.packages(c('stringdist', 'rvest', 'stringr', 'xml2', 'remotes', 'rsconnect', 'dplyr', 'forcats', 'lubridate', 'scales', 'zoo', 'shiny', 'shinydashboard', 'shinyWidgets', 'shinycssloaders', 'plotly', 'sf', 'leaflet', 'mapview', 'ggplot2'), type = 'binary')"
+          Rscript -e "install.packages(c('parsedate','stringdist', 'rvest', 'stringr', 'xml2', 'remotes', 'rsconnect', 'dplyr', 'forcats', 'lubridate', 'scales', 'zoo', 'shiny', 'shinydashboard', 'shinyWidgets', 'shinycssloaders', 'plotly', 'sf', 'leaflet', 'mapview', 'ggplot2'), type = 'binary')"
           Rscript -e "remotes::install_github('MattCowgill/strayr', dependencies = FALSE)"
           Rscript -e "remotes::install_github('hamgamb/aititheme', dependencies = FALSE)"
           Rscript -e "remotes::install_github('hamgamb/reportabs', dependencies = FALSE)"
