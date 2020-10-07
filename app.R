@@ -15,6 +15,7 @@ library(absmapsdata)
 library(sf)
 library(leaflet)
 library(mapview)
+library(strayr)
 
 #### Preamble ####
 # Plotly Setup
