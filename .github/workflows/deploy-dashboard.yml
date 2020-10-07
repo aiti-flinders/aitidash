@@ -4,7 +4,7 @@ name: deploy-dashboard
 # events but only for the master branch
 on:
   schedule:
-    - cron: '0 2 * * MON-FRI'
+    - cron: '0 1 * * MON-FRI'
   push: 
     branches: 
       master
