@@ -2,12 +2,8 @@
 
 boxesUI <- function(id) {
   ns <- NS(id)
-  
-  withSpinner(
-    infoBoxOutput(ns('box'), width = 6), 
-    image = "https://github.com/hamgamb/aitidash/blob/master/www/aiti_spinner.gif?raw=true"
-  )
-  
+
+  infoBoxOutput(ns('box'), width = 6)
   
   
 }
@@ -30,7 +26,9 @@ boxesServer <- function(id, data, region, indicator, reverse = FALSE, percent = 
         "Employment to population ratio", "Employment to Population Ratio",
         "Underemployment rate (proportion of labour force)", "Underemployment Rate",
         "Underutilisation rate", "Underusilisation Rate",
-        "Monthly hours worked in all jobs", "Hours Worked"
+        "Monthly hours worked in all jobs", "Hours Worked",
+        "Jobkeeper applications", "JobKeeper Applications",
+        "Jobkeeper proportion", "Jobkeeper Rate"
       )
       
       output$box <- renderInfoBox({
@@ -47,14 +45,16 @@ boxesServer <- function(id, data, region, indicator, reverse = FALSE, percent = 
           cu <- current(data, list('indicator' = indicator, 'state' = region()), print = FALSE) 
           ly <- cu - last_value(data, list('indicator' = indicator, 'state' = region()), "year", print = FALSE)
           lm <- cu - last_value(data, list('indicator' = indicator, 'state' = region()), 'month', print = FALSE)
+
           
           if(percent == T) {
-            box_text_yoy <- paste0(ifelse(ly > 0, "+", ""), as_percentage_point(ly))
+            if (length(ly) >= 1) {box_text_yoy <- paste0(ifelse(ly > 0, "+", ""), as_percentage_point(ly))} else {box_text_yoy <- "N/A"}
             box_text_mom <- paste0(ifelse(lm > 0, "+", ""), as_percentage_point(lm))
             box_text_current <- paste0(as_percent(cu), " (",box_text_mom,")")
-            
-          } else {
-            box_text_yoy <- paste0(ifelse(ly > 0, "+", ""), as_comma(ly))
+          }
+
+          else {
+            if (length(ly) >=1) {box_text_yoy <- paste0(ifelse(ly > 0, "+", ""), as_comma(ly)) } else {box_text_yoy <- "N/A"}
             box_text_mom <- paste0(ifelse(lm > 0, "+", ""), as_comma(lm))
             box_text_current <- paste0(as_comma(cu), " (",box_text_mom,")")
           }

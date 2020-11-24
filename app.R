@@ -207,10 +207,16 @@ server <- function(input, output) {
   boxesServer("unemployment_rate", data = labour_force, region = region_selected, "Unemployment rate", reverse = T, percent = T)
   boxesServer("underemployment_rate", data = labour_force, region = region_selected, "Underemployment rate (proportion of labour force)", reverse = T, percent = T)
   boxesServer("underutilisation_rate", data = labour_force, region = region_selected, "Underutilisation rate", reverse = T, percent = T)
-
+  
+  
+  #Hours worked 
   boxesServer("hours_worked_total", data = labour_force, region = region_selected, "Monthly hours worked in all jobs")
   boxesServer("participation_rate", data = labour_force, region = region_selected, "Participation rate", percent = TRUE)
   boxesServer("labour_force_total", data = labour_force, region = region_selected, "Labour force total")
+  
+  #JobKeeper Boxes
+  boxesServer("jobkeeper_total", data = jobkeeper_state, region = region_selected, "Jobkeeper applications", percent = FALSE, reverse = TRUE)
+  boxesServer("jobkeeper_proportion", data = jobkeeper_state, region = region_selected, "Jobkeeper proportion", percent = TRUE, reverse = TRUE)
   
 
   #Industry Employment 
