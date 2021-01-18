@@ -12,7 +12,7 @@ covidIndustryUI <- function(id, data) {
              box(status = "info", solidHeader = FALSE,
                  checkboxGroupInput(
                    inputId = ns("industry"),
-                   label = "Select Industry (Upto 9)",
+                   label = "Select Industry (Up to 9)",
                    choices = industry_choices,
                    selected = NULL
                  )
