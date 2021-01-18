@@ -94,6 +94,7 @@ covidRegionServer <- function(id, data, region) {
                           "<br>Week Ending: ", format(date, "%B %d"),
                           "<br>Index: ", as_comma(value, digits = 2)))) + 
           geom_line() +
+          geom_hline(aes(yintercept = 100)) + 
           geom_point(shape = 1, size = 1) + 
           theme_aiti(legend = "bottom", base_family = "Roboto") +
           theme(strip.background = element_blank()) + 
