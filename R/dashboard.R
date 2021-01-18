@@ -5,19 +5,24 @@ dashboardUI <- function(id, data) {
   industry_next_release <- abs_next_release("labour-force-australia-detailed")
 
   fluidPage(
+  h1(textOutput("region_selected")),
   h2("Jobkeeper Insights"),
-  p("This data is current as of November 2020."),
+  p("Based on data released on December 18th for September."),
   fluidRow(
     boxesUI("jobkeeper_total"),
     boxesUI("jobkeeper_proportion")
   ),
+  # h2("Jobseeker Insights"),
+  # fluidRow(
+  #   boxesUI("jobseeker_total"),
+  #   boxesUI("ya_total")
+  # ),
   h2("Employment Insights"),
-  h2(textOutput("region_selected")),
   p(paste0("This data is current as of ", release(labour_force, "month"), " ", release(labour_force, "year"),".")),
   p(paste0("Data for ",
            release(labour_force, "month", plus = 1),
            " will be available on ",
-           weekdays(lf_next_release), ", the ", scales::ordinal(day(lf_next_release)), " ", month(lf_next_release, abbr = F, label = T), ".")),
+           weekdays(lf_next_release), ", the ", scales::ordinal(day(lf_next_release)), " of ", month(lf_next_release, abbr = F, label = T), ".")),
   fluidRow( 
     boxesUI('unemployment_rate'),
     boxesUI('unemployed')

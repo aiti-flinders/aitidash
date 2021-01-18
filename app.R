@@ -218,6 +218,11 @@ server <- function(input, output) {
   boxesServer("jobkeeper_total", data = jobkeeper_state, region = region_selected, "Jobkeeper applications", percent = FALSE, reverse = TRUE)
   boxesServer("jobkeeper_proportion", data = jobkeeper_state, region = region_selected, "Jobkeeper proportion", percent = TRUE, reverse = TRUE)
   
+  #Jobseeker Boxes
+  #boxesServer("jobseeker_total", data = jobseeker_state, region = region_selected, "Jobseeker payment", percent = FALSE, reverse = TRUE)
+  #boxesServer("ya_total", data = jobseeker_state, region = region_selected, "Youth allowance other", percent = FALSE, reverse = TRUE)
+  
+  
 
   #Industry Employment 
   boxesAltServer("industry_total", data = employment_by_industry, region = region_selected,  "Employed total")

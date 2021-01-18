@@ -28,7 +28,9 @@ boxesServer <- function(id, data, region, indicator, reverse = FALSE, percent = 
         "Underutilisation rate", "Underusilisation Rate",
         "Monthly hours worked in all jobs", "Hours Worked",
         "Jobkeeper applications", "JobKeeper Applications",
-        "Jobkeeper proportion", "Jobkeeper Rate"
+        "Jobkeeper proportion", "Jobkeeper Rate",
+        "Jobseeker payment", "JobSeeker Recipients",
+        "Youth allowance other", "Youth Allowance"
       )
       
       output$box <- renderInfoBox({
