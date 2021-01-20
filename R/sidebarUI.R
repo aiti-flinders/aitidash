@@ -22,12 +22,12 @@ sidebarUI <- function(id) {
         text = "Labour Force",
         tabName = "labour_market",
         icon = icon("chart-line")
-      ),
-      menuItem(
-        text = "Internet Vacancies",
-        tabName = "internet_vacancies",
-        icon = icon("newspaper")
       )
+      # menuItem(
+      #   text = "Internet Vacancies",
+      #   tabName = "internet_vacancies",
+      #   icon = icon("newspaper")
+      # )
     ),
     menuItem(
       text = "Industry Insights",
@@ -68,11 +68,13 @@ sidebarUI <- function(id) {
         icon = icon("chart-line")
       )
     ),
-    radioButtons(
+    radioGroupButtons(
       inputId = "region_select",
       label = "Select Region",
       choices = c("Australia","New South Wales", "Victoria", "Queensland", "South Australia", "Western Australia", "Tasmania", "Northern Territory", "Australian Capital Territory"),
-      selected = "Australia"
+      selected = "Australia",
+      direction = "vertical",
+      justified = TRUE
     )
   )
 } 

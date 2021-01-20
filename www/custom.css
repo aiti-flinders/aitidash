@@ -268,10 +268,51 @@ h3 {
 }
 
 
+/* Region Button Styling */
 
+.btn-default {
+  color: var(--dark_blue);
+  background-color: white;
+  border-color: white;
+  border: none;
+  font-size: 16px;
+  font: Roboto;
+}
 
+.btn-primary.active .btn-primary:active, .open>.dropdown-toggle.btn-primary {
+  color: white;
+  background-color: var(--yellow);
+  
+}
 
+.btn-default.active {
+  color: white;
+  background-color: var(--light_blue);
+  border-color: white;
+}
 
+.btn-default:hover {
+  color: white;
+  background-color: var(--light_blue);
+  border-color: white;
+  border-radius: 0;
+}
+
+.btn-primary.active, .btn-primary:active, .open>.dropdown-toggle.btn-primary {
+  color: white;
+  background-color: var(--light_blue);
+  border-color: white;
+}
+
+.btn-default.active.focus, .btn-default.active:focus, .btn-default.active:hover, .btn-default:active.focus, .btn-default:active:focus, .btn-default:active:hover, .open>.dropdown-toggle.btn-default.focus, .open>.dropdown-toggle.btn-default:focus, .open>.dropdown-toggle.btn-default:hover {
+  color: white;
+  background-color: var(--light_blue);
+  border-color: white;
+}
+
+.btn {
+  text-align:left;
+}
 
 
 
