@@ -1,3 +1,4 @@
+#' @export
 covidDemographicUI <- function(id, data) {
   ns <- NS(id)
   
@@ -30,6 +31,7 @@ covidDemographicUI <- function(id, data) {
   
 }
 
+#' @export
 covidDemographicServer <- function(id, data, region) {
   
   moduleServer(

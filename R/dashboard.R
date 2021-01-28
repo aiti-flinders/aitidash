@@ -1,8 +1,8 @@
 dashboardUI <- function(id, data) {
   ns <- NS(id)
   
-  lf_next_release <- abs_next_release("labour-force-australia")
-  industry_next_release <- abs_next_release("labour-force-australia-detailed")
+  lf_next_release <- aitidata::abs_next_release("labour-force-australia")
+  industry_next_release <- aitidata::abs_next_release("labour-force-australia-detailed")
 
   fluidPage(
   h1(textOutput("region_selected")),
@@ -18,11 +18,11 @@ dashboardUI <- function(id, data) {
   #   boxesUI("ya_total")
   # ),
   h2("Employment Insights"),
-  p(paste0("This data is current as of ", release(labour_force, "month"), " ", release(labour_force, "year"),".")),
+  p(paste0("This data is current as of ", reportabs::release(aitidata::labour_force, "month"), " ", reportabs::release(aitidata::labour_force, "year"),".")),
   p(paste0("Data for ",
-           release(labour_force, "month", plus = 1),
+           reportabs::release(aitidata::labour_force, "month", plus = 1),
            " will be available on ",
-           weekdays(lf_next_release), ", the ", scales::ordinal(day(lf_next_release)), " of ", month(lf_next_release, abbr = F, label = T), ".")),
+           weekdays(lf_next_release), ", the ", scales::ordinal(lubridate::day(lf_next_release)), " of ", lubridate::month(lf_next_release, abbr = F, label = T), ".")),
   fluidRow( 
     boxesUI('unemployment_rate'),
     boxesUI('unemployed')
@@ -53,11 +53,15 @@ dashboardUI <- function(id, data) {
     paste0("The boxes below show which industry employs the most people overall, full-time, and part-time. 
           Each box displays the industry name, the number of people employed, and the yearly change. ")
   ),
-  p(paste0("This data is current as at: ", release(employment_by_industry, "month"), " ", release(employment_by_industry, "year"))),
+  p(paste0("This data is current as at: ", reportabs::release(aitidata::employment_by_industry, "month"), " ", reportabs::release(aitidata::employment_by_industry, "year"))),
   p(paste0("Data for ",
-           release(employment_by_industry, "month", plus = 3),
+           reportabs::release(aitidata::employment_by_industry, "month", plus = 3),
            " will be available on ",
-           weekdays(industry_next_release), ", the ", scales::ordinal(day(industry_next_release))," ", month(industry_next_release, abbr = F, label = T), ".")),
+           weekdays(industry_next_release), 
+           ", the ", 
+           scales::ordinal(lubridate::day(industry_next_release))
+           ," ", 
+           lubridate::month(industry_next_release, abbr = F, label = T), ".")),
 
   fluidRow(
     boxesAltUI("industry_total"),

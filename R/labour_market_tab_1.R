@@ -1,5 +1,3 @@
-#Module UI Function
-#Labour Market tab/tabPanel
 
 
 labourMarketUI <- function(id, data) {
@@ -64,6 +62,9 @@ labourMarketUI <- function(id, data) {
 }
 
 
+#' @export
+#' @import reportabs
+#' @import ggplot2
 
 labourMarketServer <- function(id, data, region) {
   

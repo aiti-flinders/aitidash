@@ -2,7 +2,7 @@ covidIndustryUI <- function(id, data) {
   
   ns <- NS(id)
   
-  industry_choices <- unique(payroll_index$industry)
+  industry_choices <- unique(data$industry)
   
   tabPanel("Industry",
            plotlyOutput(ns("plot"), width = "100%", height = "600px"),
