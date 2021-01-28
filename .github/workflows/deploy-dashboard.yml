@@ -26,6 +26,6 @@ jobs:
         
       - name: Push to shiny.io
         run: |
-          Rscript -e "rsconnect::setAccountInfo(name='aiti', token=${{secrets.SHINYAPPS_TOKEN}}, secret=${{secrets.SHINYAPPS_SECRET}})"
+          Rscript -e "rsconnect::setAccountInfo(name='db-dev', token=${{secrets.SHINYAPPS_TOKEN}}, secret=${{secrets.SHINYAPPS_SECRET}})"
           Rscript -e "rsconnect::deployApp(appName = 'WorkSight')"
      
