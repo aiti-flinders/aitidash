@@ -23,6 +23,11 @@ jobs:
         run: |
           Rscript -e "install.packages(c('shiny', 'rsconnect', 'remotes'))"
           Rscript -e "remotes::install_deps(type = 'binary', force = FALSE)"
+          Rscript -e "remotes::install_github('MattCowgill/strayr', dependencies = TRUE)"
+          Rscript -e "remotes::install_github('hamgamb/aititheme', dependencies = TRUE)"
+          Rscript -e "remotes::install_github('hamgamb/reportabs', dependencies = TRUE)"
+          Rscript -e "remotes::install_github('hamgamb/aitidata', dependencies = TRUE)"
+          Rscript -e "remotes::install_github('wfmackey/absmapsdata', dependencies = TRUE)"
         
       - name: Push to shiny.io
         run: |
