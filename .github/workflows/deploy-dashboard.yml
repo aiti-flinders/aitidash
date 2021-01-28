@@ -21,8 +21,8 @@ jobs:
         env: 
           GITHUB_PAT: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
-          Rscript -e "install.packages(c('shiny', 'rsconnect', 'remotes')"
-          Rscript -e "remotes::install_deps(type = 'binary', force = FALSE)""
+          Rscript -e "install.packages(c('shiny', 'rsconnect', 'remotes'))"
+          Rscript -e "remotes::install_deps(type = 'binary', force = FALSE)"
         
       - name: Push to shiny.io
         run: |
