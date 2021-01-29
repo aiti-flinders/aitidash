@@ -4,6 +4,8 @@
 #'@import shinycssloaders
 #'@import dplyr
 #'@importFrom plotly ggplotly layout plotlyOutput renderPlotly plotly_IMAGE
+#'@importFrom stats reorder setNames
+#'@importFrom utils download.file tail write.csv
 #'@import ggplot2
 #'@import forcats
 #'@import scales

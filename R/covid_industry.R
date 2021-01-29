@@ -66,11 +66,11 @@ covidIndustryServer <- function(id, data, region) {
             label = "Weeks Since 100th COVID-19 Case (Mar 14th 2020)", 
             choices = data %>% 
               distinct(date) %>% 
-              mutate(index = week(date) - week(as.Date("2020-03-14"))) %>%
+              mutate(index = as.integer(difftime(date, "2020-03-14", units = "weeks"))) %>%
               pull(index),
             selected = data %>% 
               distinct(date) %>% 
-              mutate(index = week(date) - week(as.Date("2020-03-14"))) %>%
+              mutate(index = as.integer(difftime(date, "2020-03-14", units = "weeks"))) %>%
               pull(index) %>% max())
         }
       })
