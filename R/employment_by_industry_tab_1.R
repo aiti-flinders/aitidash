@@ -165,7 +165,7 @@ empInd <- function(input, output, session, data, region) {
                            y =  as.name(y_var),
                            text = ~paste0(input$indicator, ": ", as_comma(value),
                                          " (", as_percent(share), ")"))) + 
-        geom_bar(stat='identity', fill = aiti_blue) + 
+        geom_bar(stat='identity', fill = aititheme::aiti_blue) + 
         labs(
           y = NULL,
           x = NULL,

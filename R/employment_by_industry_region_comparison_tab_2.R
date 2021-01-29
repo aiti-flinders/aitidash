@@ -81,7 +81,7 @@ empIndComparison <- function(input, output, session, data, region) {
                        xend = industry, 
                        y = !!as.name(region()), 
                        yend = !!as.name(input$comparison)), 
-                   colour = aiti_darkblue) + 
+                   colour = aititheme::aiti_darkblue) + 
       geom_point(aes(x = industry, 
                      y = !!as.name(region()),
                      text = paste0(region(),
@@ -89,7 +89,7 @@ empIndComparison <- function(input, output, session, data, region) {
                                   "<br>", as_percent(!!as.name(region()))),
                      fill = region()),
                  shape = 21, 
-                 colour = aiti_yellow) +
+                 colour = aititheme::aiti_yellow) +
       geom_point(aes(x = industry, 
                      y = !!as.name(input$comparison),
                      text = paste0(input$comparison, 
@@ -97,9 +97,9 @@ empIndComparison <- function(input, output, session, data, region) {
                                   "<br>", as_percent(!!as.name(input$comparison))),
                      fill = input$comparison), 
                  shape = 21,
-                 colour = aiti_blue) +
+                 colour = aititheme::aiti_blue) +
       scale_y_continuous(labels = percent_format(scale = 1)) +
-      scale_fill_manual(breaks = c(region(), input$comparison), values = c(aiti_yellow, aiti_blue)) + 
+      scale_fill_manual(breaks = c(region(), input$comparison), values = c(aititheme::aiti_yellow, aititheme::aiti_blue)) + 
       coord_flip() + 
       labs(
         y = NULL,

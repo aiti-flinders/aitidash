@@ -8,7 +8,7 @@ labourMarketSmallAreaUI <- function(id, data) {
   
   tabPanel(title = "Small Area Labour Force",
            withSpinner(leafletOutput(ns("map"), width = "100%", height = "600px"),
-                       image = "https://raw.githubusercontent.com/hamgamb/aitidash/master/www/aiti_spinner.gif"),
+                       image = "https://raw.githubusercontent.com/hamgamb/aitidash/master/inst/www/aiti_spinner.gif"),
            fluidRow(
              box(status = 'info', solidHeader = FALSE,
                sliderTextInput(
@@ -50,7 +50,7 @@ labourMarketSmallAreaServer <- function(id, data, region) {
       filter(indicator == input$indicator,
              date == as.Date(as.yearqtr(input$date)) + months(2)) %>%
       mutate(value_label = ifelse(grepl("%", indicator), as_percent(value), as_comma(value))) %>%
-      left_join(sa22016) %>%
+      left_join(absmapsdata::sa22016) %>%
       st_as_sf()
     } else {
       df <- data %>%
@@ -58,7 +58,7 @@ labourMarketSmallAreaServer <- function(id, data, region) {
                date == as.Date(as.yearqtr(input$date)) + months(2),
                state_name_2016 == region()) %>%
         mutate(value_label = ifelse(grepl("%", indicator), as_percent(value), as_comma(value))) %>%
-        left_join(sa22016) %>%
+        left_join(absmapsdata::sa22016) %>%
         st_as_sf()
     }
   })
@@ -79,7 +79,7 @@ labourMarketSmallAreaServer <- function(id, data, region) {
         )
     )
     
-    pal <- colorBin("Blues", pal_domain, 6, pretty = TRUE, na.color = aiti_grey)
+    pal <- colorBin("Blues", pal_domain, 6, pretty = TRUE, na.color = aititheme::aiti_grey)
     
     leaflet(create_data()) %>%
       addTiles() %>% 
@@ -92,7 +92,7 @@ labourMarketSmallAreaServer <- function(id, data, region) {
         fillOpacity = 0.7,
         highlight = highlightOptions(
           weight = 2,
-          color = aiti_blue,
+          color = aititheme::aiti_blue,
           dashArray = "",
           fillOpacity = 0.7,
           bringToFront = TRUE),

@@ -5,7 +5,7 @@ Authors@R:
     person(given = "Hamish",
            family = "Gamble",
            role = c("aut", "cre"),
-           email = "hamish.gamble@flinders.edu.au"
+           email = "hamish.gamble@flinders.edu.au")
 Description: What the package does (one paragraph).
 License: MIT + file LICENSE
 Encoding: UTF-8

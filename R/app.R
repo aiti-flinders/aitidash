@@ -123,7 +123,7 @@ covid_map_tab <- tabItem(
     tabBox(
       id = "covid_map_tab_id",
       width = 12,
-      covidUI("covid_map", data = aiti::covid_data)
+      covidUI("covid_map", data = aitidata::covid_data)
     )
   )
 )
@@ -190,7 +190,7 @@ server <- function(input, output) {
   iviTreeServer("ivi_treemap", data = aitidata::internet_vacancies_index, region = region_selected)
   
   #COVID - Tab
-  covidServer("covid_map", data = aiti::covid_data, region = region_selected)
+  covidServer("covid_map", data = aitidata::covid_data, region = region_selected)
   covidRegionServer("covid_region", data = aitidata::payroll_index, region = region_selected)
   covidDemographicServer("covid_demog", data = aitidata::payroll_index, region = region_selected)
   covidIndustryServer("covid_industry", data = aitidata::payroll_index, region = region_selected)

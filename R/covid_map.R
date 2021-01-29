@@ -11,7 +11,7 @@ covidUI <- function(id, data) {
   
   tabPanel(title = uiOutput(ns("title_panel")),
            withSpinner(leafletOutput(ns("map"), width = "100%", height = "600px"), 
-                       image = "https://github.com/hamgamb/aitidash/blob/master/www/aiti_spinner.gif?raw=true"),
+                       image = "https://github.com/hamgamb/aitidash/blob/master/inst/www/aiti_spinner.gif?raw=true"),
            fluidRow(
              box(width = 4, status = "info", solidHeader = FALSE,
                  selectInput(
@@ -112,7 +112,7 @@ covidServer <- function(id, data, region) {
                    date == as.Date("2020-03-14") + weeks(input$date))
           
           label_name <-  'sa3_name_2016'
-          join <- sa32016
+          join <- absmapsdata::sa32016
           join_by <- "sa3_code_2016"
           
         } 
@@ -121,7 +121,7 @@ covidServer <- function(id, data, region) {
             filter(!is.na(sa2_main_2016),
                    date == as.Date(as.yearmon(input$date)))
           label_name <- 'sa2_name_2016'
-          join <- sa22016 
+          join <- absmapsdata::sa22016 
           join_by <- "sa2_main_2016"
         }
         
@@ -158,7 +158,7 @@ covidServer <- function(id, data, region) {
         legend_title <- names(indicator_choices)[indicator_choices == input$indicator]
         
         
-        pal <- colorBin("Blues", pal_domain, 6, pretty = TRUE, na.color = aiti_grey)
+        pal <- colorBin("Blues", pal_domain, 6, pretty = TRUE, na.color = aititheme::aiti_grey)
         
         
         if (input$indicator == "payroll_index") {
@@ -177,7 +177,7 @@ covidServer <- function(id, data, region) {
             fillOpacity = 0.7,
             highlight = highlightOptions(
               weight = 2, 
-              color = aiti_blue,
+              color = aititheme::aiti_blue,
               dashArray = "",
               fillOpacity = 0.7, 
               bringToFront = TRUE),

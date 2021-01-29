@@ -4,7 +4,8 @@ covidRegionUI <- function(id, data) {
   state_choices <- sort(unique(data$state))
   
   tabPanel(title = "Regional Comparison",
-           withSpinner(plotlyOutput(ns("plot"), width = "100%", height = "620px"), image = "https://raw.githubusercontent.com/hamgamb/aitidash/master/www/aiti_spinner.gif"),
+           withSpinner(plotlyOutput(ns("plot"), width = "100%", height = "620px"), 
+                       image = "https://raw.githubusercontent.com/hamgamb/aitidash/master/inst/www/aiti_spinner.gif"),
            fluidRow(
              box(status = "info", solidHeader = FALSE,
                  selectInput(

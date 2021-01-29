@@ -93,7 +93,7 @@ covidIndustryServer <- function(id, data, region) {
                   text = paste0(region(), 
                                 "<br>Week Ending: ", format(date, "%d %B %Y"),
                                 "<br>Index: ", as_comma(value, digits = 2)))) +
-          geom_bar(stat = 'identity', fill = aiti_blue) + 
+          geom_bar(stat = 'identity', fill = aititheme::aiti_blue) + 
           scale_y_continuous(labels = percent_format(scale = 1)) + 
           coord_flip() +
           theme_aiti(legend = "bottom", base_family = "Roboto") + 
