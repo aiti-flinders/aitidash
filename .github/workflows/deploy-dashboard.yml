@@ -22,6 +22,7 @@ jobs:
           GITHUB_PAT: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
           Rscript -e "install.packages(c('shiny', 'rsconnect', 'remotes'), type = 'binary')"
+          Rscript -e "remotes::install_version('testthat', '3.0.1', type = 'binary')"
           Rscript -e "remotes::install_github('MattCowgill/strayr', dependencies = TRUE, type = 'binary')"
           Rscript -e "remotes::install_github('hamgamb/aititheme', dependencies = TRUE, type = 'binary')"
           Rscript -e "remotes::install_github('hamgamb/aitidata', dependencies = TRUE, type = 'binary')"
