@@ -1,37 +1,32 @@
-#' @export
 covidDemographicUI <- function(id, data) {
   ns <- NS(id)
   
-  tabPanel("Demography",
+  tabPanel("Demographic Comparison",
            plotlyOutput(ns("plot"), width = "100%", height = "600px"),
            fluidRow(
-             box(status = "info", solidHeader = FALSE,
-                 selectInput(
-                   inputId = ns("breakdown"),
-                   label = "Select Demographic Variable",
-                   choices = c("Gender" = "gender",
-                               "Age" = "age")
-                 ))
-           ),
-           fluidRow(
-             box(width = 12, status = "info", title = "Downloads", solidHeader = FALSE,
-                 downloadButton(
-                   outputId = ns("download_plot"),
-                   label = "Click here to download the chart as a .png",
-                   class = 'download-button'
-                 ),
-                 downloadButton(
-                   outputId = ns("download_data"),
-                   label = "Click here to download the chart data",
-                   class = 'download-button'
-                 )
+             dashboard_box(title = "Customise Chart",
+                           selectInput(
+                             inputId = ns("indicator"),
+                             label = "Select Indicator",
+                             choices = c("Payroll Jobs Index" = "payroll_jobs",
+                                         "Payroll Wages Index" = "payroll_wages"),
+                             selected = "payroll_jobs"
+                           ),
+                           radioGroupButtons(
+                             inputId = ns("breakdown"),
+                             label = "Select Demographic Variable",
+                             choices = c("Gender" = "gender",
+                                         "Age" = "age")
+                           )
+             ),
+             dashboard_box(width = 8, title = "Downloads",
+                           download_graph_ui(id)
              )
            )
   )
   
 }
 
-#' @export
 covidDemographicServer <- function(id, data, region) {
   
   moduleServer(
@@ -44,11 +39,13 @@ covidDemographicServer <- function(id, data, region) {
           df <- data %>%
             filter(state == region(), 
                    industry == "All Industries", 
+                   indicator == input$indicator, 
                    gender == "Persons",
                    age != "All ages") 
         } else {
           df <- data %>%
             filter(state == region(),
+                   indicator == input$indicator,
                    industry == "All Industries",
                    age == "All ages", 
                    gender != "Persons")
@@ -57,6 +54,11 @@ covidDemographicServer <- function(id, data, region) {
       
 
       create_plot <- reactive({
+        
+        plot_title <- case_when(
+          input$indicator == "payroll_jobs" ~ "Payroll Jobs Index",
+          input$indicator == "payroll_wages" ~ "Payroll Wages Index"
+        )
 
         p <-  ggplot(create_data(), 
                      aes_(x = ~date, 
@@ -74,7 +76,7 @@ covidDemographicServer <- function(id, data, region) {
           labs(x = NULL,
                y = NULL,
                title = toupper(
-                 paste0("Payroll Jobs Index: ", region())
+                 paste0(plot_title, ": ", region())
                ))
         
         

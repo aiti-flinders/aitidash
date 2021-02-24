@@ -4,36 +4,41 @@ covidRegionUI <- function(id, data) {
   state_choices <- sort(unique(data$state))
   
   tabPanel(title = "Regional Comparison",
-           withSpinner(plotlyOutput(ns("plot"), width = "100%", height = "620px"), 
-                       image = "https://raw.githubusercontent.com/hamgamb/aitidash/master/inst/www/aiti_spinner.gif"),
+           
            fluidRow(
-             box(status = "info", solidHeader = FALSE,
-                 selectInput(
-                   inputId = ns("facet"),
-                   label = "Select Facet Variable",
-                   choices = c("Gender" = "gender", 
-                               "Age" = "age",
-                               #"Industry" = "industry",
-                               "None" = "none"),
-                   selected = "none"
-                 )),
-             box(status = "info", solidHeader = FALSE,
-                 checkboxGroupInput(
-                   inputId = ns('state'),
-                   label = "Select Comparison Region",
-                   choices = state_choices)),
-             fluidRow(
-               box(width = 12, status = "info", title = "Downloads", solidHeader = FALSE,
-                   downloadButton(
-                     outputId = ns("download_plot"),
-                     label = "Click here to download the chart as a .png",
-                     class = 'download-button'
-                   ),
-                   downloadButton(
-                     outputId = ns("download_data"),
-                     label = "Click here to download the chart data",
-                     class = 'download-button'
-                   ))
+             dashboard_box(title = "Customise Chart",
+                           selectInput(
+                             width = "100%",
+                             inputId = ns("indicator"),
+                             label = "Select Indicator",
+                             choices = c("Payroll Jobs Index" = "payroll_jobs",
+                                         "Payroll Wages Index" = "payroll_wages"),
+                             selected = "payroll_jobs"
+                           ),
+                           radioGroupButtons(
+                             inputId = ns("facet"),
+                             label = "Select Facet Variable",
+                             choices = c("Gender" = "gender", 
+                                         "Age" = "age",
+                                         #"Industry" = "industry",
+                                         "None" = "none"),
+                             selected = "none",
+                             direction = "horizontal",
+                             justified = TRUE
+                           )
+                           
+             ),
+             dashboard_box(title = "Compare Regions",
+                           checkboxGroupButtons(
+                             inputId = ns('state'),
+                             label = "Select Comparison Region",
+                             choices = state_choices,
+                             direction = "vertical",
+                             justified = TRUE
+                           )
+             ),
+             dashboard_box(title = "Downloads", 
+                           download_graph_ui(id)
              )
            )
   )
@@ -49,30 +54,34 @@ covidRegionServer <- function(id, data, region) {
           df <- data %>%
             filter(industry == "All Industries",
                    gender == "Persons",
+                   indicator == input$indicator, 
                    age == "All ages",
                    state %in% c(region(), input$state))
         } else if (input$facet == "gender") {
           df <- data %>% 
             filter(industry == "All Industries",
                    age == "All ages",
+                   indicator == input$indicator, 
                    state %in% c(region(), input$state))
         } else if (input$facet == "industry") {
           df <- data %>%
             filter(age == "All ages",
                    gender == "Persons", 
+                   indicator == input$indicator, 
                    state %in% c(region(), input$state)) %>%
             mutate(industry = as_factor(industry)) 
           } else {
           df <- data %>%
             filter(industry == "All Industries",
                    gender == "Persons",
+                   indicator == input$indicator,
                    state %in% c(region(), input$state))
         }
       })
       
       observeEvent(region(), {
         
-        updateCheckboxGroupInput(session, "state", choices = data %>%
+        updateCheckboxGroupButtons(session, "state", choices = data %>%
                                    filter(state != region()) %>%
                                    pull(state) %>%
                                    unique() %>%
@@ -81,9 +90,14 @@ covidRegionServer <- function(id, data, region) {
       
       create_plot <- reactive({
         
+        plot_title <- case_when(
+          input$indicator == "payroll_jobs" ~ "Payroll Jobs Index",
+          input$indicator == "payroll_wages" ~ "Payroll Wages Index"
+        )
+        
         plot_title <- ifelse(length(input$state) < 1,
-                               toupper(paste0("Payroll Jobs Index: ", region())),
-                               toupper(paste0("Payroll Jobs Index: Multiple Regions")))
+                               toupper(paste0(plot_title, ": ", region())),
+                               toupper(paste0(plot_title, ":  Multiple Regions")))
      
         p <- ggplot(create_data(), 
                     aes(x = date, 
@@ -105,12 +119,12 @@ covidRegionServer <- function(id, data, region) {
         if(input$facet != "none") {
           p <- p + 
             facet_wrap(~get(input$facet)~., nrow = 5, ncol = 4) +
-            scale_x_date(date_breaks = "2 months", date_labels = "%b") +
+            scale_x_date(date_breaks = "4 months", date_labels = "%b") +
             labs(x = NULL,
                  title = plot_title)
         } else {
           p <- p + 
-            scale_x_date(date_breaks = "1 month", date_labels = "%b") +
+            scale_x_date(date_breaks = "4 months", date_labels = "%b") +
             labs(x = NULL, 
                  y = NULL,
                  title = plot_title)

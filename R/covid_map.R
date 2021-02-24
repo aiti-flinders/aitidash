@@ -10,32 +10,22 @@ covidUI <- function(id, data) {
                          "Payroll Jobs Index (SA3)" = "payroll_index")
   
   tabPanel(title = uiOutput(ns("title_panel")),
-           withSpinner(leafletOutput(ns("map"), width = "100%", height = "600px"), 
-                       image = "https://github.com/hamgamb/aitidash/blob/master/inst/www/aiti_spinner.gif?raw=true"),
            fluidRow(
-             box(width = 4, status = "info", solidHeader = FALSE,
-                 selectInput(
-                   inputId = ns("indicator"),
-                   label = "Select Indicator",
-                   choices = indicator_choices,
-                   selected = "covid_impact"
-                 )
+             dashboard_box(title = "Customise Chart",
+                           selectInput(
+                             inputId = ns("indicator"),
+                             label = "Select Indicator",
+                             choices = indicator_choices,
+                             selected = "covid_impact"
+                           ),
+                           uiOutput(
+                             ns("date")
+                           )
              ),
-             box(width = 8, status = "info", solidHeader = FALSE,
-                 uiOutput(
-                   ns("date")
-                 )
-             )
-           ),
-           fluidRow(
-             box(width = 12, status = "info",  solidHeader = FALSE, title = "Downloads",
-                 downloadButton(
-                   outputId = ns("download_plot"),
-                   label = "Click here to download the chart as a .png",
-                   class = 'download-button'
-                 )
-             )
+             dashboard_box(width = 8, title = "Downloads",
+                           download_graph_ui(id))
            )
+           
   )
 }
 
@@ -53,6 +43,7 @@ covidServer <- function(id, data, region) {
         
         if(input$indicator == "payroll_index") {
           sliderTextInput(
+            width = "100%",
             inputId = session$ns("date"),
             label = "Weeks Since 100th COVID-19 Case (Mar 14th 2020)", 
             choices = data %>% 
@@ -64,6 +55,7 @@ covidServer <- function(id, data, region) {
           ) } else {
             
             sliderTextInput(
+              width = "100%",
               inputId = session$ns("date"),
               label = "Select Date", 
               choices = data %>% filter(indicator == input$indicator, !is.na(value)) %>%
@@ -134,6 +126,7 @@ covidServer <- function(id, data, region) {
                    value_label = ifelse(indicator == "payroll_index", as_comma(value, digits = 2), value_label)) %>% 
             left_join(join, by = c("state" = "state_name_2016", join_by)) %>%
             rename(label = all_of(label_name)) %>%
+            st_transform("+proj=longlat +datum=WGS84") %>%
             st_as_sf() 
           
         } else {
@@ -144,6 +137,7 @@ covidServer <- function(id, data, region) {
                    value_label = ifelse(indicator == "payroll_index", as_comma(value, digits = 2), value_label)) %>% 
             left_join(join, by = c(join_by, "state" = "state_name_2016")) %>%
             rename(label = all_of(label_name)) %>%
+            st_transform("+proj=longlat +datum=WGS84") %>%
             st_as_sf() 
         } 
         

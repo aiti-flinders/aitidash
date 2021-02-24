@@ -184,16 +184,16 @@ h3 {
 
 
 
-.bg-green {
+.bg-lime {
 	background-color: var(--arrow_green)!important;
 }
 
 
-.bg-red {
+.bg-rpink {
 	background-color: var(--arrow_red)!important;
 }
 
-.bg-yellow {
+.bg-orange {
   background-color: var(--grey)!important;
 }
 

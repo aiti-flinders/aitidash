@@ -10,8 +10,8 @@ empIndUI <- function(id, data) {
                          "Underemployed total")
   
   industry_choices <- data %>%
-    filter(industry != "Total (industry)") %>%
-    pull(industry) %>%
+    dplyr::filter(industry != "Total (industry)") %>%
+    dplyr::pull(industry) %>%
     unique() %>%
     sort()
 
@@ -22,42 +22,37 @@ empIndUI <- function(id, data) {
            title = uiOutput(ns('title_panel')), 
            plotlyOutput(ns("plot"), height = "600px"),
            fluidRow(
-             box(status = 'info', solidHeader = F,
-                 selectInput(
-                   inputId = ns("indicator"),
-                   label = "Select Indicator",
-                   choices = indicator_choices,
-                   selected = "Employed Total"),
-                 radioButtons(
-                   inputId = ns("share"),
-                   label = "Display as: ",
-                   choices = c("Share", "Value"),
-                   selected = "Value"
-                 ),
-                 uiOutput(ns("date"))
-                 ),
-             
-             box(status = 'info', solidHeader = F,
-                 checkboxGroupInput(
-                   inputId = ns('industry'),
-                   label = "Select Industry (up to 9)",
-                   choices = industry_choices
-                 )),
-             fluidRow(
-               box(width = 12, status = "info", title = "Downloads", solidHeader = F,
-                   downloadButton(
-                     outputId = ns("download_plot"),
-                     label = "Click here to download the chart as a .png",
-                     class = 'download-button'
-                   ),
-                   downloadButton(
-                     outputId = ns("download_data"),
-                     label = "Click here to download the chart data",
-                     class = 'download-button'
-                   ))
+             dashboard_box(title = "Customise Chart",
+                           selectInput(
+                             inputId = ns("indicator"),
+                             label = "Select Indicator",
+                             choices = indicator_choices,
+                             selected = "Employed Total"),
+                           radioGroupButtons(
+                             inputId = ns("share"),
+                             label = "Display as: ",
+                             choices = c("Share", "Value"),
+                             selected = "Value"
+                           ),
+                           uiOutput(ns("date"))
+             ),
+             dashboard_box(title = "Industry Analysis",
+                           overflow = TRUE,
+                           checkboxGroupButtons(
+                             inputId = ns('industry'),
+                             label = "Select Industry (up to 9)",
+                             choices = industry_choices,
+                             direction = "vertical",
+                             justified = TRUE
+                           )
+             ),
+             dashboard_box(title = "Downloads",
+                           download_graph_ui(id)
              )
            )
   )
+
+
 }
 
 empInd <- function(input, output, session, data, region) {
@@ -72,7 +67,7 @@ empInd <- function(input, output, session, data, region) {
   
   observe({
     if (length(input$industry) > 9) {
-      updateCheckboxGroupInput(session, "industry", selected = tail(input$industry, 9))
+      updateCheckboxGroupButtons(session, "industry", selected = tail(input$industry, 9))
     }
   })
   
@@ -81,6 +76,7 @@ empInd <- function(input, output, session, data, region) {
   output$date <- renderUI({
     if(is.null(input$industry)) {
       sliderTextInput(
+        width = "100%",
         inputId = session$ns("date"),
         label = "Select Date",
         choices = zoo::as.yearqtr(sort(unique(data$date))),
@@ -115,8 +111,10 @@ empInd <- function(input, output, session, data, region) {
                state == region(), 
                indicator == input$indicator) %>% 
         group_by(date, industry) %>% 
-        summarise(value = mean(value), .groups = 'drop_last') %>% 
-        mutate(share = 100*value/sum(value)) %>%
+        summarise(value = mean(value),
+                  value_share = mean(value_share),
+                  .groups = 'drop_last') %>% 
+        #mutate(share = 100*value/sum(value)) %>%
         filter(date == as.Date(zoo::as.yearqtr(input$date)) + months(1)) %>%
         ungroup() %>%
         arrange(desc(industry)) %>%
@@ -128,9 +126,9 @@ empInd <- function(input, output, session, data, region) {
              industry != "Total (industry)",
              series_type == "Original",
              gender == "Persons") %>%
-      group_by(date) %>%
-      mutate(share = 100*value/sum(value)) %>%
-      ungroup() %>%
+      # group_by(date) %>%
+      # mutate(share = 100*value/sum(value)) %>%
+      # ungroup() %>%
       filter(industry %in% input$industry)
       }
   })
@@ -142,7 +140,7 @@ empInd <- function(input, output, session, data, region) {
     )
     
     if(input$share == "Share") {
-      y_var <- "share"
+      y_var <- "value_share"
       y_labels <- percent_format(scale = 1)
     } else {
       y_var <- "value"
@@ -164,7 +162,7 @@ empInd <- function(input, output, session, data, region) {
       p <- ggplot(create_data(), aes_(x = ~reorder(industry, value), 
                            y =  as.name(y_var),
                            text = ~paste0(input$indicator, ": ", as_comma(value),
-                                         " (", as_percent(share), ")"))) + 
+                                         " (", as_percent(value_share), ")"))) + 
         geom_bar(stat='identity', fill = aititheme::aiti_blue) + 
         labs(
           y = NULL,
@@ -181,7 +179,7 @@ empInd <- function(input, output, session, data, region) {
                            colour = ~industry, 
                            text = ~paste0("Date: ", format(date, "%Y-%b"),
                                          "<br>",industry, ": ", as_comma(value),
-                                         " (", as_percent(share), ")"),
+                                         " (", as_percent(value_share), ")"),
                            group = ~industry)) + 
         geom_line() + 
         labs(
@@ -236,7 +234,7 @@ empInd <- function(input, output, session, data, region) {
     },
     content = function(file) {
       write.csv(create_data() %>%
-                  select(date, industry, value, share), file, row.names = FALSE)
+                  select(date, industry, value, value_share), file, row.names = FALSE)
     }
   )
     
