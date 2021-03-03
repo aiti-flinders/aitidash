@@ -4,7 +4,7 @@ covidRegionUI <- function(id, data) {
   state_choices <- sort(unique(data$state))
   
   tabPanel(title = "Regional Comparison",
-           
+           plotlyOutput(ns("plot"), width = "100%", height = "600px"),
            fluidRow(
              dashboard_box(title = "Customise Chart",
                            selectInput(

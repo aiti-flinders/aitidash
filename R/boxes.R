@@ -178,7 +178,9 @@ boxes_server <- function(id, data, indicator, region,  reverse = FALSE, percent 
           need(create_data()$box_text_current != "Data Not Available", message = FALSE)
         )
         
-        abs_plot(indicators = indicator,
+        if (indicator %in% labour_market_indicators()) {
+        
+        abs_plot(indicator = indicator,
                  years = 2018,
                  states = region(),
                  ages = "Total (age)",
@@ -187,6 +189,13 @@ boxes_server <- function(id, data, indicator, region,  reverse = FALSE, percent 
                  compare_aus  = FALSE, 
                  plotly = FALSE,
                  void = TRUE) 
+        } else {
+          jobkeeper_plots(indicator = indicator, 
+                          states = region(),
+                          compare_aus = FALSE,
+                          plotly = FALSE,
+                          void = TRUE)
+        }
       })
       
       output$box_ui <- renderUI({

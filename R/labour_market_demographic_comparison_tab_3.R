@@ -121,7 +121,7 @@ labourMarketDemogServer <- function(id, data) {
     p <- abs_plot(indicator = input$indicator,
                states = input$state,
                series_type = input$series_type,
-               genders = genders(),
+               sex = genders(),
                ages = ages(),
                years = input$years,
                compare_aus = FALSE,
