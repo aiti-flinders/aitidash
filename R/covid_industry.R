@@ -46,6 +46,7 @@ covidIndustryServer <- function(id, data, region) {
         if(is.null(input$industry)) {
         df <- data %>%
           filter(state == region(),
+                 indicator == "payroll_jobs",
                  gender == "Persons",
                  age == "All ages",
                  industry != "All industries",
@@ -53,6 +54,7 @@ covidIndustryServer <- function(id, data, region) {
         } else {
           df <- data %>%
             filter(state == region(),
+                   indicator == "payroll_jobs",
                    gender == "Persons",
                    age == "All ages",
                    industry %in% input$industry)
