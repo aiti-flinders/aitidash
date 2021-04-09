@@ -5,5 +5,14 @@ dashboard_box <- function(...,
                           solidHeader = FALSE, 
                           headerBorder = TRUE, 
                           collapsible = FALSE) {
-  box(..., title = title, width = width, status = status, solidHeader = solidHeader, headerBorder = headerBorder, collapsible = collapsible)
+  box(
+    ..., 
+    title = title, 
+    width = width, 
+    status = status, 
+    solidHeader = solidHeader, 
+    headerBorder = headerBorder, 
+    collapsible = collapsible
+  )
+  
 }
