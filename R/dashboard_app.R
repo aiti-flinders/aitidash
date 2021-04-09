@@ -35,7 +35,7 @@ if (is.null(suppressMessages(webshot:::find_phantom()))) { webshot::install_phan
 
 # Font Setup
 dir.create("~/.fonts")
-file.copy("www/Roboto.ttf", "~/.fonts")
+file.copy("inst/www/Roboto.ttf", "~/.fonts")
 system('fc-cache -f ~/.fonts')
 
 
