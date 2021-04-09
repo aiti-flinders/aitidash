@@ -27,6 +27,11 @@ sidebar <- function(id) {
         text = "Weekly Payroll",
         tabName = "jobs_payroll",
         icon = icon("chart-line")
+      ),
+      menuSubItem(
+        text = "Small Areas",
+        tabName = "salm",
+        icon = icon("map")
       )
     ),
     menuItem(

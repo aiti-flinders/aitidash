@@ -102,6 +102,17 @@ labour_market_tab <- tabItem(
   )
 )
 
+small_area_labour_market_tab <- tabItem(
+  tabName = "salm",
+  fluidRow(
+    tabBox(
+      id = "salm_tab_id",
+      width = 12,
+      map_ui("lm_salm", data = aitidata::small_area_labour_market, title = "Small Area Labour Market")
+    )
+  )
+)
+
 jobs_payroll_tab <- tabItem(
   tabName = "jobs_payroll",
   fluidRow(
@@ -162,7 +173,6 @@ map_tab <- tabItem(
     tabBox(
       id = "map_tab_id",
       width = 12,
-      map_ui("lm_salm", data = aitidata::small_area_labour_market, title = "Small Area Labour Market"),
       map_ui("jobseeker_map", data = aitidata::jobseeker_sa2, title = "JobSeeker Data"),
       map_ui("jobkeeper_map", data = aitidata::jobkeeper_sa2, title = "JobKeeper Data"),
       map_ui("payroll_map", data = aitidata::payroll_substate, title = "Weekly Payroll Data")
@@ -179,6 +189,7 @@ body <- dashboardBody(
   tabItems(
     dashboard_tab,
     labour_market_tab,
+    small_area_labour_market_tab,
     jobs_payroll_tab,
     emp_ind_tab,
     industry_payroll_tab,
@@ -225,7 +236,7 @@ server <- function(input, output) {
   map_server("jobseeker_map", data = aitidata::jobseeker_sa2)
   map_server("payroll_map", data = aitidata::payroll_substate)
   map_server("lm_salm", data = aitidata::small_area_labour_market)
-  covidRegionServer("covid_region", data = aitidata::payroll_index, region = region_selected)
+  covidRegionServer("covid_region", data = aitidata::payroll_index)
   covidDemographicServer("covid_demog", data = aitidata::payroll_index, region = region_selected)
   covidIndustryServer("covid_industry", data = aitidata::payroll_index, region = region_selected)
 
