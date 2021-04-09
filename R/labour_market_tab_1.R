@@ -39,7 +39,7 @@ labourMarketUI <- function(id, data) {
                            )
                            
              ),
-             box(title = "Downloads", width = 4, status = "primary", solidHeader = FALSE, headerBorder = TRUE, collapsible = FALSE,
+             dashboard_box(title = "Downloads", width = 4,
                  download_graph_ui(id),
                  uiOutput(inline = TRUE, NS(id, "download_report_button"))
              )

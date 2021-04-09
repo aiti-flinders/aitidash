@@ -28,6 +28,12 @@ empIndUI <- function(id, data) {
                              label = "Select Indicator",
                              choices = indicator_choices,
                              selected = "Employed Total"),
+                           pickerInput(
+                             inputId = ns("industry"),
+                             label = "Select Industry (up to 9)",
+                             choices = industry_choices, 
+                             multiple = TRUE,
+                           ),
                            radioGroupButtons(
                              inputId = ns("share"),
                              label = "Display as: ",
@@ -36,12 +42,12 @@ empIndUI <- function(id, data) {
                            ),
                            uiOutput(ns("date"))
              ),
-             dashboard_box(title = "Industry Analysis",
-                           overflow = TRUE,
-                           checkboxGroupButtons(
-                             inputId = ns('industry'),
-                             label = "Select Industry (up to 9)",
-                             choices = industry_choices,
+             dashboard_box(title = "Select Region",
+                           radioGroupButtons(
+                             inputId = NS(id, "state"),
+                             label = NULL,
+                             choices = regions(),
+                             selected = "Australia",
                              direction = "vertical",
                              justified = TRUE
                            )
@@ -88,7 +94,7 @@ empInd <- function(input, output, session, data, region) {
   current_indicator <- reactiveVal(NULL)
   
 
-  observeEvent(region(), {
+  observeEvent(input$state, {
     
     current_indicator(input$indicator)
     
@@ -108,7 +114,7 @@ empInd <- function(input, output, session, data, region) {
     if(is.null(input$industry)) {
       df <- data %>%
         filter(industry != "Total (industry)",
-               state == region(), 
+               state == input$state, 
                indicator == input$indicator) %>% 
         group_by(date, industry) %>% 
         summarise(value = mean(value),
@@ -121,7 +127,7 @@ empInd <- function(input, output, session, data, region) {
         mutate(industry = forcats::as_factor(industry)) 
       } else {
         df <- data %>% 
-      filter(state == region(), 
+      filter(state == input$state, 
              indicator == input$indicator,
              industry != "Total (industry)",
              series_type == "Original",
@@ -148,10 +154,10 @@ empInd <- function(input, output, session, data, region) {
     }
     
     if(length(input$industry) > 1) {
-      plot_title <- toupper(paste0(region(), ": ", input$indicator, " (Multiple industries)"))
+      plot_title <- toupper(paste0(input$state, ": ", input$indicator, " (Multiple industries)"))
       
     } else {
-      plot_title <- toupper(paste0(region(), ": ", input$indicator, " (", input$industry, ")"))
+      plot_title <- toupper(paste0(input$state, ": ", input$indicator, " (", input$industry, ")"))
       
     }
     
@@ -167,7 +173,7 @@ empInd <- function(input, output, session, data, region) {
         labs(
           y = NULL,
           x = NULL,
-          title = toupper(paste0(input$indicator, ": ", region(), " (", input$date, ")"))
+          title = toupper(paste0(input$indicator, ": ", input$state, " (", input$date, ")"))
         ) +
         scale_y_continuous(expand = c(0,0), labels = y_labels) +
         coord_flip() +
@@ -221,10 +227,10 @@ empInd <- function(input, output, session, data, region) {
   
   output$download_plot <- downloadHandler(
     filename = function(){
-      paste(input$indicator, "-plot.png", sep = '')
+      paste0(input$filename, "-plot.", input$filetype)
     },
     content = function(file) {
-      plotly_IMAGE(create_plot(), out_file = file)
+      plotly_IMAGE(create_plot(), format = input$filetype, width = input$width, height = input$height, out_file = file)
     }
   )
   

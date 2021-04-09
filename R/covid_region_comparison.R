@@ -28,13 +28,14 @@ covidRegionUI <- function(id, data) {
                            )
                            
              ),
-             dashboard_box(title = "Compare Regions",
+             dashboard_box(title = "Add Regions",
                            checkboxGroupButtons(
                              inputId = ns('state'),
-                             label = "Select Comparison Region",
+                             label = NULL,
                              choices = state_choices,
                              direction = "vertical",
-                             justified = TRUE
+                             justified = TRUE,
+                             selected = "Australia"
                            )
              ),
              dashboard_box(title = "Downloads", 
@@ -44,7 +45,7 @@ covidRegionUI <- function(id, data) {
   )
 }
 
-covidRegionServer <- function(id, data, region) {
+covidRegionServer <- function(id, data) {
   moduleServer(
     id,
     function(input, output, session) {
@@ -56,37 +57,37 @@ covidRegionServer <- function(id, data, region) {
                    gender == "Persons",
                    indicator == input$indicator, 
                    age == "All ages",
-                   state %in% c(region(), input$state))
+                   state %in% input$state)
         } else if (input$facet == "gender") {
           df <- data %>% 
             filter(industry == "All Industries",
                    age == "All ages",
                    indicator == input$indicator, 
-                   state %in% c(region(), input$state))
+                   state %in% input$state)
         } else if (input$facet == "industry") {
           df <- data %>%
             filter(age == "All ages",
                    gender == "Persons", 
                    indicator == input$indicator, 
-                   state %in% c(region(), input$state)) %>%
+                   state %in% input$state) %>%
             mutate(industry = as_factor(industry)) 
           } else {
           df <- data %>%
             filter(industry == "All Industries",
                    gender == "Persons",
                    indicator == input$indicator,
-                   state %in% c(region(), input$state))
+                   state %in% input$state)
         }
       })
       
-      observeEvent(region(), {
-        
-        updateCheckboxGroupButtons(session, "state", choices = data %>%
-                                   filter(state != region()) %>%
-                                   pull(state) %>%
-                                   unique() %>%
-                                   sort())
-      })
+      # observeEvent(region(), {
+      #   
+      #   updateCheckboxGroupButtons(session, "state", choices = data %>%
+      #                              filter(state != region()) %>%
+      #                              pull(state) %>%
+      #                              unique() %>%
+      #                              sort())
+      # })
       
       create_plot <- reactive({
         
@@ -95,8 +96,8 @@ covidRegionServer <- function(id, data, region) {
           input$indicator == "payroll_wages" ~ "Payroll Wages Index"
         )
         
-        plot_title <- ifelse(length(input$state) < 1,
-                               toupper(paste0(plot_title, ": ", region())),
+        plot_title <- ifelse(length(input$state) <= 1,
+                               toupper(paste0(plot_title, ": ", input$state)),
                                toupper(paste0(plot_title, ":  Multiple Regions")))
      
         p <- ggplot(create_data(), 

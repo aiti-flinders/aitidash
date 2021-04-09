@@ -18,7 +18,7 @@ map_ui <- function(id, data, title) {
                              ns("date")
                            )
              ),
-             dashboard_box(title = "Select Regions",
+             dashboard_box(title = "Select Region",
                            radioGroupButtons(
                              inputId = ns("state"),
                              label = NULL,
@@ -43,7 +43,7 @@ map_server <- function(id, data) {
       
       output$date <- renderUI({
         
-        if (input$indicator == "payroll_index") {
+        if (input$indicator == "Payroll Index") {
           sliderTextInput(
             width = "100%",
             inputId = session$ns("date"),
@@ -92,7 +92,7 @@ map_server <- function(id, data) {
       create_data <- reactive({
         validate(need(input$date, message = FALSE))
         
-        if (input$indicator == "payroll_index") {
+        if (input$indicator == "Payroll Index") {
           data <- data %>%
             filter(!is.na(sa3_code_2016),
                    date == as.Date("2020-03-14") + weeks(input$date)) %>%
@@ -159,7 +159,7 @@ map_server <- function(id, data) {
         
         pal <- colorBin("Blues", pal_domain, 6, pretty = TRUE, na.color = aititheme::aiti_grey)
         
-        if (input$indicator == "payroll_index") {
+        if (input$indicator == "Payroll Index") {
           annodate <- tags$div(HTML(format(as.Date("2020-03-14") + weeks(input$date), "%B %d %Y")))
         } else if (grepl("Smoothed", input$indicator)) {
           annodate <- tags$div(HTML(format(as.Date(as.yearqtr(input$date)) + months(2), "%B %Y")))
@@ -206,11 +206,20 @@ map_server <- function(id, data) {
       })
       
       output$download_plot <- downloadHandler(
-        filename = function() {
-          paste(input$state, input$indicator, "-map.png", sep = "")
+        filename = function(){
+          paste0(input$filename, "-plot.", input$filetype)
         },
         content = function(file) {
-          mapview::mapshot(user_map(), file = file, cliprect = "viewport", selfcontained = FALSE)
+          plotly_IMAGE(create_plot(), format = input$filetype, width = input$width, height = input$height, out_file = file)
+        }
+      )
+      
+      output$download_data <- downloadHandler(
+        filename = function() {
+          paste(input$indicator, "-data.csv", sep = '')
+        },
+        content = function(file) {
+          write.csv(create_data(), file, row.names = FALSE)
         }
       )
     }
