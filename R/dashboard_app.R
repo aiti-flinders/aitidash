@@ -17,13 +17,13 @@
 #'@import mapview
 #'@import strayr
 #'@import aititheme
+#'@import pkgload
 #'@importFrom plotly ggplotly layout plotlyOutput renderPlotly plotly_IMAGE
 #'@importFrom stats reorder setNames
 #'@importFrom utils download.file tail write.csv
 #'@importFrom purrr pmap
 #'@importFrom tidyr tribble
 
-aitidashboard <- function(...) {
 
 #### Preamble ####
 # Plotly Setup
@@ -39,177 +39,9 @@ file.copy("www/Roboto.ttf", "~/.fonts")
 system('fc-cache -f ~/.fonts')
 
 
-#### Header Controls ####
-header <- dashboardHeader(
-  skin = "light",
-  title = dashboardBrand(
-    title = "Economic Indicators",
-    href = "http://www.flinders.edu.au/aiti",
-    image =  "custom-assets/aiti_logo.png",
-    opacity = 1.0
-  ),
-  fixed = TRUE,
-  leftUI = conditionalPanel(
-    condition = "input.sidebarmenu === 'dashboard'",
-    radioGroupButtons(
-      inputId = "region_select",
-      choiceNames = toupper(strayr(regions())),
-      choiceValues = regions(),
-      selected = "Australia",
-      direction = "horizontal",
-      justified = FALSE
-    )
-  )
-)
-
-
-##### Sidebar Controls #####
-sidebar <- dashboardSidebar(
-  skin = "light",
-  width = "230px",
-  sidebar("sidebar")
-)
-
-#### User Guide ####
-user_guide_tab <- tabItem(
-  tabName = "user_guide",
-  fluidRow(
-    tabBox(
-      id = "user_guide_tab_id",
-      width = 12,
-      user_guide("user_guide"),
-      specificInstructionsUI("specific_instructions")
-    )
-  )
-)
-
-#### Dashboard Tab ####
-dashboard_tab <- tabItem(
-  tabName = 'dashboard',
-  dashboardUI("dashboard")
-)
-
-#### Labour Market Tab ####
-labour_market_tab <- tabItem(
-  tabName = 'employment',
-  fluidRow(
-    tabBox(
-      id = 'labour_market_tab_id',
-      width = 12,
-      labourMarketUI("lm_ts", data = aitidata::labour_force),
-      labourMarketDemogUI("lm_demog", data = aitidata::labour_force)
-    )
-  )
-)
-
-small_area_labour_market_tab <- tabItem(
-  tabName = "salm",
-  fluidRow(
-    tabBox(
-      id = "salm_tab_id",
-      width = 12,
-      map_ui("lm_salm", data = aitidata::small_area_labour_market, title = "Small Area Labour Market")
-    )
-  )
-)
-
-jobs_payroll_tab <- tabItem(
-  tabName = "jobs_payroll",
-  fluidRow(
-    tabBox(
-      id = "jobs_payroll_tab_id",
-      width = 12,
-      covidRegionUI("covid_region", data = aitidata::payroll_index),
-      covidDemographicUI("covid_demog", data = aitidata::payroll_index)
-    )
-  )
-)
-
-#Employment by Industry
-emp_ind_tab <- tabItem(
-  tabName = 'industry_employment',
-  fluidRow(
-    tabBox(
-      id = "employment_industry_tab_id",
-      width = 12,
-      empIndUI("empInd_ts", data = aitidata::employment_by_industry),
-      empIndComparisonUI("empInd_region", data = aitidata::employment_by_industry)
-    )
-  )
-)
-
-industry_payroll_tab <- tabItem(
-  tabName = "industry_payroll",
-  fluidRow(
-    tabBox(
-      id = "industry_payroll_tab_id",
-      width = 12,
-      covidIndustryUI("covid_industry", data = aitidata::payroll_index)
-      
-    )
-  )
-)
-
-
-
-#IVI Tab
-internet_vacancies_tab <- tabItem(
-  tabName = "internet_vacancies", 
-  fluidRow(
-    tabBox(
-      id = "internet_vacancies_tab_id",
-      width = 12,
-      iviUI("ivi_ts", data = aitidata::internet_vacancies_index),
-      iviComparisonUI("ivi_comparison", data = aitidata::internet_vacancies_index),
-      iviTreeUI("ivi_treemap", data = aitidata::internet_vacancies_index)
-    )
-  )
-)
-
-#### Map Tabs ####
-map_tab <- tabItem(
-  tabName = "maps",
-  fluidRow(
-    tabBox(
-      id = "map_tab_id",
-      width = 12,
-      map_ui("jobseeker_map", data = aitidata::jobseeker_sa2, title = "JobSeeker Data"),
-      map_ui("jobkeeper_map", data = aitidata::jobkeeper_sa2, title = "JobKeeper Data"),
-      map_ui("payroll_map", data = aitidata::payroll_substate, title = "Weekly Payroll Data")
-      
-    )
-  )
-)
-                         
-#### Body ####                                       
-body <- dashboardBody(
-  use_theme(mytheme()),
-  #tags$head(includeHTML(("custom-assets/google-analytics.html"))),
-  tags$head(tags$link(rel = "stylesheet", type = 'text/css', href = 'custom-assets/custom2.css')),
-  tabItems(
-    dashboard_tab,
-    labour_market_tab,
-    small_area_labour_market_tab,
-    jobs_payroll_tab,
-    emp_ind_tab,
-    industry_payroll_tab,
-    internet_vacancies_tab,
-    map_tab
-  )
-)
-  
-#### UI ####
-ui <- dashboardPage(
-  dark = FALSE,
-  title = "Economic Indicators Dashboard",
-  header = header,
-  sidebar = sidebar,
-  body = body, 
-  footer = dashboardFooter(left ="Australian Industrial Transformation Institute", fixed = TRUE, right = "Flinders University")
-)
 
 #### Server ####
-server <- function(input, output) {
+dash_server <- function(input, output, session) {
   region_selected <- reactive(input$region_select)
   output$region_selected <- renderText({
     region_selected()
@@ -274,7 +106,7 @@ server <- function(input, output) {
   
 }
 
-shinyApp(ui = ui, server = server)
-
+dash_app <- function(...) {
+  shinyApp(ui = dash_ui(), server = dash_server)
 
 }
