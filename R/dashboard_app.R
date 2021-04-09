@@ -13,6 +13,7 @@
 #'@import reportabs
 #'@import absmapsdata
 #'@import sf
+#'@import pkgload
 #'@import leaflet
 #'@import mapview
 #'@import strayr
