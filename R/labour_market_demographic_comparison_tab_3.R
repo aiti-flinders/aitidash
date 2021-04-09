@@ -7,7 +7,8 @@ labourMarketDemogUI <- function(id, data) {
   min_date <- min(data$year)
   max_date <- max(data$year)
   
-  tabPanel(title = "Demographic Comparison", plotlyOutput(ns("plot"), width='100%'),
+  tabPanel(title = "Demographic Comparison", 
+           plotlyOutput(ns("plot"), width='100%'),
            fluidRow(
              dashboard_box(title = "Customise Chart",
                  selectInput(
@@ -47,7 +48,7 @@ labourMarketDemogUI <- function(id, data) {
                              justified = TRUE
                            )
              ),
-             dashboard_box(width = 4, title = "Downloads", status = "primary", solidHeader = FALSE,
+             dashboard_box(title = "Downloads", width = 4,
                  download_graph_ui(id)
              )
            )

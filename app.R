@@ -1,3 +1,3 @@
 pkgload::load_all()
 
-aitidashboard()
+dash_app()
