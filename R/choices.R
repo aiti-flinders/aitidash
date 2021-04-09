@@ -3,7 +3,6 @@ labour_market_indicators <- function() {
     dplyr::distinct(indicator) %>%
     dplyr::filter(!indicator %in% c("Monthly hours worked in all jobs (employed full-time)",
                              "Monthly hours worked in all jobs (employed part-time)",
-                             "Employed part-time", 
                              "Unemployed looked for full-time work",
                              "Unemployed looked for only part-time work",
                              "Unemployment rate looked for full-time work",
