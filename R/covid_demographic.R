@@ -53,6 +53,7 @@ covidDemographicServer <- function(id, data, region) {
             filter(state == input$state, 
                    industry == "All Industries", 
                    indicator == input$indicator,
+
                    gender == "Persons",
                    age != "All ages") 
         } else {
@@ -60,6 +61,7 @@ covidDemographicServer <- function(id, data, region) {
             filter(state == input$state,
                    indicator == input$indicator,
                    industry == "All Industries",
+                   indicator == "payroll_jobs",
                    age == "All ages", 
                    gender != "Persons")
         }

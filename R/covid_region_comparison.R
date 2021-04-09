@@ -54,6 +54,7 @@ covidRegionServer <- function(id, data) {
         if(input$facet == "none") {
           df <- data %>%
             filter(industry == "All Industries",
+                   indicator == "payroll_jobs",
                    gender == "Persons",
                    indicator == input$indicator, 
                    age == "All ages",
@@ -61,6 +62,7 @@ covidRegionServer <- function(id, data) {
         } else if (input$facet == "gender") {
           df <- data %>% 
             filter(industry == "All Industries",
+                   indicator == "payroll_jobs",
                    age == "All ages",
                    indicator == input$indicator, 
                    state %in% input$state)
@@ -77,6 +79,7 @@ covidRegionServer <- function(id, data) {
                    gender == "Persons",
                    indicator == input$indicator,
                    state %in% input$state)
+
         }
       })
       
