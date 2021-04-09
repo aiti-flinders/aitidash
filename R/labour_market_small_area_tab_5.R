@@ -3,36 +3,32 @@ labourMarketSmallAreaUI <- function(id, data) {
   ns <- NS(id)
   
   date_select <- as.yearqtr(unique(data$date))
-  indicator_select <- unique(data$indicator)
+  indicator_select <- c(
+    "Labour force total" = "Smoothed labour force (persons)",
+    "Unemployed total" = "Smoothed unemployment (persons)",
+    "Unemployment rate" = "Smoothed unemployment rate (%)")
 
   
   tabPanel(title = "Small Area Labour Force",
-           withSpinner(leafletOutput(ns("map"), width = "100%", height = "600px"),
-                       image = "https://raw.githubusercontent.com/hamgamb/aitidash/master/inst/www/aiti_spinner.gif"),
+          
            fluidRow(
-             box(status = 'info', solidHeader = FALSE,
-               sliderTextInput(
-                   inputId = ns("date"),
-                   label = "Select Date",
-                   choices = date_select,
-                   selected = max(date_select)
-                 )
+             dashboard_box(title = "Customise Chart",
+                           selectInput(
+                             inputId = ns("indicator"),
+                             label = "Select Indicator",
+                             choices = indicator_select
+                           ),
+                           sliderTextInput(
+                             width = "100%",
+                             inputId = ns("date"),
+                             label = "Select Date",
+                             choices = date_select,
+                             selected = max(date_select)
+                           )
              ),
-             box(status = "info", solidHeader = FALSE,
-                 selectInput(
-                   inputId = ns("indicator"),
-                   label = "Select Indicator",
-                   choices = indicator_select
-                 ))
-            ),
-           fluidRow(
-             box(width = 12, status = "info", title = "Downloads", solidHeader = FALSE,
-                 downloadButton(
-                   outputId = ns("download_plot"),
-                   label = "Click here to download the chart as a .png",
-                   class = 'download-button'
-                 )
-           )
+             dashboard_box(width = 8, title = "Downloads",
+                         download_graph_ui(id)
+             )
            )
   )
 }

@@ -1,12 +1,12 @@
 Package: aitidash
 Title: AITI WorkSight/Economic Indicators Dashboard
-Version: 0.0.0.9000
+Version: 0.0.1.9000
 Authors@R: 
     person(given = "Hamish",
            family = "Gamble",
            role = c("aut", "cre"),
            email = "hamish.gamble@flinders.edu.au")
-Description: What the package does (one paragraph).
+Description: Functioning Bootstrap3 dashboard for economic indicators
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -14,21 +14,31 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Imports:
     shiny,
-    shinydashboard,
     shinyWidgets,
+    bs4Dash,
+    fresh,
     shinycssloaders,
     dplyr,
-    forcats, 
-    lubridate,
-    scales, 
-    zoo,
-    plotly,
+    forcats,
     ggplot2,
-    reportabs,
-    aitidata,
-    aititheme,
-    absmapsdata,
+    lubridate,
+    scales,
+    zoo,
+    reportabs (>= 1.0.0),
+    absmapsdata (>= 1.2.1),
     sf,
     leaflet,
     mapview,
-    strayr
+    strayr (>= 0.0.1),
+    aititheme (>= 0.0.0.9000),
+    plotly,
+    stats,
+    utils,
+    purrr,
+    tidyr
+Remotes: 
+    hamgamb/aitidata,
+    hamgamb/reportabs,
+    wfmackey/absmapsdata,
+    MattCowgill/strayr,
+    hamgamb/aititheme

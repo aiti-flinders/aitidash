@@ -1,37 +1,45 @@
-#' @export
 covidDemographicUI <- function(id, data) {
   ns <- NS(id)
   
-  tabPanel("Demography",
+  state_choices <- sort(unique(data$state))
+  
+  
+  tabPanel("Demographic Comparison",
            plotlyOutput(ns("plot"), width = "100%", height = "600px"),
            fluidRow(
-             box(status = "info", solidHeader = FALSE,
-                 selectInput(
-                   inputId = ns("breakdown"),
-                   label = "Select Demographic Variable",
-                   choices = c("Gender" = "gender",
-                               "Age" = "age")
-                 ))
-           ),
-           fluidRow(
-             box(width = 12, status = "info", title = "Downloads", solidHeader = FALSE,
-                 downloadButton(
-                   outputId = ns("download_plot"),
-                   label = "Click here to download the chart as a .png",
-                   class = 'download-button'
-                 ),
-                 downloadButton(
-                   outputId = ns("download_data"),
-                   label = "Click here to download the chart data",
-                   class = 'download-button'
-                 )
+             dashboard_box(title = "Customise Chart",
+                           selectInput(
+                             inputId = ns("indicator"),
+                             label = "Select Indicator",
+                             choices = c("Payroll Jobs Index" = "payroll_jobs",
+                                         "Payroll Wages Index" = "payroll_wages"),
+                             selected = "payroll_jobs"
+                           ),
+                           radioGroupButtons(
+                             inputId = ns("breakdown"),
+                             label = "Select Demographic Variable",
+                             choices = c("Gender" = "gender",
+                                         "Age" = "age")
+                           )
+             ),
+             dashboard_box(title = "Select Region",
+                           radioGroupButtons(
+                             inputId = ns('state'),
+                             label = NULL,
+                             choices = state_choices,
+                             direction = "vertical",
+                             justified = TRUE,
+                             selected = "Australia"
+                           )
+             ),
+             dashboard_box(title = "Downloads",
+                           download_graph_ui(id)
              )
            )
   )
   
 }
 
-#' @export
 covidDemographicServer <- function(id, data, region) {
   
   moduleServer(
@@ -42,14 +50,16 @@ covidDemographicServer <- function(id, data, region) {
         
         if(input$breakdown == "age") {
           df <- data %>%
-            filter(state == region(), 
-                   industry == "All Industries",                 
-                   indicator == "payroll_jobs",
+            filter(state == input$state, 
+                   industry == "All Industries", 
+                   indicator == input$indicator,
+
                    gender == "Persons",
                    age != "All ages") 
         } else {
           df <- data %>%
-            filter(state == region(),
+            filter(state == input$state,
+                   indicator == input$indicator,
                    industry == "All Industries",
                    indicator == "payroll_jobs",
                    age == "All ages", 
@@ -59,12 +69,17 @@ covidDemographicServer <- function(id, data, region) {
       
 
       create_plot <- reactive({
+        
+        plot_title <- case_when(
+          input$indicator == "payroll_jobs" ~ "Payroll Jobs Index",
+          input$indicator == "payroll_wages" ~ "Payroll Wages Index"
+        )
 
         p <-  ggplot(create_data(), 
                      aes_(x = ~date, 
                           y = ~value, 
                           colour = as.name(input$breakdown),
-                          text = ~paste0(region(), 
+                          text = ~paste0(input$state, 
                                          "<br>Week Ending: ", format(date, "%d %B %Y"),
                                          "<br>Index: ", as_comma(value, digits = 2)),
                           group = as.name(input$breakdown))) + 
@@ -76,7 +91,7 @@ covidDemographicServer <- function(id, data, region) {
           labs(x = NULL,
                y = NULL,
                title = toupper(
-                 paste0("Payroll Jobs Index: ", region())
+                 paste0(plot_title, ": ", input$state)
                ))
         
         
@@ -105,7 +120,7 @@ covidDemographicServer <- function(id, data, region) {
       
       output$download_plot <- downloadHandler(
         filename = function(){
-          paste("Payroll Index", region(), input$breakdown,"plot.png", sep = '-')
+          paste("Payroll Index", input$state, input$breakdown,"plot.png", sep = '-')
         },
         content = function(file) {
           plotly_IMAGE(create_plot(), out_file = file)
@@ -114,7 +129,7 @@ covidDemographicServer <- function(id, data, region) {
       
       output$download_data <- downloadHandler(
         filename = function() {
-          paste("Payroll Index", region(), input$breakdown,"data.csv", sep = '-')
+          paste("Payroll Index", input$state, input$breakdown,"data.csv", sep = '-')
         },
         content = function(file) {
           write.csv(create_data(), file, row.names = FALSE)

@@ -8,42 +8,46 @@ empIndComparisonUI <- function(id, data) {
                          "Employed part-time")
   
   series_choices <- "Original"
-  region_choices <- sort(unique(data$state))
   date_min <- min(data$date)
   date_max <- max(data$date)
   
   tabPanel(title = "Regional Comparison", plotlyOutput(ns("plot"), width='100%', height = "600px"),
            fluidRow(
-             box(status = 'info',solidHeader = F,
-                 selectInput(
-                   inputId = ns("indicator"),
-                   label = "Select Indicator", 
-                   choices = indicator_choices),
-                 sliderTextInput(
-                   inputId = ns("date"),
-                   label = "Select Date",
-                   choices = zoo::as.yearqtr(sort(unique(data$date))),
-                   selected = zoo::as.yearqtr(date_max)
-                 )),
-             box(status='info',solidHeader = F,
-                 radioButtons(
-                   inputId = ns("comparison"),
-                   label = "Select Comparison Region",
-                   choices = region_choices)
-             )),
-           fluidRow(
-             box(width = 12, status = "info", title = "Downloads", solidHeader = F,
-                 downloadButton(
-                   outputId = ns("download_plot"),
-                   label = "Click here to download the chart as a .png",
-                   class = 'download-button'
-                 ),
-                 downloadButton(
-                   outputId = ns("download_data"),
-                   label = "Click here to download the chart data",
-                   class = 'download-button'
-                 ))
-           ))
+             dashboard_box(title = "Customise Chart",
+                           selectInput(
+                             inputId = ns("indicator"),
+                             label = "Select Indicator", 
+                             choices = indicator_choices
+                             ),
+                           sliderTextInput(
+                             inputId = ns("date"),
+                             label = "Select Date",
+                             choices = zoo::as.yearqtr(sort(unique(data$date))),
+                             selected = zoo::as.yearqtr(date_max)
+                             )
+                           ),
+             dashboard_box(title = "Select Regions",
+                           radioGroupButtons(
+                             inputId = ns("region_one"),
+                             label = "Select Region One",
+                             choiceNames = toupper(strayr(regions())),
+                             choiceValues = regions(),
+                             direction = 'horizontal'
+                             ),
+                           radioGroupButtons(
+                             inputId = ns("region_two"),
+                             label = "Select Region Two",
+                             choiceNames = toupper(strayr(regions())),
+                             choiceValues = regions(),
+                             direction = "horizontal",
+                             justified = TRUE
+                             )
+                           ),
+             dashboard_box(title = "Downloads", 
+                           download_graph_ui(id)
+                           )
+             )
+  )
 }
 
 empIndComparison <- function(input, output, session, data, region) {
@@ -67,11 +71,11 @@ empIndComparison <- function(input, output, session, data, region) {
       summarise(value = mean(value)) %>% 
       mutate(share = 100*value/sum(value)) %>%
       ungroup() %>%
-      filter(state %in% c(region(), input$comparison),
+      filter(state %in% c(input$region_one, input$region_two),
              date == as.Date(zoo::as.yearqtr(input$date)) + months(1)) %>%
       select(-value) %>% 
       tidyr::pivot_wider(names_from = state, values_from = share) %>%
-      arrange(!!as.name(region())) %>%
+      arrange(!!as.name(input$region_one)) %>%
       mutate(industry = forcats::as_factor(industry)) 
   })
   
@@ -79,32 +83,32 @@ empIndComparison <- function(input, output, session, data, region) {
     p <- ggplot(create_data()) + 
       geom_segment(aes(x = industry, 
                        xend = industry, 
-                       y = !!as.name(region()), 
-                       yend = !!as.name(input$comparison)), 
+                       y = !!as.name(input$region_one), 
+                       yend = !!as.name(input$region_two)), 
                    colour = aititheme::aiti_darkblue) + 
       geom_point(aes(x = industry, 
-                     y = !!as.name(region()),
-                     text = paste0(region(),
+                     y = !!as.name(input$region_one),
+                     text = paste0(input$region_one,
                                   "<br>",industry, 
-                                  "<br>", as_percent(!!as.name(region()))),
-                     fill = region()),
+                                  "<br>", as_percent(!!as.name(input$region_one))),
+                     fill = input$region_one),
                  shape = 21, 
                  colour = aititheme::aiti_yellow) +
       geom_point(aes(x = industry, 
-                     y = !!as.name(input$comparison),
-                     text = paste0(input$comparison, 
+                     y = !!as.name(input$region_two),
+                     text = paste0(input$region_two, 
                                   "<br>", industry,
-                                  "<br>", as_percent(!!as.name(input$comparison))),
-                     fill = input$comparison), 
+                                  "<br>", as_percent(!!as.name(input$region_two))),
+                     fill = input$region_two), 
                  shape = 21,
                  colour = aititheme::aiti_blue) +
       scale_y_continuous(labels = percent_format(scale = 1)) +
-      scale_fill_manual(breaks = c(region(), input$comparison), values = c(aititheme::aiti_yellow, aititheme::aiti_blue)) + 
+      scale_fill_manual(breaks = c(input$region_one, input$region_two), values = c(aititheme::aiti_yellow, aititheme::aiti_blue)) + 
       coord_flip() + 
       labs(
         y = NULL,
         x = NULL,
-        title = toupper(paste0("share of industry employment: ", region(), " & ", input$comparison, " (", input$date, ")"))
+        title = toupper(paste0("share of industry employment: ", input$region_one, " & ", input$region_two, " (", input$date, ")"))
       ) +
       theme_aiti(legend = 'bottom', base_family = "Roboto")
     
@@ -129,10 +133,10 @@ empIndComparison <- function(input, output, session, data, region) {
   
   output$download_plot <- downloadHandler(
     filename = function(){
-      paste(input$indicator, "-plot.png", sep = '')
+      paste0(input$filename, "-plot.", input$filetype)
     },
     content = function(file) {
-      plotly_IMAGE(create_plot(), out_file = file)
+      plotly_IMAGE(create_plot(), format = input$filetype, width = input$width, height = input$height, out_file = file)
     }
   )
   

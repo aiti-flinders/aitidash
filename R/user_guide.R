@@ -1,4 +1,4 @@
-userGuideUI <- function(id) {
+user_guide <- function(id) {
   ns <- NS(id)
   
 tabPanel(title = "User Guide",

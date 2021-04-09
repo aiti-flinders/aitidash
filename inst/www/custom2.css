@@ -1,0 +1,26 @@
+.btn-default.active {
+  color: white; 
+  background-color: #0077ff;
+}
+
+.btn-default:hover, .btn-default:active, .btn-default:focus {
+  color: #0077ff;
+}
+
+/* Leaflet legend alignment */
+
+.legend {
+  text-align: left;
+}
+
+.img-circle {
+ border-radius: 0;
+}
+
+.elevation-3 {
+  box-shadow: none!important;
+}
+
+.form-group {
+  margin-bottom: 0
+}
