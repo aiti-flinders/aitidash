@@ -24,6 +24,8 @@
 #'@importFrom utils download.file tail write.csv
 #'@importFrom purrr pmap
 #'@importFrom tidyr tribble
+#'
+#'@export dash_app
 
 
 #### Preamble ####

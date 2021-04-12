@@ -6,7 +6,7 @@ Authors@R:
            family = "Gamble",
            role = c("aut", "cre"),
            email = "hamish.gamble@flinders.edu.au")
-Description: Functioning Bootstrap3 dashboard for economic indicators
+Description: Dashboard and interactive visualisation tool for Australian economic indicators. 
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -15,6 +15,8 @@ RoxygenNote: 7.1.1
 Imports:
     shiny,
     shinyWidgets,
+    aitidata,
+    pkgload,
     bs4Dash,
     fresh,
     shinycssloaders,
@@ -35,7 +37,8 @@ Imports:
     stats,
     utils,
     purrr,
-    tidyr
+    tidyr,
+    config
 Remotes: 
     hamgamb/aitidata,
     hamgamb/reportabs,
