@@ -68,8 +68,8 @@ empInd <- function(input, output, session, data, region) {
   
   
   output$title_panel <- renderText({
-    region()
-  })
+    input$state
+    })
   
   observe({
     if (length(input$industry) > 9) {
