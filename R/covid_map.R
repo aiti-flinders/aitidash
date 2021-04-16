@@ -29,15 +29,15 @@ covidUI <- function(id, data) {
   )
 }
 
-covidServer <- function(id, data, region) {
+covidServer <- function(id, data) {
   
   moduleServer(
     id,
     function(input, output, session) {
       
-      output$title_panel = renderText({
-        region()
-      })
+      # output$title_panel = renderText({
+      #   region()
+      # })
       
       output$date <- renderUI({
         
@@ -68,7 +68,7 @@ covidServer <- function(id, data, region) {
       })
       
       observe({
-        if(region() != "Australian Capital Territory") {
+        if(input$state != "Australian Capital Territory") {
           updateSelectInput(session, "indicator", choices = c("JobKeeper Applications (SA2)" = "jobkeeper_applications",
                                                               "JobKeeper Rate (% Businesses) (SA2)" = "jobkeeper_proportion",
                                                               "JobKeeper Applications Growth (SA2)" = "jobkeeper_growth",
@@ -117,10 +117,10 @@ covidServer <- function(id, data, region) {
           join_by <- "sa2_main_2016"
         }
         
-        if (region() != "Australia") {
+        if (input$state != "Australia") {
           
           df <- data %>% 
-            filter(state == region(),
+            filter(state == input$state,
                    indicator == input$indicator) %>% 
             mutate(value_label = ifelse(grepl("proportion", indicator), as_percent(value), as_comma(value)),
                    value_label = ifelse(indicator == "payroll_index", as_comma(value, digits = 2), value_label)) %>% 
@@ -198,7 +198,7 @@ covidServer <- function(id, data, region) {
       
       output$download_plot <- downloadHandler(
         filename = function(){
-          paste(region(), "-map.png", sep = '')
+          paste(input$state, "-map.png", sep = '')
         },
         content = function(file) {
           mapview::mapshot(user_map(), file = file, cliprect = "viewport", selfcontained = FALSE)

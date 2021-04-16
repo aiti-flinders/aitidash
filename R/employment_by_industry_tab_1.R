@@ -30,7 +30,7 @@ empIndUI <- function(id, data) {
                              selected = "Employed Total"),
                            pickerInput(
                              inputId = ns("industry"),
-                             label = "Select Industry (up to 9)",
+                             label = "Select Industry (max 9)",
                              choices = industry_choices, 
                              multiple = TRUE,
                            ),
@@ -61,7 +61,7 @@ empIndUI <- function(id, data) {
 
 }
 
-empInd <- function(input, output, session, data, region) {
+empInd <- function(input, output, session, data) {
   
   date_min <- min(data$date)
   date_max <- max(data$date)
@@ -99,7 +99,7 @@ empInd <- function(input, output, session, data, region) {
     current_indicator(input$indicator)
     
     updateSelectInput(session, "indicator", choices = data %>%
-                        filter(state == region(),
+                        filter(state == input$state,
                                indicator != "Underemployment ratio (proportion of employed)") %>%
                         pull(indicator) %>%
                         unique() %>%
