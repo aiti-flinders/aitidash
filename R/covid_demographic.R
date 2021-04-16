@@ -53,7 +53,6 @@ covidDemographicServer <- function(id, data, region) {
             filter(state == input$state, 
                    industry == "All Industries", 
                    indicator == input$indicator,
-
                    gender == "Persons",
                    age != "All ages") 
         } else {
@@ -61,7 +60,6 @@ covidDemographicServer <- function(id, data, region) {
             filter(state == input$state,
                    indicator == input$indicator,
                    industry == "All Industries",
-                   indicator == "payroll_jobs",
                    age == "All ages", 
                    gender != "Persons")
         }
@@ -84,6 +82,7 @@ covidDemographicServer <- function(id, data, region) {
                                          "<br>Index: ", as_comma(value, digits = 2)),
                           group = as.name(input$breakdown))) + 
           geom_line() +
+          geom_hline(aes(yintercept = 100)) + 
           geom_point(shape = 1, size = 1) + 
           theme_aiti(legend = 'bottom', base_family = "Roboto") +
           scale_x_date(date_breaks = "4 weeks", date_labels = "%b-%d") + 
