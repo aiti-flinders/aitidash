@@ -25,7 +25,7 @@
 #'@importFrom purrr pmap
 #'@importFrom tidyr tribble
 #'
-#'@export dash_app
+#'@export aiti_dashboard
 
 
 #### Preamble ####
@@ -57,7 +57,7 @@ dash_server <- function(input, output, session) {
   
 
   #Employment by Industry - Tab
-  callModule(empInd, "empInd_ts", data = aitidata::employment_by_industry, region = region_selected)
+  callModule(empInd, "empInd_ts", data = aitidata::employment_by_industry)
   callModule(empIndComparison, "empInd_region", data = aitidata::employment_by_industry, region = region_selected)
   callModule(empIndAnalysis, "empInd_analysis", data = aitidata::employment_by_industry, region = region_selected)
   
@@ -66,14 +66,17 @@ dash_server <- function(input, output, session) {
   iviComparisonServer("ivi_comparison", data = aitidata::internet_vacancies_index, region = region_selected)
   iviTreeServer("ivi_treemap", data = aitidata::internet_vacancies_index, region = region_selected)
   
+  #Weekly payroll data
+  covidRegionServer("covid_region", data = aitidata::payroll_index)
+  covidDemographicServer("covid_demog", data = aitidata::payroll_index)
+  covidIndustryServer("covid_industry", data = aitidata::payroll_index)
+  
   #Maps
   map_server("jobkeeper_map", data = aitidata::jobkeeper_sa2)
   map_server("jobseeker_map", data = aitidata::jobseeker_sa2)
   map_server("payroll_map", data = aitidata::payroll_substate)
   map_server("lm_salm", data = aitidata::small_area_labour_market)
-  covidRegionServer("covid_region", data = aitidata::payroll_index)
-  covidDemographicServer("covid_demog", data = aitidata::payroll_index, region = region_selected)
-  covidIndustryServer("covid_industry", data = aitidata::payroll_index, region = region_selected)
+
 
   #Employment boxes - row 1
   pmap(box_map(), function(id, indicator, reverse, percent, ...) boxes_server(id, aitidata::labour_force, indicator, region_selected, reverse, percent))
@@ -109,7 +112,7 @@ dash_server <- function(input, output, session) {
   
 }
 
-dash_app <- function(...) {
+aiti_dashboard <- function(...) {
   shinyApp(ui = dash_ui(), server = dash_server)
 
 }

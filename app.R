@@ -3,4 +3,5 @@
 # Or use the blue button on top of this file
 
 pkgload::load_all(export_all = FALSE,helpers = FALSE,attach_testthat = FALSE)
-aitidash::dash_app() # add parameters here (if any)
+aitidash::aiti_dashboard() # add parameters here (if any)
+ 
