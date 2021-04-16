@@ -191,11 +191,13 @@ boxes_server <- function(id, data, indicator, region,  reverse = FALSE, percent 
                  plotly = FALSE,
                  void = TRUE) 
         } else {
-          jobkeeper_plots(indicator = indicator, 
-                          states = region(),
-                          compare_aus = FALSE,
-                          plotly = FALSE,
-                          void = TRUE)
+          abs_plot(data = aitidata::jobkeeper_state, 
+                   indicator = indicator,
+                   states = region(),
+                   series_types = "Original",
+                   compare_aus = FALSE,
+                   plotly = FALSE,
+                   void = TRUE)
         }
       })
       
