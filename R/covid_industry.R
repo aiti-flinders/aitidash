@@ -5,7 +5,7 @@ covidIndustryUI <- function(id, data) {
                          "Payroll Wages Index" = "payroll_wages")
   industry_choices <- unique(data$industry)
   
-  tabPanel("Industry",
+  tabPanel(title = "Industry",
            plotlyOutput(ns("plot"), width = "100%", height = "600px"),
            fluidRow(
              dashboard_box(title = "Customise Chart",
@@ -15,14 +15,20 @@ covidIndustryUI <- function(id, data) {
                              choices = indicator_choices,
                              selected = "payroll_jobs"
                            ),
+                           pickerInput(
+                             inputId = ns("industry"),
+                             label = "Select Industry (max 9)",
+                             choices = industry_choices,
+                             multiple = TRUE
+                           ),
                            uiOutput(ns("date"))
              ),
-             dashboard_box(title = "Industry Analysis",
-                           checkboxGroupButtons(
-                             inputId = ns("industry"),
-                             label = "Select Industry (Up to 9)",
-                             choices = industry_choices,
-                             selected = NULL,
+             dashboard_box(title = "Select Region",
+                           radioGroupButtons(
+                             inputId = ns("state"),
+                             label = NULL,
+                             choices = regions(),
+                             selected = "Australia",
                              direction = "vertical",
                              justified = TRUE
                            )
@@ -36,7 +42,7 @@ covidIndustryUI <- function(id, data) {
 }
              
 
-covidIndustryServer <- function(id, data, region) {
+covidIndustryServer <- function(id, data) {
   
   moduleServer(
     id,
@@ -45,8 +51,7 @@ covidIndustryServer <- function(id, data, region) {
       create_data <- reactive({
         if(is.null(input$industry)) {
         df <- data %>%
-          filter(state == region(),
-                 indicator == "payroll_jobs",
+          filter(state == input$state,
                  gender == "Persons",
                  age == "All ages",
                  industry != "All industries",
@@ -54,8 +59,7 @@ covidIndustryServer <- function(id, data, region) {
                  date == as.Date("2020-03-14") + weeks(input$date)) 
         } else {
           df <- data %>%
-            filter(state == region(),
-                   indicator == "payroll_jobs",
+            filter(state == input$state,
                    gender == "Persons",
                    indicator == input$indicator,
                    age == "All ages",
@@ -88,18 +92,18 @@ covidIndustryServer <- function(id, data, region) {
         
         if(is.null(input$industry)) {
           plot_title <- case_when(
-            input$date == 1 ~ paste0("Change in ", plot_title, " :", region(), " (", input$date, " week since March 14th", ")"),
-            input$date > 1 ~ paste0("Change in ", plot_title, " :", region(), " (", input$date, " weeks since March 14th", ")"),
-            input$date == -1 ~ paste0("Change in ", plot_title, " :", region(), " (", -as.numeric(input$date), " week before March 14th", ")"),
-            input$date < -1 ~ paste0("Change in ", plot_title, " :", region(), " (", -as.numeric(input$date), " weeks before March 14th", ")"),
-            TRUE ~ paste0("Change in ", plot_title, " :", region(), " (Week Ending March 14th)")
+            input$date == 1 ~ paste0("Change in ", plot_title, ": ", input$state, " (", input$date, " week since March 14th", ")"),
+            input$date > 1 ~ paste0("Change in ", plot_title, ": ", input$state, " (", input$date, " weeks since March 14th", ")"),
+            input$date == -1 ~ paste0("Change in ", plot_title, ": ", input$state, " (", -as.numeric(input$date), " week before March 14th", ")"),
+            input$date < -1 ~ paste0("Change in ", plot_title, ": ", input$state, " (", -as.numeric(input$date), " weeks before March 14th", ")"),
+            TRUE ~ paste0("Change in ", plot_title, " :", input$state, " (Week Ending March 14th)")
             )
           
 
           p <- ggplot(create_data(),
               aes(x = reorder(industry, -(value-100)),
                   y = value-100,
-                  text = paste0(region(), 
+                  text = paste0(input$state, 
                                 "<br>Week Ending: ", format(date, "%d %B %Y"),
                                 paste0("<br>", plot_title, ": "), as_comma(value, digits = 2)))) +
           geom_bar(stat = 'identity', fill = aititheme::aiti_blue) + 
@@ -116,8 +120,8 @@ covidIndustryServer <- function(id, data, region) {
           )
           
           plot_title <- ifelse(length(input$industry) > 1,
-                               toupper(paste0(plot_title, ": ", region(), " (Multiple industries)")),
-                               toupper(paste0(plot_title, ": ", region(), " (", input$industry, ")")))
+                               toupper(paste0(plot_title, ": ", input$state, " (Multiple industries)")),
+                               toupper(paste0(plot_title, ": ", input$state, " (", input$industry, ")")))
           
 
     
@@ -126,10 +130,11 @@ covidIndustryServer <- function(id, data, region) {
                           y = value,
                           col = industry,
                           group = industry,
-                          text = paste0(region(), 
+                          text = paste0(input$state, 
                                         "<br>Week Ending: ", format(date, "%d %B %Y"),
                                         "<br>Index: ", as_comma(value, digits = 2)))) +
             geom_line()  + 
+            geom_hline(aes(yintercept = 100)) + 
             geom_point(shape = 1, size = 1) + 
             theme_aiti(legend = "bottom", base_family = "Roboto") + 
             scale_x_date(date_breaks = "4 weeks", date_labels = "%b-%d") + 
@@ -162,16 +167,16 @@ covidIndustryServer <- function(id, data, region) {
       
       output$download_plot <- downloadHandler(
         filename = function(){
-          paste("Payroll Index", region(),"plot.png", sep = '-')
+          paste0(input$filename, input$state, "-plot.", input$filetype)
         },
         content = function(file) {
-          plotly_IMAGE(create_plot(), out_file = file)
+          plotly_IMAGE(create_plot(), format = input$filetype, width = input$width, height = input$height, out_file = file)
         }
       )
       
       output$download_data <- downloadHandler(
         filename = function() {
-          paste("Payroll Index", region(), "data.csv", sep = '-')
+          paste(input$indicator, input$state, "-data.csv", sep = '')
         },
         content = function(file) {
           write.csv(create_data(), file, row.names = FALSE)
