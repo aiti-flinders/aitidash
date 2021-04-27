@@ -40,7 +40,7 @@ Imports:
     tidyr,
     config
 Remotes:  
-    hamgamb/aitidata,
+    aiti-flinders/aitidata,
     hamgamb/reportabs,
     wfmackey/absmapsdata,
     MattCowgill/strayr,
