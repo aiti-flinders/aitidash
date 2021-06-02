@@ -41,7 +41,7 @@ Imports:
     config
 Remotes:  
     aiti-flinders/aitidata,
-    hamgamb/reportabs,
+    aiti-flinders/reportabs,
     wfmackey/absmapsdata,
     MattCowgill/strayr,
-    hamgamb/aititheme,
+    aiti-flinders/aititheme,
