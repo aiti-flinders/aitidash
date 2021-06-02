@@ -34,7 +34,10 @@ Imports:
     utils,
     purrr,
     tidyr,
-    config
+    config,
+    aitidata,
+    reportabs,
+    absmapsdata
 Remotes:  
     aiti-flinders/aitidata,
     aiti-flinders/reportabs,
