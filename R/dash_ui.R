@@ -402,7 +402,7 @@ dash_ui <- function(...) {
     header = header(),
     sidebar = sidebar(),
     body = body(), 
-    footer = dashboardFooter(left ="Australian Industrial Transformation Institute", fixed = TRUE, right = "Flinders University")
+    footer = dashboardFooter(left = "Australian Industrial Transformation Institute", fixed = TRUE, right = "Flinders University")
   )
 }
 
