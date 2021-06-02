@@ -366,7 +366,7 @@ header <- function(...) {
       condition = "input.sidebarmenu === 'dashboard'",
       radioGroupButtons(
         inputId = "region_select",
-        choiceNames = toupper(strayr(regions())),
+        choiceNames = toupper(clean_state(regions())),
         choiceValues = regions(),
         selected = "Australia",
         direction = "horizontal",

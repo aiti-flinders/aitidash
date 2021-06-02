@@ -30,14 +30,14 @@ empIndComparisonUI <- function(id, data) {
                            radioGroupButtons(
                              inputId = ns("region_one"),
                              label = "Select Region One",
-                             choiceNames = toupper(strayr(regions())),
+                             choiceNames = toupper(clean_state(regions())),
                              choiceValues = regions(),
                              direction = 'horizontal'
                              ),
                            radioGroupButtons(
                              inputId = ns("region_two"),
                              label = "Select Region Two",
-                             choiceNames = toupper(strayr(regions())),
+                             choiceNames = toupper(clean_state(regions())),
                              choiceValues = regions(),
                              direction = "horizontal",
                              justified = TRUE
