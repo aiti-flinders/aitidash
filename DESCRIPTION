@@ -17,7 +17,7 @@ Imports:
     shinyWidgets,
     aitidata,
     pkgload,
-    bs4Dash (>= 2.0.0.9000),
+    bs4Dash,
     fresh,
     shinycssloaders,
     dplyr,
@@ -45,4 +45,3 @@ Remotes:
     wfmackey/absmapsdata,
     MattCowgill/strayr,
     hamgamb/aititheme,
-    RinteRface/bs4Dash
