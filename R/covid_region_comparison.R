@@ -53,14 +53,14 @@ covidRegionServer <- function(id, data) {
       create_data <- reactive({
         if(input$facet == "none") {
           df <- data %>%
-            filter(industry == "All Industries",
+            filter(industry == "All industries",
                    indicator == input$indicator,
                    gender == "Persons",
                    age == "All ages",
                    state %in% input$state)
         } else if (input$facet == "gender") {
           df <- data %>% 
-            filter(industry == "All Industries",
+            filter(industry == "All industries",
                    age == "All ages",
                    indicator == input$indicator, 
                    state %in% input$state)
@@ -73,7 +73,7 @@ covidRegionServer <- function(id, data) {
             mutate(industry = as_factor(industry)) 
           } else {
           df <- data %>%
-            filter(industry == "All Industries",
+            filter(industry == "All industries",
                    gender == "Persons",
                    indicator == input$indicator,
                    state %in% input$state)
