@@ -118,9 +118,8 @@ empInd <- function(input, output, session, data) {
                indicator == input$indicator) %>% 
         group_by(date, industry) %>% 
         summarise(value = mean(value),
-                  value_share = mean(value_share),
                   .groups = 'drop_last') %>% 
-        #mutate(share = 100*value/sum(value)) %>%
+        mutate(value_share = 100*value/sum(value)) %>%
         filter(date == as.Date(zoo::as.yearqtr(input$date)) + months(1)) %>%
         ungroup() %>%
         arrange(desc(industry)) %>%
