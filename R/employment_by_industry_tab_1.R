@@ -131,9 +131,9 @@ empInd <- function(input, output, session, data) {
              industry != "Total (industry)",
              series_type == "Original",
              gender == "Persons") %>%
-      # group_by(date) %>%
-      # mutate(share = 100*value/sum(value)) %>%
-      # ungroup() %>%
+      group_by(date) %>%
+      mutate(value_share = 100*value/sum(value)) %>%
+      ungroup() %>%
       filter(industry %in% input$industry)
       }
   })
