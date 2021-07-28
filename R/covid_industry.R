@@ -1,8 +1,7 @@
 covidIndustryUI <- function(id, data) {
   
   ns <- NS(id)
-  indicator_choices <- c("Payroll Jobs Index" = "payroll_jobs",
-                         "Payroll Wages Index" = "payroll_wages")
+  indicator_choices <- c("Payroll Jobs Index" = "payroll_jobs")
   industry_choices <- unique(data$industry)
   
   tabPanel(title = "Industry",
@@ -85,10 +84,8 @@ covidIndustryServer <- function(id, data) {
       
       create_plot <- reactive({
         
-        plot_title <- case_when(
-          input$indicator == "payroll_jobs" ~ "Payroll Jobs Index",
-          input$indicator == "payroll_wages" ~ "Payroll Wages Index"
-        )
+        plot_title <- "Payroll Jobs Index",
+
         
         if(is.null(input$industry)) {
           plot_title <- case_when(
@@ -114,10 +111,7 @@ covidIndustryServer <- function(id, data) {
           
         } else {
           
-          plot_title <- case_when(
-            input$indicator == "payroll_jobs" ~ "Payroll Jobs Index",
-            input$indicator == "payroll_wages" ~ "Payroll Wages Index"
-          )
+          plot_title <-  "Payroll Jobs Index",
           
           plot_title <- ifelse(length(input$industry) > 1,
                                toupper(paste0(plot_title, ": ", input$state, " (Multiple industries)")),

@@ -11,8 +11,7 @@ covidDemographicUI <- function(id, data) {
                            selectInput(
                              inputId = ns("indicator"),
                              label = "Select Indicator",
-                             choices = c("Payroll Jobs Index" = "payroll_jobs",
-                                         "Payroll Wages Index" = "payroll_wages"),
+                             choices = c("Payroll Jobs Index" = "payroll_jobs"),
                              selected = "payroll_jobs"
                            ),
                            radioGroupButtons(
@@ -68,10 +67,8 @@ covidDemographicServer <- function(id, data, region) {
 
       create_plot <- reactive({
         
-        plot_title <- case_when(
-          input$indicator == "payroll_jobs" ~ "Payroll Jobs Index",
-          input$indicator == "payroll_wages" ~ "Payroll Wages Index"
-        )
+        plot_title <-  "Payroll Jobs Index",
+
 
         p <-  ggplot(create_data(), 
                      aes_(x = ~date, 
