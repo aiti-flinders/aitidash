@@ -121,7 +121,7 @@ labourMarketDemogServer <- function(id, data) {
   create_plot <- reactive({
     p <- abs_plot(indicator = input$indicator,
                states = input$state,
-               series_type = input$series_type,
+               series_types = input$series_type,
                sex = genders(),
                ages = ages(),
                years = input$years,
