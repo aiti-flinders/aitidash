@@ -67,7 +67,7 @@ covidDemographicServer <- function(id, data, region) {
 
       create_plot <- reactive({
         
-        plot_title <-  "Payroll Jobs Index",
+        plot_title <-  "Payroll Jobs Index"
 
 
         p <-  ggplot(create_data(), 
