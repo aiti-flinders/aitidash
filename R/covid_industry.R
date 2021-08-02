@@ -84,7 +84,7 @@ covidIndustryServer <- function(id, data) {
       
       create_plot <- reactive({
         
-        plot_title <- "Payroll Jobs Index",
+        plot_title <- "Payroll Jobs Index"
 
         
         if(is.null(input$industry)) {
@@ -111,7 +111,7 @@ covidIndustryServer <- function(id, data) {
           
         } else {
           
-          plot_title <-  "Payroll Jobs Index",
+          plot_title <-  "Payroll Jobs Index"
           
           plot_title <- ifelse(length(input$industry) > 1,
                                toupper(paste0(plot_title, ": ", input$state, " (Multiple industries)")),
