@@ -11,7 +11,7 @@ on:
      master
 
 
-jobs:
+jobs: 
   deploy-dashboard:
     runs-on: macOS-latest
     steps:
