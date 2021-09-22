@@ -37,11 +37,15 @@ Imports:
     config,
     aitidata,
     reportabs,
-    absmapsdata
-Remotes:  
+    absmapsdata,
+    aititheme
+Remotes: 
     aiti-flinders/aitidata,
     aiti-flinders/reportabs,
     wfmackey/absmapsdata,
     runapp-aus/strayr,
     aiti-flinders/aititheme,
     RinteRface/bs4Dash
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
