@@ -197,11 +197,11 @@ user_guide_tab <- function(...) {
 #### Summary UI ####
 summary_ui <- function(...) {
   
-  lf_release <- list("current" = aitidata::abs_current_release("labour-force-australia"))
+  lf_release <- list("current" = aitidata::current_release("labour-force-australia"))
   
   
   industry_release <- list("nxt" = aitidata::abs_next_release("labour-force-australia-detailed"),
-                           "current" = aitidata::abs_current_release("labour-force-australia-detailed"))
+                           "current" = aitidata::current_release("labour-force-australia-detailed"))
   
   
   
