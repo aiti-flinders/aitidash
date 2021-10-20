@@ -209,8 +209,6 @@ summary_ui <- function(...) {
     h1(textOutput("region_selected")),
     h2("Employment Insights"),
     fluidRow( 
-      boxes_ui("jobkeeper_total", indicator = "Jobkeeper applications", plot = TRUE, footer = em("Data last updated: 2021-05-14")),
-      boxes_ui("jobkeeper_proportion", indicator = "Jobkeeper proportion", plot = TRUE, footer = em("Data last updated: 2021-05-14")),
       purrr::pmap(box_map(), function(id, indicator, footer, ...) boxes_ui(id, indicator, em(paste0(footer, lf_release$current))))
     ),
     h2("Industry Insights"),
