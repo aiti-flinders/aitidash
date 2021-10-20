@@ -104,24 +104,24 @@ map_server <- function(id, data) {
           
         } else if (grepl("Smoothed", input$indicator)) {
           data <- data %>%
-            filter(!is.na(sa2_main_2016),
+            filter(!is.na(sa2_code_2016),
                    date == as.Date(as.yearqtr(input$date)) + months(2)) %>%
             select(-sa2_name_2016, 
                    -state_name_2016)
           
           label_name <- "sa2_name_2016"
           join <- absmapsdata::sa22016
-          join_by <- "sa2_main_2016"
+          join_by <- "sa2_code_2016"
         }
         
         else {
           data <- data %>%
-            filter(!is.na(sa2_main_2016),
+            filter(!is.na(sa2_code_2016),
                    date == as.Date(as.yearmon(input$date)))
           
           label_name <- "sa2_name_2016"
           join <- absmapsdata::sa22016
-          join_by <- "sa2_main_2016"
+          join_by <- "sa2_code_2016"
         }
         
         if (input$state != "Australia") {
