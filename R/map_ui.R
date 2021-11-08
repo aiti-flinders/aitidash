@@ -219,7 +219,7 @@ map_server <- function(id, data) {
           paste(input$indicator, "-data.csv", sep = '')
         },
         content = function(file) {
-          write.csv(create_data(), file, row.names = FALSE)
+          write.csv(create_data() %>% as_tibble() %>% select(-geometry), file, row.names = FALSE)
         }
       )
     }
