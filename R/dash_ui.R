@@ -197,7 +197,8 @@ user_guide_tab <- function(...) {
 #### Summary UI ####
 summary_ui <- function(...) {
   
-  lf_release <- list("current" = aitidata::current_release("labour-force-australia"))
+  lf_release <- list("current" = aitidata::current_release("labour-force-australia"),
+                     "nxt" = aitidata::abs_next_release("labour-force-australia"))
   
   
   industry_release <- list("nxt" = aitidata::abs_next_release("labour-force-australia-detailed"),
@@ -208,19 +209,16 @@ summary_ui <- function(...) {
   fluidPage(
     h1(textOutput("region_selected")),
     h2("Employment Insights"),
+    p(paste0("This data is current as at: ", reportabs::release(aitidata::labour_force, "month"), " ", reportabs::release(aitidata::labour_force, "year"))),
+    p(paste0("It was last updated on: ", format(lf_release$current, "%A, %d %B %Y"))),
+    p(paste0("It will next be updated on: ", format(lf_release$nxt, "%A, %d %B %Y"))),
     fluidRow( 
-      purrr::pmap(box_map(), function(id, indicator, footer, ...) boxes_ui(id, indicator, em(paste0(footer, lf_release$current))))
+      purrr::pmap(box_map(), function(id, indicator, ...) boxes_ui(id, indicator))
     ),
     h2("Industry Insights"),
     p(paste0("This data is current as at: ", reportabs::release(aitidata::employment_by_industry, "month"), " ", reportabs::release(aitidata::employment_by_industry, "year"))),
-    p(paste0("Data for ",
-             reportabs::release(aitidata::employment_by_industry, "month", plus = 3),
-             " will be available on ",
-             weekdays(industry_release$nxt), 
-             ", the ", 
-             scales::ordinal(lubridate::day(industry_release$nxt))
-             ," ", 
-             lubridate::month(industry_release$nxt, abbr = F, label = T), ".")),
+    p(paste0("It was last updated on: ", format(industry_release$current, "%A, %d %B %Y"))),
+    p(paste0("It will next be updated on: ", format(industry_release$nxt, "%A, %d %B %Y"))),
     
     fluidRow(
       boxes_ui_industry("industry_total"),
