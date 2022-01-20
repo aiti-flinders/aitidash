@@ -18,7 +18,7 @@ covidRegionUI <- function(id, data) {
                            radioGroupButtons(
                              inputId = ns("facet"),
                              label = "Select Facet Variable",
-                             choices = c("Gender" = "sex", 
+                             choices = c("Gender" = "gender", 
                                          "Age" = "age",
                                          #"Industry" = "industry",
                                          "None" = "none"),
@@ -55,7 +55,7 @@ covidRegionServer <- function(id, data) {
           df <- data %>%
             filter(industry == "All industries",
                    indicator == input$indicator,
-                   sex == "Persons",
+                   gender == "Persons",
                    age == "All ages",
                    state %in% input$state)
         } else if (input$facet == "sex") {
@@ -67,14 +67,14 @@ covidRegionServer <- function(id, data) {
         } else if (input$facet == "industry") {
           df <- data %>%
             filter(age == "All ages",
-                   sex == "Persons", 
+                   gender == "Persons", 
                    indicator == input$indicator, 
                    state %in% input$state) %>%
             mutate(industry = as_factor(industry)) 
           } else {
           df <- data %>%
             filter(industry == "All industries",
-                   sex == "Persons",
+                   gender == "Persons",
                    indicator == input$indicator,
                    state %in% input$state)
 

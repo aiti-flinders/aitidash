@@ -17,7 +17,7 @@ covidDemographicUI <- function(id, data) {
                            radioGroupButtons(
                              inputId = ns("breakdown"),
                              label = "Select Demographic Variable",
-                             choices = c("Sex" = "sex",
+                             choices = c("Sex" = "gender",
                                          "Age" = "age")
                            )
              ),
@@ -52,7 +52,7 @@ covidDemographicServer <- function(id, data, region) {
             filter(state == input$state, 
                    industry == "All industries", 
                    indicator == input$indicator,
-                   sex == "Persons",
+                   gender == "Persons",
                    age != "All ages") 
         } else {
           df <- data %>%
@@ -60,7 +60,7 @@ covidDemographicServer <- function(id, data, region) {
                    indicator == input$indicator,
                    industry == "All industries",
                    age == "All ages", 
-                   sex != "Persons")
+                   gender != "Persons")
         }
       })
       
