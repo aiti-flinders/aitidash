@@ -14,7 +14,7 @@ table_server <- function(id, data, region) {
     id,
     function(input, output, session) {
       
-      all_indicators <- c("Unemployment rate",
+      all_indicators <- as_factor(c("Unemployment rate",
                           "Unemployed total",
                           "Employed total",
                           "Participation rate",
@@ -25,7 +25,7 @@ table_server <- function(id, data, region) {
                           "Underemployment rate (proportion of labour force)",
                           "Underutilisation rate",
                           "Monthly hours worked in all jobs",
-                          "Labour force total")
+                          "Labour force total"))
       
       
       output$table <- renderUI({
@@ -106,11 +106,12 @@ table_server <- function(id, data, region) {
                "Current value" = current,
                "Monthly change" = change_over_month,
                "Yearly change" = change_over_year,
-               "Trend (2 years)" = sparkline)
-      
-      
+               "Previous two years" = sparkline) %>%
+        arrange(factor(Indicator, levels = all_indicators))
+
       out <- formattable(
         table_data,
+        align = "r",
         list(unit = F,
              last_month = F,
              last_year = F,
@@ -118,8 +119,12 @@ table_server <- function(id, data, region) {
              up_month = F,
              up_year = F,
              `Current value` = formatter("span", style = style(font.weight = "bold")),
-             `Monthly change` = formatter("span", style = ~style(color = ifelse(up_month == "red", "#ffb24d", "#64b478"))),
-             `Yearly change` = formatter("span", style = ~style(color = ifelse(up_year == "red", "#ffb24d", "#64b478")))
+             `Monthly change` = formatter("span",
+                                          style = ~ style(color = ifelse(up_month == "red",  "#ffb24d", "#64b478")),
+                                          ~ icontext(ifelse(up_month == "red", "arrow-down", "arrow-up"), `Monthly change`)),
+             `Yearly change` = formatter("span",
+                                         style = ~ style(color = ifelse(up_year == "red",  "#ffb24d", "#64b478")),
+                                         ~ icontext(ifelse(up_year == "red", "arrow-down", "arrow-up"), `Yearly change`))
         )) %>%
         format_table() %>%
         HTML() %>%
