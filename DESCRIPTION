@@ -15,10 +15,7 @@ RoxygenNote: 7.1.2
 Imports:
     shiny,
     shinyWidgets,
-    pkgload,
-    bs4Dash (>= 2.0.0),
     fresh,
-    shinycssloaders,
     dplyr,
     forcats,
     ggplot2,
@@ -26,27 +23,22 @@ Imports:
     scales,
     zoo,
     sf,
+    pkgload,
     leaflet,
     mapview,
-    strayr,
+    pkgload,
+    sparkline,
+    formattable,
+    htmltools,
+    htmlwidgets,
     plotly,
-    stats,
-    utils,
-    purrr,
-    tidyr,
-    config,
-    aitidata,
-    reportabs,
-    absmapsdata,
-    aititheme,
-    showtext
+    tidyr
 Remotes: 
     aiti-flinders/aitidata,
     aiti-flinders/reportabs,
     wfmackey/absmapsdata,
     runapp-aus/strayr,
     aiti-flinders/aititheme,
-    RinteRface/bs4Dash
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
