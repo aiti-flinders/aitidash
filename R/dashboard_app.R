@@ -1,6 +1,7 @@
 #'@rawNamespace import(shiny, except = c(column, tabsetPanel, insertTab, actionButton))
 #'@rawNamespace import(shinyWidgets, except = c(progressBar))
 #'@import aitidata
+#'@import bs4Dash
 #'@import fresh
 #'@import dplyr
 #'@import forcats

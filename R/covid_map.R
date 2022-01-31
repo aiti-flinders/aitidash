@@ -104,7 +104,7 @@ covidServer <- function(id, data) {
                    date == as.Date("2020-03-14") + weeks(input$date))
           
           label_name <-  'sa3_name_2016'
-          join <- absmapsdata::sa32016
+          join <- strayr::read_absmaps("sa32016")
           join_by <- "sa3_code_2016"
           
         } 
@@ -113,7 +113,7 @@ covidServer <- function(id, data) {
             filter(!is.na(sa2_main_2016),
                    date == as.Date(as.yearmon(input$date)))
           label_name <- 'sa2_name_2016'
-          join <- absmapsdata::sa22016 
+          join <- strayr::read_absmaps("sa22016") 
           join_by <- "sa2_main_2016"
         }
         

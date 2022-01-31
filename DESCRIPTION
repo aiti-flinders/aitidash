@@ -14,7 +14,9 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 Imports:
     shiny,
+    bs4Dash,
     shinyWidgets,
+    shinydashboard,
     fresh,
     dplyr,
     forcats,
@@ -32,11 +34,15 @@ Imports:
     htmltools,
     htmlwidgets,
     plotly,
-    tidyr
+    tidyr,
+    aitidata,
+    reportabs,
+    absmapsdata,
+    strayr,
+    aititheme
 Remotes: 
     aiti-flinders/aitidata,
     aiti-flinders/reportabs,
-    wfmackey/absmapsdata,
     runapp-aus/strayr,
     aiti-flinders/aititheme,
 Suggests: 
