@@ -212,9 +212,12 @@ summary_ui <- function(...) {
     p(paste0("This data is current as at: ", reportabs::release(aitidata::labour_force, "month"), " ", reportabs::release(aitidata::labour_force, "year"))),
     p(paste0("It was last updated on: ", format(lf_release$current, "%A, %d %B %Y"))),
     p(paste0("It will next be updated on: ", format(lf_release$nxt, "%A, %d %B %Y"))),
-    fluidRow( 
-      purrr::pmap(box_map(), function(id, indicator, ...) boxes_ui(id, indicator))
-    ),
+    fluidRow(width = 8,
+             table_ui("table")
+             ),
+    # fluidRow( 
+    #   purrr::pmap(box_map(), function(id, indicator, ...) boxes_ui(id, indicator))
+    # ),
     h2("Industry Insights"),
     p(paste0("This data is current as at: ", reportabs::release(aitidata::employment_by_industry, "month"), " ", reportabs::release(aitidata::employment_by_industry, "year"))),
     p(paste0("It was last updated on: ", format(industry_release$current, "%A, %d %B %Y"))),
