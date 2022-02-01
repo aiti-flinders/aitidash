@@ -10,7 +10,6 @@
 #'@import scales
 #'@import zoo
 #'@import reportabs
-#'@import absmapsdata
 #'@import sf
 #'@import pkgload
 #'@import leaflet

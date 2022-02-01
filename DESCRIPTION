@@ -37,7 +37,6 @@ Imports:
     tidyr,
     aitidata,
     reportabs,
-    absmapsdata,
     strayr,
     aititheme
 Remotes: 
