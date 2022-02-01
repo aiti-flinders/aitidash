@@ -104,3 +104,90 @@ boxes_names <- function() {
   )
   
 }
+
+create_sparklines <- function(data, years, region) {
+  data  %>%
+    dplyr::filter(gender == "Persons", 
+           age == "Total (age)",
+           state == {{region}},
+           indicator %in% dashboard_summary$indicator,
+           series_type == "Seasonally Adjusted",
+           year >= max(.$year) - years) %>%
+    dplyr::group_by(indicator) %>%
+    dplyr::mutate(sparkline = sparkline::spk_chr(value,
+                               disableInteraction = TRUE,
+                               type = "line",
+                               width = "160px",
+                               height = "50px", 
+                               lineColor = "#001155",
+                               fillColor = FALSE, 
+                               spotRadius = 3,
+                               spotColor = "#006eff",
+                               minSpotColor = FALSE,
+                               maxSpotColor = FALSE)) %>%
+    dplyr::ungroup() %>%
+    dplyr::distinct(indicator, sparkline)
+}
+
+dashboard_summary <- data.frame(
+  indicator = forcats::as_factor(c("Unemployment rate",
+              "Unemployed total",
+              "Employed total",
+              "Participation rate",
+              "Employed full-time",
+              "Employed part-time",
+              "Underemployed total",
+              "Underutilised total",
+              "Underemployment rate (proportion of labour force)",
+              "Underutilisation rate",
+              "Monthly hours worked in all jobs",
+              "Labour force total")),
+    reverse = c(TRUE,
+                TRUE,
+                FALSE,
+                FALSE,
+                FALSE,
+                FALSE,
+                TRUE,
+                TRUE,
+                TRUE, 
+                TRUE,
+                FALSE,
+                FALSE),
+  name = c("Unmemployment Rate",
+           "Unemployed Total",
+           "Employed Total",
+           "Participation Rate",
+           "Employed Full-Time",
+           "Employed Part-Time",
+           "Underemployed Total",
+           "Underutilised Total",
+           "Underemployment Rate",
+           "Underutilisation Rate",
+           "Hours Worked",
+           "Labour Force")
+
+)
+
+add_colours <- function(value, reverse) {
+  if (reverse) {
+    case_when(value > 0 ~ "red",
+              value < 0 ~ "green")
+  } else {
+    case_when(value > 0 ~ "green",
+              value < 0 ~ "red")
+  }
+  
+}
+
+add_arrows <- function(value, reverse) {
+  if (reverse) {
+    case_when(value > 0 ~ "arrow-up",
+              value < 0 ~ "arrow-down")
+  } else {
+    case_when(value > 0 ~ "arrow-up",
+              value < 0 ~ "arrow-down")
+  }
+  
+  
+}

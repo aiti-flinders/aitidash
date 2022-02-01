@@ -14,45 +14,22 @@ table_server <- function(id, data, region) {
     id,
     function(input, output, session) {
       
-      all_indicators <- as_factor(c("Unemployment rate",
-                          "Unemployed total",
-                          "Employed total",
-                          "Participation rate",
-                          "Employed full-time",
-                          "Employed part-time",
-                          "Underemployed total",
-                          "Underutilised total",
-                          "Underemployment rate (proportion of labour force)",
-                          "Underutilisation rate",
-                          "Monthly hours worked in all jobs",
-                          "Labour force total"))
-      
-      
+
       output$table <- renderUI({
       
       using <- data %>%
-        filter(gender == "Persons",
+        dplyr::filter(gender == "Persons",
                age == "Total (age)",
                state == region(),
-               indicator %in% all_indicators,
+               indicator %in% dashboard_summary$indicator,
                series_type == "Seasonally Adjusted") %>%
         distinct(state, indicator, series_type) %>%
         as.list()
       
-      sparklines <- data %>%
-        filter(gender == "Persons", 
-               age == "Total (age)",
-               state == region(),
-               indicator %in% all_indicators,
-               series_type == "Seasonally Adjusted",
-               year >= 2019) %>%
-        group_by(indicator) %>%
-        mutate(sparkline = spk_chr(value, type = "line", width = "160px", height = "50px")) %>%
-        ungroup() %>%
-        distinct(indicator, sparkline)
-      
+      sparklines <- create_sparklines(data, 1, region())
+
       current <- data %>%
-        filter(indicator %in% using$indicator,
+        dplyr::filter(indicator %in% using$indicator,
                state == region(),
                series_type == "Seasonally Adjusted",
                age == "Total (age)",
@@ -61,37 +38,24 @@ table_server <- function(id, data, region) {
         select(indicator, unit, current = value)
       
       over_month <- data %>%
-        value_at(data = ., filter_with = using, at_month = "November") %>%
+        value_at(data = ., filter_with = using, at_month = month(max(.$date) - months(1), label = T, abbr = F)) %>%
         select(indicator, last_month = value)
       
       over_year <- data %>%
-        value_at(data = ., filter_with = using, at_year = 2020) %>% 
+        value_at(data = ., filter_with = using, at_year = max(.$year) - 1) %>% 
         select(indicator, last_year = value)
       
       table_data <- left_join(current, over_month, by = "indicator") %>%
         left_join(over_year, by = "indicator") %>%
+        left_join(dashboard_summary, by = "indicator") %>% 
         mutate(change_over_month = current - last_month,
-               change_over_year = current - last_year,
-               reverse = case_when(
-                 indicator %in% c("Unemployed total",
-                                  "Underemployed total",
-                                  "Underutilised total",
-                                  "Unemployment rate",
-                                  "Underemployment rate (proportion of labour force)",
-                                  "Underutilisation rate") ~ TRUE,
-                 TRUE ~ FALSE
-               ),
-               up_month = case_when(
-                 change_over_month > 0 & reverse ~ "red",
-                 change_over_month > 0 & !reverse ~ "green",
-                 change_over_month < 0 & reverse ~ "green",
-                 TRUE ~ "red"
-               ), 
-               up_year = case_when(
-                 change_over_year > 0 & reverse ~ "red",
-                 change_over_year > 0 & !reverse ~ "green",
-                 change_over_year < 0 & reverse ~ "green",
-                 TRUE ~ "red")) %>%
+               change_over_year = current - last_year) %>%
+        rowwise() %>%
+        mutate(colour_month = add_colours(change_over_month, reverse),
+               colour_year = add_colours(change_over_year, reverse),
+               arrow_month = add_arrows(change_over_month, reverse),
+               arrow_year = add_arrows(change_over_year, reverse)) %>%
+        ungroup() %>%
         left_join(sparklines, by = "indicator") %>%
         mutate(current = case_when(
           unit == "000" ~ as_comma_group(., group = "indicator", value = "current"),
@@ -101,34 +65,30 @@ table_server <- function(id, data, region) {
             unit == "Percent" ~ as_percent(change_over_month)),
           change_over_year = case_when(
             unit == "000" ~ as_comma_group(., group = "indicator", value = "change_over_year"),
-            unit == "Percent" ~ as_percent(change_over_year))) %>%
-        rename(Indicator = indicator,
-               "Current value" = current,
-               "Monthly change" = change_over_month,
-               "Yearly change" = change_over_year,
-               "Previous two years" = sparkline) %>%
-        arrange(factor(Indicator, levels = all_indicators))
+            unit == "Percent" ~ as_percent(change_over_year)))  %>%
+        arrange(factor(indicator, levels = dashboard_summary$indicator)) %>%
+        select(name, current, change_over_month, change_over_year, sparkline, colour_month, colour_year, arrow_month, arrow_year,
+               -c(unit, last_month, last_year, reverse))
 
-      out <- formattable(
+      out <- format_table(
         table_data,
-        align = "r",
-        list(unit = F,
-             last_month = F,
-             last_year = F,
-             reverse = F,
-             up_month = F,
-             up_year = F,
-             `Current value` = formatter("span", style = style(font.weight = "bold")),
-             `Monthly change` = formatter("span",
-                                          style = ~ style(color = ifelse(up_month == "red",  "#ffb24d", "#64b478")),
-                                          ~ icontext(ifelse(up_month == "red", "arrow-down", "arrow-up"), `Monthly change`)),
-             `Yearly change` = formatter("span",
-                                         style = ~ style(color = ifelse(up_year == "red",  "#ffb24d", "#64b478")),
-                                         ~ icontext(ifelse(up_year == "red", "arrow-down", "arrow-up"), `Yearly change`))
-        )) %>%
-        format_table() %>%
-        HTML() %>%
-        div() %>% 
+        align = c("l", rep("c", NCOL(table_data) - 1)),
+        col.names = c("Indicator", "Current Value", "Monthly Change", "Yearly Change", paste0("Trend [", max(data$year) - 1, " - ", max(data$year), "]")),
+        list(colour_month = F,
+             colour_year = F,
+             arrow_month = F,
+             arrow_year = F,
+             indicator = F,
+             current = formatter("span", style = style(font.weight = "bold")),
+             change_over_month = formatter("span",
+                                          style = ~ style(color = ifelse(colour_month == "red",  "#ffb24d", "#64b478")),
+                                          ~ icontext(ifelse(arrow_month == "arrow-down", "arrow-down", "arrow-up"), change_over_month)),
+             change_over_year = formatter("span",
+                                         style = ~ style(color = ifelse(colour_year == "red",  "#ffb24d", "#64b478")),
+                                         ~ icontext(ifelse(arrow_year == "arrow-down", "arrow-down", "arrow-up"), change_over_year))
+             )) %>%
+        htmltools::HTML() %>%
+        div() %>%
         spk_add_deps()
       
       out
