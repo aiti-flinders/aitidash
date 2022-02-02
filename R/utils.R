@@ -154,7 +154,7 @@ dashboard_summary <- data.frame(
                 TRUE,
                 FALSE,
                 FALSE),
-  name = c("Unmemployment Rate",
+  name = c("Unemployment Rate",
            "Unemployed Total",
            "Employed Total",
            "Participation Rate",
