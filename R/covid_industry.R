@@ -5,7 +5,7 @@ covidIndustryUI <- function(id, data) {
                          "Payroll Wages Index" = "payroll_wages")
   industry_choices <- unique(data$industry)
   
-  tabPanel(title = "Payroll Jobs by Industry",
+  tabPanel(title = "Payroll Indexes by Industry",
            plotlyOutput(ns("plot"), width = "100%", height = "600px"),
            fluidRow(
              dashboard_box(title = "Customise Chart",
