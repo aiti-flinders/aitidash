@@ -3,7 +3,7 @@ name: deploy-dashboard
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the dev branch
 on:
-  pull-request:
+  pull_request:
 
 jobs: 
   deploy-dashboard:
