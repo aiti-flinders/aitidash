@@ -30,9 +30,9 @@
 
 
 #### Preamble ####
-# Plotly Setup
-# Sys.setenv("plotly_username" = "hamgamb")
-# Sys.setenv("plotly_api_key" = 'SDYMDyK3YM0eZrTNpyoa')
+Plotly Setup
+Sys.setenv("plotly_username" = "hamgamb")
+Sys.setenv("plotly_api_key" = 'SDYMDyK3YM0eZrTNpyoa')
 
 # # phantom_js install
 # if (is.null(suppressMessages(webshot:::find_phantom()))) { webshot::install_phantomjs() }
