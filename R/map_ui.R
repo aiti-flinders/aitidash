@@ -210,7 +210,7 @@ map_server <- function(id, data) {
           paste0(input$filename, "-plot.", input$filetype)
         },
         content = function(file) {
-          plotly_IMAGE(create_plot(), format = input$filetype, width = input$width, height = input$height, out_file = file)
+          mapview::mapshot(user_map(), file = file, cliprect = "viewport", selfcontained = FALSE)
         }
       )
       
