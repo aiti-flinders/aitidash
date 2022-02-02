@@ -381,23 +381,4 @@ dash_ui <- function(...) {
   )
 }
 
-boxes_ui <- function(id, indicator = NULL, footer = NULL, plot = TRUE) {
-  
-  ns <- NS(id)
-  bs4Card(width = 6,
-          height = ifelse(plot, "150px", "100px"),
-          title = uiOutput(ns("box_title")),
-          solidHeader = FALSE, 
-          status = 'primary', 
-          collapsible = F,
-          footer = footer,
-          uiOutput(ns("box_ui")),
-          if(plot) {plotOutput(height = 50, ns("plot"))}
-  )
-}
-
-boxes_ui_industry <- function(id) {
-  ns <- NS(id)
-  infoBoxOutput(ns('box'), width = 6)
-}
 
