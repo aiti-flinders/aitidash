@@ -126,7 +126,7 @@ create_sparklines <- function(data, years, region) {
                                minSpotColor = FALSE,
                                maxSpotColor = FALSE)) %>%
     dplyr::ungroup()
-
+}
 dashboard_summary <- data.frame(
   indicator = forcats::as_factor(c("Unemployment rate",
               "Unemployed total",
