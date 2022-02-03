@@ -200,35 +200,14 @@ summary_ui <- function(...) {
   lf_release <- list("current" = aitidata::current_release("labour-force-australia"),
                      "nxt" = aitidata::abs_next_release("labour-force-australia"))
   
-  
-  industry_release <- list("nxt" = aitidata::abs_next_release("labour-force-australia-detailed"),
-                           "current" = aitidata::current_release("labour-force-australia-detailed"))
-  
-  
-  
   fluidPage(
     h1(textOutput("region_selected")),
-    h2("Employment Insights"),
-    p(paste0("This data is current as at: ", reportabs::release(aitidata::labour_force, "month"), " ", reportabs::release(aitidata::labour_force, "year"))),
-    p(paste0("It was last updated on: ", format(lf_release$current, "%A, %d %B %Y"))),
-    p(paste0("It will next be updated on: ", format(lf_release$nxt, "%A, %d %B %Y"))),
-    fluidRow( 
-      purrr::pmap(box_map(), function(id, indicator, ...) boxes_ui(id, indicator))
-    ),
-    h2("Industry Insights"),
-    p(paste0("This data is current as at: ", reportabs::release(aitidata::employment_by_industry, "month"), " ", reportabs::release(aitidata::employment_by_industry, "year"))),
-    p(paste0("It was last updated on: ", format(industry_release$current, "%A, %d %B %Y"))),
-    p(paste0("It will next be updated on: ", format(industry_release$nxt, "%A, %d %B %Y"))),
-    
-    fluidRow(
-      boxes_ui_industry("industry_total"),
-      boxes_ui_industry("industry_ft")
-      
-    ),
-    fluidRow(
-      boxes_ui_industry("industry_pt"),
-      boxes_ui_industry("industry_under")
-    )
+    h2(paste0("Employment Insights - ", reportabs::release(aitidata::labour_force, "month"), " ", reportabs::release(aitidata::labour_force, "year"))),
+    p(paste0("Last updated on: ", format(lf_release$current, "%A, %d %B %Y"))),
+    p(paste0("The next update is: ", format(lf_release$nxt, "%A, %d %B %Y"))),
+    fluidRow(width = 12,
+             table_ui("table")),
+  
   )
 }
 
@@ -402,23 +381,4 @@ dash_ui <- function(...) {
   )
 }
 
-boxes_ui <- function(id, indicator = NULL, footer = NULL, plot = TRUE) {
-  
-  ns <- NS(id)
-  bs4Card(width = 6,
-          height = ifelse(plot, "150px", "100px"),
-          title = uiOutput(ns("box_title")),
-          solidHeader = FALSE, 
-          status = 'primary', 
-          collapsible = F,
-          footer = footer,
-          uiOutput(ns("box_ui")),
-          if(plot) {plotOutput(height = 50, ns("plot"))}
-  )
-}
-
-boxes_ui_industry <- function(id) {
-  ns <- NS(id)
-  infoBoxOutput(ns('box'), width = 6)
-}
 

@@ -99,7 +99,7 @@ map_server <- function(id, data) {
             select(-state_name_2016)
           
           label_name <- "sa3_name_2016"
-          join <- absmapsdata::sa32016
+          join <- read_absmap("sa32016")
           join_by <- "sa3_code_2016"
           
         } else if (grepl("Smoothed", input$indicator)) {
@@ -110,7 +110,7 @@ map_server <- function(id, data) {
                    -state_name_2016)
           
           label_name <- "sa2_name_2016"
-          join <- absmapsdata::sa22016
+          join <- read_absmap("sa22016")
           join_by <- "sa2_code_2016"
         }
         
@@ -120,7 +120,7 @@ map_server <- function(id, data) {
                    date == as.Date(as.yearmon(input$date)))
           
           label_name <- "sa2_name_2016"
-          join <- absmapsdata::sa22016
+          join <- read_absmap("sa22016")
           join_by <- "sa2_code_2016"
         }
         
@@ -210,7 +210,7 @@ map_server <- function(id, data) {
           paste0(input$filename, "-plot.", input$filetype)
         },
         content = function(file) {
-          plotly_IMAGE(create_plot(), format = input$filetype, width = input$width, height = input$height, out_file = file)
+          mapview::mapshot(user_map(), file = file, cliprect = "viewport", selfcontained = FALSE)
         }
       )
       

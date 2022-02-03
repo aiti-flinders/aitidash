@@ -1,0 +1,102 @@
+table_ui <- function(id) {
+  
+  
+  ns <- NS(id)
+  
+  
+  htmlOutput(ns("table"))
+  
+  
+}
+
+table_server <- function(id, data, region) {
+  moduleServer(
+    id,
+    function(input, output, session) {
+      
+
+      output$table <- renderUI({
+      
+      using <- data %>%
+        dplyr::filter(gender == "Persons",
+               age == "Total (age)",
+               state == region(),
+               indicator %in% dashboard_summary$indicator,
+               series_type == "Seasonally Adjusted") %>%
+        distinct(state, indicator, series_type) %>%
+        as.list()
+      
+      sparklines <- create_sparklines(data, 1, region())
+
+      current <- data %>%
+        dplyr::filter(indicator %in% using$indicator,
+               state == region(),
+               series_type == "Seasonally Adjusted",
+               age == "Total (age)",
+               gender == "Persons",
+               date == max(.$date)) %>%
+        select(indicator, unit, current = value)
+      
+      over_month <- data %>%
+        value_at(data = ., filter_with = using, at_month = month(max(.$date) - months(1), label = T, abbr = F)) %>%
+        select(indicator, last_month = value)
+      
+      over_year <- data %>%
+        value_at(data = ., filter_with = using, at_year = max(.$year) - 1) %>% 
+        select(indicator, last_year = value)
+      
+      table_data <- left_join(current, over_month, by = "indicator") %>%
+        left_join(over_year, by = "indicator") %>%
+        left_join(dashboard_summary, by = "indicator") %>% 
+        mutate(change_over_month = current - last_month,
+               change_over_year = current - last_year) %>%
+        rowwise() %>%
+        mutate(colour_month = add_colours(change_over_month, reverse),
+               colour_year = add_colours(change_over_year, reverse),
+               arrow_month = add_arrows(change_over_month, reverse),
+               arrow_year = add_arrows(change_over_year, reverse)) %>%
+        ungroup() %>%
+        left_join(sparklines, by = "indicator") %>%
+        mutate(current = case_when(
+          unit == "000" ~ as_comma_group(., group = "indicator", value = "current"),
+          unit == "Percent" ~ as_percent(current)),
+          change_over_month = case_when(
+            unit == "000" ~ as_comma_group(., group = "indicator", value = "change_over_month"),
+            unit == "Percent" ~ as_percent(change_over_month)),
+          change_over_year = case_when(
+            unit == "000" ~ as_comma_group(., group = "indicator", value = "change_over_year"),
+            unit == "Percent" ~ as_percent(change_over_year)))  %>%
+        arrange(factor(indicator, levels = dashboard_summary$indicator)) %>%
+        select(name, current, change_over_month, change_over_year, sparkline, colour_month, colour_year, arrow_month, arrow_year,
+               -c(unit, last_month, last_year, reverse))
+
+      out <- format_table(
+        table_data,
+        align = c("l", rep("c", NCOL(table_data) - 1)),
+        col.names = c("Indicator", "Current Value", "Monthly Change", "Yearly Change", paste0("Trend [", max(data$year) - 1, " - ", max(data$year), "]")),
+        list(colour_month = F,
+             colour_year = F,
+             arrow_month = F,
+             arrow_year = F,
+             indicator = F,
+             current = formatter("span", style = style(font.weight = "bold")),
+             change_over_month = formatter("span",
+                                          style = ~ style(color = ifelse(colour_month == "red",  "#ffb24d", "#64b478")),
+                                          ~ icontext(ifelse(arrow_month == "arrow-down", "arrow-down", "arrow-up"), change_over_month)),
+             change_over_year = formatter("span",
+                                         style = ~ style(color = ifelse(colour_year == "red",  "#ffb24d", "#64b478")),
+                                         ~ icontext(ifelse(arrow_year == "arrow-down", "arrow-down", "arrow-up"), change_over_year))
+             )) %>%
+        htmltools::HTML() %>%
+        div() %>%
+        spk_add_deps()
+      
+      out
+      
+      })
+      
+      
+      
+    }
+  )
+}

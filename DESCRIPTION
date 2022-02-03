@@ -11,14 +11,13 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Imports:
     shiny,
+    bs4Dash,
     shinyWidgets,
-    pkgload,
-    bs4Dash (>= 2.0.0),
+    shinydashboard,
     fresh,
-    shinycssloaders,
     dplyr,
     forcats,
     ggplot2,
@@ -26,26 +25,25 @@ Imports:
     scales,
     zoo,
     sf,
+    pkgload,
     leaflet,
     mapview,
-    strayr,
+    pkgload,
+    sparkline,
+    formattable,
+    htmltools,
+    htmlwidgets,
     plotly,
-    stats,
-    utils,
-    purrr,
     tidyr,
-    config,
     aitidata,
     reportabs,
-    absmapsdata,
+    strayr,
     aititheme
 Remotes: 
     aiti-flinders/aitidata,
     aiti-flinders/reportabs,
-    wfmackey/absmapsdata,
     runapp-aus/strayr,
     aiti-flinders/aititheme,
-    RinteRface/bs4Dash
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

@@ -1,9 +1,8 @@
 #'@rawNamespace import(shiny, except = c(column, tabsetPanel, insertTab, actionButton))
 #'@rawNamespace import(shinyWidgets, except = c(progressBar))
-#'@import bs4Dash
 #'@import aitidata
+#'@import bs4Dash
 #'@import fresh
-#'@import shinycssloaders
 #'@import dplyr
 #'@import forcats
 #'@import ggplot2
@@ -11,7 +10,6 @@
 #'@import scales
 #'@import zoo
 #'@import reportabs
-#'@import absmapsdata
 #'@import sf
 #'@import pkgload
 #'@import leaflet
@@ -19,24 +17,26 @@
 #'@import strayr
 #'@import aititheme
 #'@import pkgload
+#'@import sparkline
+#'@import formattable
+#'@import htmltools
+#'@import htmlwidgets
 #'@importFrom plotly ggplotly layout plotlyOutput renderPlotly plotly_IMAGE
 #'@importFrom stats reorder setNames
 #'@importFrom utils download.file tail write.csv
-#'@importFrom purrr pmap
 #'@importFrom tidyr tribble
 #'
 #'@export aiti_dashboard
 
 
 #### Preamble ####
-# Plotly Setup
 Sys.setenv("plotly_username" = "hamgamb")
 Sys.setenv("plotly_api_key" = 'SDYMDyK3YM0eZrTNpyoa')
 
-# phantom_js install
-if (is.null(suppressMessages(webshot:::find_phantom()))) { webshot::install_phantomjs() }
+# # phantom_js install
+# if (is.null(suppressMessages(webshot:::find_phantom()))) { webshot::install_phantomjs() }
 
-# Font Setup
+#Install fonts
 dir.create("~/.fonts")
 file.copy("inst/www/Roboto.ttf", "~/.fonts")
 system('fc-cache -f ~/.fonts')
@@ -79,20 +79,19 @@ dash_server <- function(input, output, session) {
 
 
   #Employment boxes - row 1
-  pmap(box_map(), function(id, indicator, reverse, percent, ...) boxes_server(id, aitidata::labour_force, indicator, region_selected, reverse, percent))
-                                                                                       
+  table_server("table", data = aitidata::labour_force, region = region_selected)
   #JobKeeper Boxes
-  boxes_server("jobkeeper_total", data = aitidata::jobkeeper_state, region = region_selected, "Jobkeeper applications", percent = FALSE, reverse = TRUE)
-  boxes_server("jobkeeper_proportion", data = aitidata::jobkeeper_state, region = region_selected, "Jobkeeper proportion", percent = TRUE, reverse = TRUE)
-
+  # boxes_server("jobkeeper_total", data = aitidata::jobkeeper_state, region = region_selected, "Jobkeeper applications", percent = FALSE, reverse = TRUE)
+  # boxes_server("jobkeeper_proportion", data = aitidata::jobkeeper_state, region = region_selected, "Jobkeeper proportion", percent = TRUE, reverse = TRUE)
+  # 
 
 
   #Industry Employment 
-  boxes_server_industry("industry_total", data = aitidata::employment_by_industry, region = region_selected,  "Employed total")
-  boxes_server_industry("industry_ft", data = aitidata::employment_by_industry, region = region_selected, "Employed full-time")
-  boxes_server_industry("industry_pt", data = aitidata::employment_by_industry, region = region_selected, "Employed part-time")
-  boxes_server_industry("industry_under", data = aitidata::employment_by_industry, region = region_selected, "Underemployed total")
-  
+  # boxes_server_industry("industry_total", data = aitidata::employment_by_industry, region = region_selected,  "Employed total")
+  # boxes_server_industry("industry_ft", data = aitidata::employment_by_industry, region = region_selected, "Employed full-time")
+  # boxes_server_industry("industry_pt", data = aitidata::employment_by_industry, region = region_selected, "Employed part-time")
+  # boxes_server_industry("industry_under", data = aitidata::employment_by_industry, region = region_selected, "Underemployed total")
+  # 
 
   # callModule(retailTrade, "rt_ts", data = rt)
   # callModule(retailTradeRegional, "rt_region", data  = rt)

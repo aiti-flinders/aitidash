@@ -46,7 +46,7 @@ labourMarketSmallAreaServer <- function(id, data, region) {
       filter(indicator == input$indicator,
              date == as.Date(as.yearqtr(input$date)) + months(2)) %>%
       mutate(value_label = ifelse(grepl("%", indicator), as_percent(value), as_comma(value))) %>%
-      left_join(absmapsdata::sa22016) %>%
+      left_join(strayr::read_absmaps("sa22016")) %>%
       st_as_sf()
     } else {
       df <- data %>%
@@ -54,7 +54,7 @@ labourMarketSmallAreaServer <- function(id, data, region) {
                date == as.Date(as.yearqtr(input$date)) + months(2),
                state_name_2016 == region()) %>%
         mutate(value_label = ifelse(grepl("%", indicator), as_percent(value), as_comma(value))) %>%
-        left_join(absmapsdata::sa22016) %>%
+        left_join(strayr::read_absmaps("sa22016")) %>%
         st_as_sf()
     }
   })

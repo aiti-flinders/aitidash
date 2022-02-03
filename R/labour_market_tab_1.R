@@ -108,7 +108,7 @@ labourMarketServer <- function(id, data) {
     p <- abs_plot(indicator = input$indicator,
                   years = input$years,
                   states = input$state,
-                  series_type = input$series_type,
+                  series_types =  input$series_type,
                   compare_aus = FALSE,
                   plotly = TRUE) 
   })
