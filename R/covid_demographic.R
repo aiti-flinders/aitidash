@@ -94,7 +94,8 @@ covidDemographicServer <- function(id, data, region) {
         ggplotly(p, tooltip = "text") %>%
           layout(autosize = TRUE,
                  legend = list(orientation = "h", 
-                               y = -0.15),
+                               y = -0.15,
+                               title = ""),
                  annotations = list(
                    x = 1,
                    y = -0.20,
