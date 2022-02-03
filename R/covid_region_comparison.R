@@ -53,14 +53,14 @@ covidRegionServer <- function(id, data) {
       create_data <- reactive({
         if(input$facet == "none") {
           df <- data %>%
-            filter(industry == "All industries",
+            filter(industry == "Total (Industry)",
                    indicator == input$indicator,
                    gender == "Persons",
                    age == "All ages",
                    state %in% input$state)
-        } else if (input$facet == "sex") {
+        } else if (input$facet == "gender") {
           df <- data %>% 
-            filter(industry == "All industries",
+            filter(industry == "Total (Industry)",
                    age == "All ages",
                    indicator == input$indicator, 
                    state %in% input$state)
@@ -73,7 +73,7 @@ covidRegionServer <- function(id, data) {
             mutate(industry = as_factor(industry)) 
           } else {
           df <- data %>%
-            filter(industry == "All industries",
+            filter(industry == "Total (Industry)",
                    gender == "Persons",
                    indicator == input$indicator,
                    state %in% input$state)
@@ -109,10 +109,16 @@ covidRegionServer <- function(id, data) {
           aiti_colour_manual(n = length(input$state) + 1) 
       
          
-        if(input$facet != "none") {
+        if (input$facet != "none") {
           p <- p + 
             facet_wrap(~get(input$facet)~., nrow = 5, ncol = 4) +
             scale_x_date(date_breaks = "4 months", date_labels = "%b") +
+            labs(x = NULL,
+                 title = plot_title)
+        } else if (input$facet == "gender") {
+          p <- p + 
+            facet_wrap(~get(input$facet)~., nrow = 5, ncol = 4) + 
+            scale_x_date(date_breaks = "4 months", date_labels = "%b%") + 
             labs(x = NULL,
                  title = plot_title)
         } else {
@@ -126,7 +132,8 @@ covidRegionServer <- function(id, data) {
         ggplotly(p, tooltip = "text") %>%
           layout(autosize = TRUE,
                  legend = list(orientation = "h", 
-                               y = -0.15),
+                               y = -0.15,
+                               title = ""),
                  annotations = list(
                    x = 1,
                    y = -0.20,

@@ -114,7 +114,7 @@ create_sparklines <- function(data, years, region) {
            series_type == "Seasonally Adjusted",
            year >= max(.$year) - years) %>%
     dplyr::group_by(indicator) %>%
-    dplyr::mutate(sparkline = sparkline::spk_chr(value,
+    dplyr::summarise(sparkline = sparkline::spk_chr(value,
                                disableInteraction = TRUE,
                                type = "line",
                                width = "160px",
@@ -125,10 +125,8 @@ create_sparklines <- function(data, years, region) {
                                spotColor = "#006eff",
                                minSpotColor = FALSE,
                                maxSpotColor = FALSE)) %>%
-    dplyr::ungroup() %>%
-    dplyr::distinct(indicator, sparkline)
+    dplyr::ungroup()
 }
-
 dashboard_summary <- data.frame(
   indicator = forcats::as_factor(c("Unemployment rate",
               "Unemployed total",
