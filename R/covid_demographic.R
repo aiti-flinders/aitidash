@@ -50,7 +50,7 @@ covidDemographicServer <- function(id, data, region) {
         if(input$breakdown == "age") {
           df <- data %>%
             filter(state == input$state, 
-                   industry == "All industries", 
+                   industry == "Total (Industry)", 
                    indicator == input$indicator,
                    gender == "Persons",
                    age != "All ages") 
@@ -58,7 +58,7 @@ covidDemographicServer <- function(id, data, region) {
           df <- data %>%
             filter(state == input$state,
                    indicator == input$indicator,
-                   industry == "All industries",
+                   industry == "Total (Industry)",
                    age == "All ages", 
                    gender != "Persons")
         }
