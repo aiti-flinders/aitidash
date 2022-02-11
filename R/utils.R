@@ -137,9 +137,7 @@ dashboard_summary <- data.frame(
               "Underemployed total",
               "Underutilised total",
               "Underemployment rate (proportion of labour force)",
-              "Underutilisation rate",
-              "Monthly hours worked in all jobs",
-              "Labour force total")),
+              "Underutilisation rate")),
     reverse = c(TRUE,
                 TRUE,
                 FALSE,
@@ -149,9 +147,7 @@ dashboard_summary <- data.frame(
                 TRUE,
                 TRUE,
                 TRUE, 
-                TRUE,
-                FALSE,
-                FALSE),
+                TRUE),
   name = c("Unemployment Rate",
            "Unemployed Total",
            "Employed Total",
@@ -161,9 +157,7 @@ dashboard_summary <- data.frame(
            "Underemployed Total",
            "Underutilised Total",
            "Underemployment Rate",
-           "Underutilisation Rate",
-           "Hours Worked",
-           "Labour Force")
+           "Underutilisation Rate")
 
 )
 
