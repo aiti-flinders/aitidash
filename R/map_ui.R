@@ -94,34 +94,34 @@ map_server <- function(id, data) {
         
         if (input$indicator == "Payroll Index") {
           data <- data %>%
-            filter(!is.na(sa3_code_2016),
+            filter(!is.na(sa3_code),
                    date == as.Date("2020-03-14") + weeks(input$date)) %>%
-            select(-state_name_2016)
+            select(-state_name)
           
-          label_name <- "sa3_name_2016"
-          join <- read_absmap("sa32016")
-          join_by <- "sa3_code_2016"
+          label_name <- "sa3_name"
+          join <- read_absmap("sa32016", remove_year_suffix = TRUE)
+          join_by <- "sa3_code"
           
         } else if (grepl("Smoothed", input$indicator)) {
           data <- data %>%
-            filter(!is.na(sa2_code_2016),
+            filter(!is.na(sa2_code),
                    date == as.Date(as.yearqtr(input$date)) + months(2)) %>%
-            select(-sa2_name_2016, 
-                   -state_name_2016)
+            select(-sa2_name, 
+                   -state_name)
           
-          label_name <- "sa2_name_2016"
-          join <- read_absmap("sa22016")
-          join_by <- "sa2_code_2016"
+          label_name <- "sa2_name"
+          join <- read_absmap("sa22016", remove_year_suffix = TRUE)
+          join_by <- "sa2_code"
         }
         
         else {
           data <- data %>%
-            filter(!is.na(sa2_code_2016),
+            filter(!is.na(sa2_code),
                    date == as.Date(as.yearmon(input$date)))
           
-          label_name <- "sa2_name_2016"
-          join <- read_absmap("sa22016")
-          join_by <- "sa2_code_2016"
+          label_name <- "sa2_name"
+          join <- read_absmap("sa22016", remove_year_suffix = TRUE)
+          join_by <- "sa2_code"
         }
         
         if (input$state != "Australia") {
@@ -131,7 +131,7 @@ map_server <- function(id, data) {
                    value_label = ifelse(grepl("%", indicator), as_percent(value), as_comma(value)),
                    value_label = ifelse(indicator == "payroll_index", as_comma(value, digits = 2), value_label)) %>%
             left_join(join, by = join_by) %>%
-            filter(state_name_2016 == input$state) %>%
+            filter(state_name == input$state) %>%
             rename(label = all_of(label_name)) %>%
             st_as_sf() %>%
             st_transform("+proj=longlat +datum=WGS84") 
