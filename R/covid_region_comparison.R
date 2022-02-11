@@ -112,18 +112,18 @@ covidRegionServer <- function(id, data) {
         if (input$facet != "none") {
           p <- p + 
             facet_wrap(~get(input$facet)~., nrow = 5, ncol = 4) +
-            scale_x_date(date_breaks = "4 months", date_labels = "%b") +
+            scale_x_date(breaks = pretty_breaks(6), date_labels = "%B") +
             labs(x = NULL,
                  title = plot_title)
         } else if (input$facet == "gender") {
           p <- p + 
             facet_wrap(~get(input$facet)~., nrow = 5, ncol = 4) + 
-            scale_x_date(date_breaks = "4 months", date_labels = "%b%") + 
+            scale_x_date(breaks = pretty_breaks(6), date_labels = "%B") + 
             labs(x = NULL,
                  title = plot_title)
         } else {
           p <- p + 
-            scale_x_date(date_breaks = "4 months", date_labels = "%b") +
+            scale_x_date(breaks = pretty_breaks(6), date_labels = "%B") +
             labs(x = NULL, 
                  y = NULL,
                  title = plot_title)

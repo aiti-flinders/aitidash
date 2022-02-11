@@ -132,7 +132,7 @@ covidIndustryServer <- function(id, data) {
             geom_hline(aes(yintercept = 100)) + 
             geom_point(shape = 1, size = 1) + 
             theme_aiti(legend = "bottom", base_family = "Roboto") + 
-            scale_x_date(date_breaks = "4 weeks", date_labels = "%b-%d") + 
+            scale_x_date(breaks = pretty_breaks(n = 6), date_labels = "%b-%d") + 
             aiti_colour_manual(n = length(input$industry)) +
             labs(x = NULL, y = NULL, title = plot_title)
           
@@ -141,7 +141,8 @@ covidIndustryServer <- function(id, data) {
         ggplotly(p, tooltip = "text") %>%
           layout(autosize = TRUE,
                  legend = list(orientation = "h", 
-                               y = -0.15),
+                               y = -0.15,
+                               title = ""),
                  annotations = list(
                    x = 1,
                    y = -0.20,

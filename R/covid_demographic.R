@@ -82,7 +82,7 @@ covidDemographicServer <- function(id, data, region) {
           geom_hline(aes(yintercept = 100)) + 
           geom_point(shape = 1, size = 1) + 
           theme_aiti(legend = 'bottom', base_family = "Roboto") +
-          scale_x_date(date_breaks = "4 weeks", date_labels = "%b-%d") + 
+          scale_x_date(breaks = pretty_breaks(6), date_labels = "%B") + 
           aiti_colour_manual(8) +
           labs(x = NULL,
                y = NULL,
