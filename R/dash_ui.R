@@ -271,8 +271,8 @@ emp_ind_tab <- function(...) {
       tabBox(
         id = "employment_industry_tab_id",
         width = 12,
-        empIndUI("empInd_ts", data = aitidata::employment_by_industry),
-        empIndComparisonUI("empInd_region", data = aitidata::employment_by_industry)
+        empIndUI("empInd_ts", data = aitidata::industry_employment),
+        empIndComparisonUI("empInd_region", data = aitidata::industry_employment)
       )
     )
   )
@@ -295,20 +295,20 @@ industry_payroll_tab <- function(...) {
 
 
 #IVI Tab
-internet_vacancies_tab <- function(...) {
-  tabItem(
-    tabName = "internet_vacancies", 
-    fluidRow(
-      tabBox(
-        id = "internet_vacancies_tab_id",
-        width = 12,
-        iviUI("ivi_ts", data = aitidata::internet_vacancies_index),
-        iviComparisonUI("ivi_comparison", data = aitidata::internet_vacancies_index),
-        iviTreeUI("ivi_treemap", data = aitidata::internet_vacancies_index)
-      )
-    )
-  )
-}
+# internet_vacancies_tab <- function(...) {
+#   tabItem(
+#     tabName = "internet_vacancies", 
+#     fluidRow(
+#       tabBox(
+#         id = "internet_vacancies_tab_id",
+#         width = 12,
+#         iviUI("ivi_ts", data = aitidata::internet_vacancies_index),
+#         iviComparisonUI("ivi_comparison", data = aitidata::internet_vacancies_index),
+#         iviTreeUI("ivi_treemap", data = aitidata::internet_vacancies_index)
+#       )
+#     )
+#   )
+# }
 
 #### Map Tabs ####
 map_tab <- function(...) {
@@ -363,7 +363,7 @@ body <- function(...) {
       jobs_payroll_tab(),
       emp_ind_tab(),
       industry_payroll_tab(),
-      internet_vacancies_tab(),
+      #internet_vacancies_tab(),
       map_tab()
     )
   )

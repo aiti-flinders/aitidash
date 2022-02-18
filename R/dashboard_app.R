@@ -57,14 +57,14 @@ dash_server <- function(input, output, session) {
   
 
   #Employment by Industry - Tab
-  callModule(empInd, "empInd_ts", data = aitidata::employment_by_industry)
-  callModule(empIndComparison, "empInd_region", data = aitidata::employment_by_industry, region = region_selected)
-  callModule(empIndAnalysis, "empInd_analysis", data = aitidata::employment_by_industry, region = region_selected)
+  callModule(empInd, "empInd_ts", data = aitidata::industry_employment)
+  callModule(empIndComparison, "empInd_region", data = aitidata::industry_employment, region = region_selected)
+  callModule(empIndAnalysis, "empInd_analysis", data = aitidata::industry_employment, region = region_selected)
   
   #IVI - Tab
-  callModule(ivi, "ivi_ts", data = aitidata::internet_vacancies_index, region = region_selected)
-  iviComparisonServer("ivi_comparison", data = aitidata::internet_vacancies_index, region = region_selected)
-  iviTreeServer("ivi_treemap", data = aitidata::internet_vacancies_index, region = region_selected)
+  # callModule(ivi, "ivi_ts", data = aitidata::internet_vacancies_index, region = region_selected)
+  # iviComparisonServer("ivi_comparison", data = aitidata::internet_vacancies_index, region = region_selected)
+  # iviTreeServer("ivi_treemap", data = aitidata::internet_vacancies_index, region = region_selected)
   
   #Weekly payroll data
   covidRegionServer("covid_region", data = aitidata::payroll_index)
