@@ -1,8 +1,8 @@
 covidIndustryUI <- function(id, data) {
   
   ns <- NS(id)
-  indicator_choices <- c("Payroll Jobs Index" = "payroll_jobs",
-                         "Payroll Wages Index" = "payroll_wages")
+  indicator_choices <- c("Payroll Jobs Index" = "Payroll jobs",
+                         "Payroll Wages Index" = "Payroll wages")
   industry_choices <- unique(data$industry)
   
   tabPanel(title = "Payroll Indexes by Industry",
@@ -13,7 +13,7 @@ covidIndustryUI <- function(id, data) {
                              inputId = ns("indicator"),
                              label = "Select Indicator",
                              choices = indicator_choices,
-                             selected = "payroll_jobs"
+                             selected = "Payroll jobs"
                            ),
                            pickerInput(
                              inputId = ns("industry"),
@@ -53,8 +53,8 @@ covidIndustryServer <- function(id, data) {
         df <- data %>%
           filter(state == input$state,
                  gender == "Persons",
-                 age == "All ages",
-                 industry != "All industries",
+                 age == "Total (age)",
+                 industry != "Total (industry)",
                  indicator == input$indicator,
                  date == as.Date("2020-03-14") + weeks(input$date)) 
         } else {
@@ -62,7 +62,7 @@ covidIndustryServer <- function(id, data) {
             filter(state == input$state,
                    gender == "Persons",
                    indicator == input$indicator,
-                   age == "All ages",
+                   age == "Total (age)",
                    industry %in% input$industry)
         }
       })

@@ -11,8 +11,8 @@ covidDemographicUI <- function(id, data) {
                            selectInput(
                              inputId = ns("indicator"),
                              label = "Select Indicator",
-                             choices = c("Payroll Jobs Index" = "payroll_jobs"),
-                             selected = "payroll_jobs"
+                             choices = c("Payroll Jobs Index" = "Payroll jobs"),
+                             selected = "Payroll jobs"
                            ),
                            radioGroupButtons(
                              inputId = ns("breakdown"),
@@ -50,16 +50,16 @@ covidDemographicServer <- function(id, data, region) {
         if(input$breakdown == "age") {
           df <- data %>%
             filter(state == input$state, 
-                   industry == "Total (Industry)", 
+                   industry == "Total (industry)", 
                    indicator == input$indicator,
                    gender == "Persons",
-                   age != "All ages") 
+                   age != "Total (age)") 
         } else {
           df <- data %>%
             filter(state == input$state,
                    indicator == input$indicator,
-                   industry == "Total (Industry)",
-                   age == "All ages", 
+                   industry == "Total (industry)",
+                   age == "Total (age)", 
                    gender != "Persons")
         }
       })
