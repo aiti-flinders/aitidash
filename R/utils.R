@@ -114,7 +114,9 @@ create_sparklines <- function(data, years, region) {
            series_type == "Seasonally Adjusted",
            year >= max(.$year) - years) %>%
     dplyr::group_by(indicator) %>%
-    dplyr::summarise(sparkline = sparkline::spk_chr(value,
+    dplyr::summarise(min_date = format(min(date), "%B %Y"),
+                     max_date = format(max(date), "%B %Y"),
+                     sparkline = sparkline::spk_chr(value,
                                disableInteraction = TRUE,
                                type = "line",
                                width = "160px",

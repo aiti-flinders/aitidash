@@ -67,14 +67,26 @@ table_server <- function(id, data, region) {
             unit == "000" ~ as_comma_group(., group = "indicator", value = "change_over_year"),
             unit == "Percent" ~ as_percent(change_over_year)))  %>%
         arrange(factor(indicator, levels = dashboard_summary$indicator)) %>%
-        select(name, current, change_over_month, change_over_year, sparkline, colour_month, colour_year, arrow_month, arrow_year,
+        select(name, 
+               min_date, 
+               max_date,
+               current, 
+               change_over_month, 
+               change_over_year,
+               sparkline, 
+               colour_month, 
+               colour_year, 
+               arrow_month, 
+               arrow_year,
                -c(unit, last_month, last_year, reverse))
 
       out <- format_table(
         table_data,
         align = c("l", rep("c", NCOL(table_data) - 1)),
-        col.names = c("Indicator", "Current Value", "Monthly Change", "Yearly Change", paste0("Trend [", max(data$year) - 1, " - ", max(data$year), "]")),
-        list(colour_month = F,
+        col.names = c("Indicator", "Current Value", "Monthly Change", "Yearly Change", paste0(unique(table_data$min_date), " - ", unique(table_data$max_date))),
+        list(min_date = F,
+             max_date = F,
+             colour_month = F,
              colour_year = F,
              arrow_month = F,
              arrow_year = F,
