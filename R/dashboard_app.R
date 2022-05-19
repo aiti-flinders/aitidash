@@ -79,7 +79,7 @@ dash_server <- function(input, output, session) {
 
 
   #Employment boxes - row 1
-  table_server("table", data = aitidata::labour_force, region = region_selected)
+  table_server("table", data = dplyr::bind_rows(aitidata::labour_force, aitidata::hours_worked), region = region_selected)
   #JobKeeper Boxes
   # boxes_server("jobkeeper_total", data = aitidata::jobkeeper_state, region = region_selected, "Jobkeeper applications", percent = FALSE, reverse = TRUE)
   # boxes_server("jobkeeper_proportion", data = aitidata::jobkeeper_state, region = region_selected, "Jobkeeper proportion", percent = TRUE, reverse = TRUE)
