@@ -176,7 +176,7 @@ empInd <- function(input, output, session, data) {
         ) +
         scale_y_continuous(expand = c(0,0), labels = y_labels) +
         coord_flip() +
-        theme_aiti(base_family = "Roboto", legend = "bottom")
+        theme_aiti(base_family = "Roboto", legend = "bottom", flipped = TRUE)
     } else {
       
         p <- ggplot(create_data(), aes_(x = ~date, 
@@ -192,7 +192,7 @@ empInd <- function(input, output, session, data) {
           y = NULL,
           title = plot_title
         ) + 
-        aititheme::aiti_colour_manual(n = length(input$industry)) +
+        aititheme::scale_colour_aiti("blue") +
         scale_y_continuous(labels = y_labels)  +
         theme_aiti(legend = 'bottom', base_family = "Roboto")
       
