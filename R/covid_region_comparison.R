@@ -90,8 +90,8 @@ covidRegionServer <- function(id, data) {
         #               plotly = TRUE)
         
         plot_title <- case_when(
-          input$indicator == "payroll_jobs" ~ "Payroll Jobs Index",
-          input$indicator == "payroll_wages" ~ "Payroll Wages Index"
+          input$indicator == "Payroll jobs" ~ "Payroll Jobs Index",
+          input$indicator == "Payroll wages" ~ "Payroll Wages Index"
         )
 
         plot_title <- ifelse(length(input$state) <= 1,
@@ -109,10 +109,11 @@ covidRegionServer <- function(id, data) {
                           "<br>Index: ", as_comma(value, digits = 2)))) +
           geom_line() +
           geom_hline(aes(yintercept = 100)) +
+          labs(title = plot_title) + 
           geom_point(shape = 1, size = 1) +
           theme_aiti(legend = "bottom", base_family = "Roboto") +
           theme(strip.background = element_blank()) +
-          aiti_colour_manual(n = length(input$state) + 1)
+          scale_colour_aiti(palette = "blue")
       
          
         if (input$facet != "none") {

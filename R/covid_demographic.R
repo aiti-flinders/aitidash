@@ -83,7 +83,7 @@ covidDemographicServer <- function(id, data, region) {
           geom_point(shape = 1, size = 1) + 
           theme_aiti(legend = 'bottom', base_family = "Roboto") +
           scale_x_date(breaks = pretty_breaks(6), date_labels = "%B") + 
-          aiti_colour_manual(8) +
+          scale_colour_aiti(palette = "blue") +
           labs(x = NULL,
                y = NULL,
                title = toupper(
