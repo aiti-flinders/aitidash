@@ -26,7 +26,7 @@ table_server <- function(id, data, region) {
         distinct(state, indicator, series_type) %>%
         as.list()
       
-      sparklines <- create_sparklines(data, 1, region())
+      sparklines <- create_sparklines(data,  region())
 
       current <- data %>%
         dplyr::filter(indicator %in% using$indicator,
@@ -83,7 +83,7 @@ table_server <- function(id, data, region) {
       out <- format_table(
         table_data,
         align = c("l", rep("c", NCOL(table_data) - 1)),
-        col.names = c("Indicator", "Current Value", "Monthly Change", "Yearly Change", paste0(unique(table_data$min_date), " - ", unique(table_data$max_date))),
+        col.names = c("Indicator", "Current Value", "Monthly Change", "Yearly Change", "Trend"),
         list(min_date = F,
              max_date = F,
              colour_month = F,

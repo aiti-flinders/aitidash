@@ -105,14 +105,14 @@ boxes_names <- function() {
   
 }
 
-create_sparklines <- function(data, years, region) {
+create_sparklines <- function(data, region) {
   data  %>%
     dplyr::filter(gender == "Persons", 
            age == "Total (age)",
            state == {{region}},
            indicator %in% dashboard_summary$indicator,
            series_type == "Seasonally Adjusted",
-           year >= max(.$year) - years) %>%
+           date %in% c(max(.$date):(max(.$date) - months(12)))) %>%
     dplyr::group_by(indicator) %>%
     dplyr::summarise(min_date = format(min(date), "%B %Y"),
                      max_date = format(max(date), "%B %Y"),
