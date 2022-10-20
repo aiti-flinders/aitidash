@@ -22,7 +22,7 @@ table_server <- function(id, data, region) {
                age == "Total (age)",
                state == region(),
                indicator %in% dashboard_summary$indicator,
-               series_type == "Seasonally Adjusted") %>%
+               series_type == "Trend") %>%
         distinct(state, indicator, series_type) %>%
         as.list()
       
@@ -31,7 +31,7 @@ table_server <- function(id, data, region) {
       current <- data %>%
         dplyr::filter(indicator %in% using$indicator,
                state == region(),
-               series_type == "Seasonally Adjusted",
+               series_type == "Trend",
                age == "Total (age)",
                gender == "Persons",
                date == max(.$date)) %>%
