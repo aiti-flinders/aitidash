@@ -110,7 +110,7 @@ empIndComparison <- function(input, output, session, data, region) {
         x = NULL,
         title = toupper(paste0("share of industry employment: ", input$region_one, " & ", input$region_two, " (", input$date, ")"))
       ) +
-      theme_aiti(legend = 'bottom', base_family = "Roboto")
+      theme_aiti()
     
     
     ggplotly(p, tooltip = 'text') %>%

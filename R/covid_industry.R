@@ -107,7 +107,7 @@ covidIndustryServer <- function(id, data) {
           geom_bar(stat = 'identity', fill = aititheme::aiti_blue) + 
           scale_y_continuous(labels = percent_format(scale = 1)) + 
           coord_flip() +
-          theme_aiti(legend = "bottom", base_family = "Roboto") + 
+          theme_aiti() + 
           labs(y = NULL, title = toupper(plot_title))
           
         } else {
@@ -131,7 +131,7 @@ covidIndustryServer <- function(id, data) {
             geom_line()  + 
             geom_hline(aes(yintercept = 100)) + 
             geom_point(shape = 1, size = 1) + 
-            theme_aiti(legend = "bottom", base_family = "Roboto") + 
+            theme_aiti() + 
             scale_x_date(breaks = pretty_breaks(n = 6), date_labels = "%b-%d") + 
             aiti_colour_manual(n = length(input$industry)) +
             labs(x = NULL, y = NULL, title = plot_title)
