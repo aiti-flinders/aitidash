@@ -32,11 +32,11 @@ jobs:
           GITHUB_PAT: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
           Rscript -e "install.packages(c('shiny', 'rsconnect', 'remotes', 'pkgload', 'purrr'))"
-          Rscript -e "remotes::install_deps(force = FALSE, dependencies = TRUE)"
+          Rscript -e "remotes::install_deps(force = FALSE, type = 'binary', dependencies = TRUE)"
 
         
       - name: Push to shiny.io
         run: |
           Rscript -e "rsconnect::setAccountInfo(name='aiti', token='${{secrets.SHINYAPPS_TOKEN}}', secret='${{secrets.SHINYAPPS_SECRET}}')"
-          Rscript -e "rsconnect::deployApp(appName = 'WorkSight')"
+          Rscript -e "rsconnect::deployApp(appName = 'WorkSight', forceUpdate = TRUE)"
      
