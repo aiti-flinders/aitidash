@@ -1,4 +1,4 @@
-covidDemographicUI <- function(id, data) {
+payroll_jobs_demographic_ui <- function(id, data) {
   ns <- NS(id)
   
   state_choices <- sort(unique(data$state))
@@ -39,7 +39,7 @@ covidDemographicUI <- function(id, data) {
   
 }
 
-covidDemographicServer <- function(id, data, region) {
+payroll_jobs_demographic_server <- function(id, data, region) {
   
   moduleServer(
     id,
@@ -67,45 +67,28 @@ covidDemographicServer <- function(id, data, region) {
 
       create_plot <- reactive({
         
-        plot_title <-  "Payroll Jobs Index"
-
-
-        p <-  ggplot(create_data(), 
-                     aes_(x = ~date, 
-                          y = ~value, 
-                          colour = as.name(input$breakdown),
-                          text = ~paste0(input$state, 
-                                         "<br>Week Ending: ", format(date, "%d %B %Y"),
-                                         "<br>Index: ", as_comma(value, digits = 2)),
-                          group = as.name(input$breakdown))) + 
-          geom_line() +
-          geom_hline(aes(yintercept = 100)) + 
-          geom_point(shape = 1, size = 1) + 
-          theme_aiti() +
-          scale_x_date(breaks = pretty_breaks(6), date_labels = "%B") + 
-          scale_colour_aiti() +
-          labs(x = NULL,
-               y = NULL,
-               title = toupper(
-                 paste0(plot_title, ": ", input$state)
-               ))
-        
-        
-        ggplotly(p, tooltip = "text") %>%
-          layout(autosize = TRUE,
-                 legend = list(orientation = "h", 
-                               y = -0.15,
-                               title = ""),
-                 annotations = list(
-                   x = 1,
-                   y = -0.20,
-                   text = "Source: AITI Economic Indicators",
-                   showarrow = FALSE,
-                   xref = "paper",
-                   yref = "paper",
-                   xanchor = "right", 
-                   yanchor ="right"
-                 ))
+        if (input$breakdown == "age") {
+          
+          abs_plot(create_data(),
+                   type = "line",
+                   indicator = input$indicator,
+                   industry = "Total (industry)",
+                   state = input$state,
+                   age = unique(create_data()$age),
+                   sex = "Persons",
+                   plotly = TRUE)
+        } else {
+          
+          abs_plot(create_data(),
+                   type = "line",
+                   indicator = input$indicator,
+                   industry = "Total (industry)",
+                   state = input$state,
+                   age = "Total (age)",
+                   sex = c("Males", "Females"),
+                   plotly = TRUE)
+          
+        }
         
       })
       

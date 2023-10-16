@@ -105,12 +105,14 @@ labourMarketServer <- function(id, data) {
   })
   
   create_plot <- reactive({
-    p <- abs_plot(.data = create_data(),
+    p <- abs_plot(data = create_data(),
+                  type = "line",
                   indicator = input$indicator,
                   years = input$years,
-                  states = input$state,
-                  series_types =  input$series_type,
+                  state = input$state,
+                  series_type =  input$series_type,
                   compare_aus = FALSE,
+                  palette = "legacy",
                   plotly = TRUE) 
   })
   

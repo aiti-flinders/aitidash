@@ -11,7 +11,7 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
 Imports:
     shiny,
     bs4Dash,
@@ -26,7 +26,7 @@ Imports:
     zoo,
     sf,
     pkgload,
-    leaflet,
+    leaflet, 
     mapview,
     pkgload,
     sparkline,
@@ -37,13 +37,11 @@ Imports:
     tidyr,
     aitidata,
     reportabs,
-    strayr,
-    aititheme
+    strayr
 Remotes: 
     aiti-flinders/aitidata,
     aiti-flinders/reportabs,
     runapp-aus/strayr,
-    aiti-flinders/aititheme,
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

@@ -1,7 +1,7 @@
 mytheme <- function(...) {
   create_theme(
     bs4dash_status(
-      primary = aititheme::aiti_blue,
+      primary = get_colour("Legacy Blue"),
       success = "#64b478",
       danger = "#ffb24d",
       warning = "#fdd969",
@@ -11,19 +11,19 @@ mytheme <- function(...) {
       family_base = "Roboto"
     ),
     bs4dash_color(
-      blue = aititheme::aiti_blue,
-      lightblue = aititheme::aiti_lightblue,
-      navy = aititheme::aiti_darkblue,
-      yellow = aititheme::aiti_yellow,
-      gray_600 = aititheme::aiti_grey
+      blue = get_colour("Legacy Blue"),
+      lightblue = get_colour("Legacy Blue Highlight"),
+      navy = get_colour("Concrete Grey"),
+      yellow = get_colour("Flinders Gold"),
+      gray_600 = get_colour("Soft Black")
     ),
     bs4dash_vars(
       card_title_font_size = "1.5rem",
-      card_border_color = aititheme::aiti_darkblue
+      card_border_color = get_colour("Concrete Grey")
     ),
     bs4dash_sidebar_light(
-      color = aititheme::aiti_darkblue,
-      hover_color = aititheme::aiti_blue
+      color = get_colour("Concrete Grey"),
+      hover_color = get_colour("Legacy Blue")
     )
     #bs_vars(input_group_addon_bg = "red"),
     # bs_vars_button(

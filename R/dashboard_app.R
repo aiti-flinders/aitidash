@@ -15,7 +15,6 @@
 #'@import leaflet
 #'@import mapview
 #'@import strayr
-#'@import aititheme
 #'@import pkgload
 #'@import sparkline
 #'@import formattable
@@ -35,12 +34,6 @@ Sys.setenv("plotly_api_key" = 'SDYMDyK3YM0eZrTNpyoa')
 
 # phantom_js install
 if (is.null(suppressMessages(webshot:::find_phantom()))) { webshot::install_phantomjs() }
-
-#Install fonts
-dir.create("~/.fonts")
-file.copy("inst/www/Roboto.ttf", "~/.fonts")
-system('fc-cache -f ~/.fonts')
-
 
 
 #### Server ####
@@ -67,8 +60,8 @@ dash_server <- function(input, output, session) {
   # iviTreeServer("ivi_treemap", data = aitidata::internet_vacancies_index, region = region_selected)
   
   #Weekly payroll data
-  covidRegionServer("covid_region", data = aitidata::payroll_index)
-  covidDemographicServer("covid_demog", data = aitidata::payroll_index)
+  payroll_jobs_server("payroll_jobs", data = aitidata::payroll_index)
+  payroll_jobs_demographic_server("payroll_jobs_demographic", data = aitidata::payroll_index)
   covidIndustryServer("covid_industry", data = aitidata::payroll_index)
   
   #Maps

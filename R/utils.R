@@ -105,14 +105,15 @@ boxes_names <- function() {
   
 }
 
+
 create_sparklines <- function(data, region) {
   data  %>%
     dplyr::filter(gender == "Persons", 
            age == "Total (age)",
            state == {{region}},
            indicator %in% dashboard_summary$indicator,
-           series_type == "Seasonally Adjusted",
-           date %in% c(max(.$date):(max(.$date) - months(12)))) %>%
+           series_type == "Trend",
+           date %in% as.Date(c(max(.$date):(max(.$date) - months(12))))) %>%
     dplyr::group_by(indicator) %>%
     dplyr::summarise(min_date = format(min(date), "%B %Y"),
                      max_date = format(max(date), "%B %Y"),
@@ -187,4 +188,8 @@ add_arrows <- function(value, reverse) {
   }
   
   
+}
+
+get_colour <- function(colour_name) {
+  reportabs::aiti_colours[[colour_name]]
 }

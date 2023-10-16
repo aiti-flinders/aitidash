@@ -63,11 +63,6 @@ sidebar <- function(...) {
           text = "Weekly Payroll",
           tabName = "jobs_payroll",
           icon = icon("chart-line")
-        ),
-        menuSubItem(
-          text = "Small Areas",
-          tabName = "salm",
-          icon = icon("map")
         )
       ),
       menuItem(
@@ -84,11 +79,6 @@ sidebar <- function(...) {
           tabName = "industry_payroll",
           icon = icon("chart-line")
         )
-      ),
-      menuItem(
-        text = "Maps",
-        tabName = "maps",
-        icon = icon("map")
       )
       
     )
@@ -236,19 +226,19 @@ labour_market_tab <- function(...) {
   )
 }
 
-small_area_labour_market_tab <- function(...) {
-  tabItem(
-    tabName = "salm",
-    fluidRow(
-      tabBox(
-        id = "salm_tab_id",
-        width = 12,
-        map_ui("lm_salm", data = aitidata::small_area_labour_market, title = "Small Area Labour Market")
-      )
-    )
-  )
-}
-
+# small_area_labour_market_tab <- function(...) {
+#   tabItem(
+#     tabName = "salm",
+#     fluidRow(
+#       tabBox(
+#         id = "salm_tab_id",
+#         width = 12,
+#         map_ui("lm_salm", data = aitidata::small_area_labour_market, title = "Small Area Labour Market")
+#       )
+#     )
+#   )
+# }
+# 
 jobs_payroll_tab <- function(...) {
   tabItem(
     tabName = "jobs_payroll",
@@ -256,13 +246,13 @@ jobs_payroll_tab <- function(...) {
       tabBox(
         id = "jobs_payroll_tab_id",
         width = 12,
-        covidRegionUI("covid_region", data = aitidata::payroll_index),
-        covidDemographicUI("covid_demog", data = aitidata::payroll_index)
+        payroll_jobs_ui("payroll_jobs", data = aitidata::payroll_index),
+        payroll_jobs_demographic_ui("payroll_jobs_demographic", data = aitidata::payroll_index)
       )
     )
   )
 }
-
+# 
 #Employment by Industry
 emp_ind_tab <- function(...) {
   tabItem(
@@ -277,56 +267,56 @@ emp_ind_tab <- function(...) {
     )
   )
 }
-
-industry_payroll_tab <- function(...) {
-  tabItem(
-    tabName = "industry_payroll",
-    fluidRow(
-      tabBox(
-        id = "industry_payroll_tab_id",
-        width = 12,
-        covidIndustryUI("covid_industry", data = aitidata::payroll_index)
-        
-      )
-    )
-  )
-}
-
-
-
-#IVI Tab
-# internet_vacancies_tab <- function(...) {
+# 
+# industry_payroll_tab <- function(...) {
 #   tabItem(
-#     tabName = "internet_vacancies", 
+#     tabName = "industry_payroll",
 #     fluidRow(
 #       tabBox(
-#         id = "internet_vacancies_tab_id",
+#         id = "industry_payroll_tab_id",
 #         width = 12,
-#         iviUI("ivi_ts", data = aitidata::internet_vacancies_index),
-#         iviComparisonUI("ivi_comparison", data = aitidata::internet_vacancies_index),
-#         iviTreeUI("ivi_treemap", data = aitidata::internet_vacancies_index)
+#         covidIndustryUI("covid_industry", data = aitidata::payroll_index)
+#         
 #       )
 #     )
 #   )
 # }
-
-#### Map Tabs ####
-map_tab <- function(...) {
-  tabItem(
-    tabName = "maps",
-    fluidRow(
-      tabBox(
-        id = "map_tab_id",
-        width = 12,
-        map_ui("jobseeker_map", data = aitidata::jobseeker_sa2, title = "JobSeeker Data"),
-        map_ui("jobkeeper_map", data = aitidata::jobkeeper_sa2, title = "JobKeeper Data"),
-        map_ui("payroll_map", data = aitidata::payroll_substate, title = "Weekly Payroll Data")
-        
-      )
-    )
-  )
-}
-
+# 
+# 
+# 
+# #IVI Tab
+# # internet_vacancies_tab <- function(...) {
+# #   tabItem(
+# #     tabName = "internet_vacancies", 
+# #     fluidRow(
+# #       tabBox(
+# #         id = "internet_vacancies_tab_id",
+# #         width = 12,
+# #         iviUI("ivi_ts", data = aitidata::internet_vacancies_index),
+# #         iviComparisonUI("ivi_comparison", data = aitidata::internet_vacancies_index),
+# #         iviTreeUI("ivi_treemap", data = aitidata::internet_vacancies_index)
+# #       )
+# #     )
+# #   )
+# # }
+# 
+# #### Map Tabs ####
+# map_tab <- function(...) {
+#   tabItem(
+#     tabName = "maps",
+#     fluidRow(
+#       tabBox(
+#         id = "map_tab_id",
+#         width = 12,
+#         map_ui("jobseeker_map", data = aitidata::jobseeker_sa2, title = "JobSeeker Data"),
+#         map_ui("jobkeeper_map", data = aitidata::jobkeeper_sa2, title = "JobKeeper Data"),
+#         map_ui("payroll_map", data = aitidata::payroll_substate, title = "Weekly Payroll Data")
+#         
+#       )
+#     )
+#   )
+# }
+# 
 header <- function(...) {
   dashboardHeader(
     skin = "light",
@@ -359,12 +349,12 @@ body <- function(...) {
     tabItems(
       dashboard_tab(),
       labour_market_tab(),
-      small_area_labour_market_tab(),
+      # small_area_labour_market_tab(),
       jobs_payroll_tab(),
-      emp_ind_tab(),
-      industry_payroll_tab(),
-      #internet_vacancies_tab(),
-      map_tab()
+      emp_ind_tab()
+      # industry_payroll_tab(),
+      # internet_vacancies_tab(),
+      # map_tab()
     )
   )
 }

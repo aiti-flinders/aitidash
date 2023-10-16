@@ -14,9 +14,9 @@ empIndUI <- function(id, data) {
     dplyr::pull(industry) %>%
     unique() %>%
     sort()
-
+  
   series_choices <- sort(unique(data$series_type))
-
+  
   
   tabPanel(width='100%',
            title = uiOutput(ns('title_panel')), 
@@ -57,8 +57,8 @@ empIndUI <- function(id, data) {
              )
            )
   )
-
-
+  
+  
 }
 
 empInd <- function(input, output, session, data) {
@@ -69,7 +69,7 @@ empInd <- function(input, output, session, data) {
   
   output$title_panel <- renderText({
     input$state
-    })
+  })
   
   observe({
     if (length(input$industry) > 9) {
@@ -90,10 +90,10 @@ empInd <- function(input, output, session, data) {
     }
   })
   
-
+  
   current_indicator <- reactiveVal(NULL)
   
-
+  
   observeEvent(input$state, {
     
     current_indicator(input$indicator)
@@ -106,7 +106,7 @@ empInd <- function(input, output, session, data) {
                         sort(), 
                       selected = "Employed total")
     
-  
+    
     
   })
   
@@ -124,18 +124,18 @@ empInd <- function(input, output, session, data) {
         ungroup() %>%
         arrange(desc(industry)) %>%
         mutate(industry = forcats::as_factor(industry)) 
-      } else {
-        df <- data %>% 
-      filter(state == input$state, 
-             indicator == input$indicator,
-             industry != "Total (industry)",
-             series_type == "Original",
-             gender == "Persons") %>%
-      group_by(date) %>%
-      mutate(value_share = 100*value/sum(value)) %>%
-      ungroup() %>%
-      filter(industry %in% input$industry)
-      }
+    } else {
+      df <- data %>% 
+        filter(state == input$state, 
+               indicator == input$indicator,
+               industry != "Total (industry)",
+               series_type == "Original",
+               gender == "Persons") %>%
+        group_by(date) %>%
+        mutate(value_share = 100*value/sum(value)) %>%
+        ungroup() %>%
+        filter(industry %in% input$industry)
+    }
   })
   
   create_plot <- reactive({
@@ -160,15 +160,15 @@ empInd <- function(input, output, session, data) {
       
     }
     
-    if(is.null(input$industry)) {
-
+    if (is.null(input$industry)) {
+      
       
       
       p <- ggplot(create_data(), aes_(x = ~reorder(industry, value), 
-                           y =  as.name(y_var),
-                           text = ~paste0(input$indicator, ": ", as_comma(value),
-                                         " (", as_percent(value_share), ")"))) + 
-        geom_bar(stat='identity', fill = aititheme::aiti_blue) + 
+                                      y =  as.name(y_var),
+                                      text = ~paste0(input$indicator, ": ", as_comma(value),
+                                                     " (", as_percent(value_share), ")"))) + 
+        geom_bar(stat='identity') + 
         labs(
           y = NULL,
           x = NULL,
@@ -179,25 +179,26 @@ empInd <- function(input, output, session, data) {
         theme_aiti(flipped = TRUE)
     } else {
       
-        p <- ggplot(create_data(), aes_(x = ~date, 
-                           y = as.name(y_var),
-                           colour = ~industry, 
-                           text = ~paste0("Date: ", format(date, "%Y-%b"),
-                                         "<br>",industry, ": ", as_comma(value),
-                                         " (", as_percent(value_share), ")"),
-                           group = ~industry)) + 
+      p <- ggplot(create_data(), 
+                  aes_(x = ~date, 
+                       y = as.name(y_var),
+                       colour = ~industry, 
+                       text = ~paste0("Date: ", format(date, "%Y-%b"),
+                                      "<br>",industry, ": ", as_comma(value),
+                                      " (", as_percent(value_share), ")"),
+                       group = ~industry)) + 
         geom_line() + 
         labs(
           x = NULL, 
           y = NULL,
           title = plot_title
         ) + 
-        aititheme::scale_colour_aiti("blue") +
+        scale_colour_aiti(palette = "main") +
         scale_y_continuous(labels = y_labels)  +
         theme_aiti()
       
     }
-
+    
     ggplotly(p, tooltip = "text") %>%
       layout(autosize = TRUE,
              legend = list(orientation = "h",
@@ -215,15 +216,15 @@ empInd <- function(input, output, session, data) {
              ))
   })
   
-
+  
   output$plot <- renderPlotly({
     validate(
       need(input$date, message = FALSE)
     )
-
+    
     create_plot()
     
-    })
+  })
   
   output$download_plot <- downloadHandler(
     filename = function(){
@@ -243,7 +244,7 @@ empInd <- function(input, output, session, data) {
                   select(date, industry, value, value_share), file, row.names = FALSE)
     }
   )
-    
-    
+  
+  
   
 }

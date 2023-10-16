@@ -2,7 +2,6 @@
 
 export(aiti_dashboard)
 import(aitidata)
-import(aititheme)
 import(bs4Dash)
 import(dplyr)
 import(forcats)
