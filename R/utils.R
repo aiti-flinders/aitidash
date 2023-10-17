@@ -111,8 +111,8 @@ create_sparklines <- function(data, region) {
            age == "Total (age)",
            state == {{region}},
            indicator %in% dashboard_summary$indicator,
-           series_type == "Seasonally Adjusted",
-           date %in% c(max(.$date):(max(.$date) - months(12)))) %>%
+           series_type == "Trend",
+           between(date, last(date) - months(12), last(date))) %>%
     dplyr::group_by(indicator) %>%
     dplyr::summarise(min_date = format(min(date), "%B %Y"),
                      max_date = format(max(date), "%B %Y"),
