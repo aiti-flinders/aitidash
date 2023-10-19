@@ -170,7 +170,3 @@ labourMarketServer <- function(id, data) {
     }
   )
 }
-
-
-
-
