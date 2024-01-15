@@ -39,13 +39,12 @@ Imports:
     reportabs,
     strayr,
     aititheme (>= 0.0.0.9000),
-    aitidash (>= 0.0.1.9000)
-Remotes:  
+    webshot
+Remotes: 
     aiti-flinders/aitidata,
     aiti-flinders/reportabs,
     runapp-aus/strayr,
     aiti-flinders/aititheme,
-    aiti-flinders/aitidash
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
