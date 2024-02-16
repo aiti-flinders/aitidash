@@ -10,7 +10,8 @@ jobs:
     runs-on: macOS-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      # 16/02/2024 - David Nicoll - updated to v4 from v2 due to deprecation warnings in logs
+      - uses: actions/checkout@v4
       - uses: r-lib/actions/setup-r@v1
         with:
           r-version: '4.0.5'
