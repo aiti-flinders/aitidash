@@ -45,11 +45,6 @@ sidebar <- function(...) {
         icon = icon("chart-bar"),
         selected = TRUE
       ),
-      # menuItem(
-      #   text = "User Guide",
-      #   tabName = "user_guide",
-      #   icon = icon("book-reader")
-      # ),
       menuItem(
         text = "Employment Insights",
         tabName = "employment_insights",
@@ -58,11 +53,6 @@ sidebar <- function(...) {
           text = "Labour Force",
           tabName = "employment",
           icon = icon("briefcase")
-        ),
-        menuSubItem(
-          text = "Weekly Payroll",
-          tabName = "jobs_payroll",
-          icon = icon("chart-line")
         ),
         menuSubItem(
           text = "Small Areas",
@@ -78,11 +68,6 @@ sidebar <- function(...) {
           text = "Employment by Industry",
           tabName = "industry_employment",
           icon = icon("industry")
-        ),
-        menuSubItem(
-          text = "Weekly Payroll",
-          tabName = "industry_payroll",
-          icon = icon("chart-line")
         )
       ),
       menuItem(
