@@ -1,6 +1,5 @@
 #'@rawNamespace import(shiny, except = c(column, tabsetPanel, insertTab, actionButton))
 #'@rawNamespace import(shinyWidgets, except = c(progressBar))
-#'@import aitidata
 #'@import bs4Dash
 #'@import fresh
 #'@import dplyr
@@ -52,62 +51,19 @@ dash_server <- function(input, output, session) {
   
 
   #Labour Market -  Tab
-  labourMarketServer("lm_ts", data = aitidata::labour_force)
-  labourMarketDemogServer("lm_demog", data = aitidata::labour_force)
+  labourMarketServer("lm_ts", data = labour_force)
+  labourMarketDemogServer("lm_demog", data = labour_force)
   
 
   #Employment by Industry - Tab
-  callModule(empInd, "empInd_ts", data = aitidata::industry_employment)
-  callModule(empIndComparison, "empInd_region", data = aitidata::industry_employment, region = region_selected)
-  callModule(empIndAnalysis, "empInd_analysis", data = aitidata::industry_employment, region = region_selected)
-  
-  #IVI - Tab
-  # callModule(ivi, "ivi_ts", data = aitidata::internet_vacancies_index, region = region_selected)
-  # iviComparisonServer("ivi_comparison", data = aitidata::internet_vacancies_index, region = region_selected)
-  # iviTreeServer("ivi_treemap", data = aitidata::internet_vacancies_index, region = region_selected)
-  
-  #Weekly payroll data
-  covidRegionServer("covid_region", data = aitidata::payroll_index)
-  covidDemographicServer("covid_demog", data = aitidata::payroll_index)
-  covidIndustryServer("covid_industry", data = aitidata::payroll_index)
-  
-  #Maps
-  map_server("jobkeeper_map", data = aitidata::jobkeeper_sa2)
-  map_server("jobseeker_map", data = aitidata::jobseeker_sa2)
-  map_server("payroll_map", data = aitidata::payroll_substate)
-  map_server("lm_salm", data = aitidata::small_area_labour_market)
-
-
-  #Employment boxes - row 1
-  table_server("table", data = dplyr::bind_rows(aitidata::labour_force, aitidata::hours_worked), region = region_selected)
-  #JobKeeper Boxes
-  # boxes_server("jobkeeper_total", data = aitidata::jobkeeper_state, region = region_selected, "Jobkeeper applications", percent = FALSE, reverse = TRUE)
-  # boxes_server("jobkeeper_proportion", data = aitidata::jobkeeper_state, region = region_selected, "Jobkeeper proportion", percent = TRUE, reverse = TRUE)
-  # 
-
-
-  #Industry Employment 
-  # boxes_server_industry("industry_total", data = aitidata::employment_by_industry, region = region_selected,  "Employed total")
-  # boxes_server_industry("industry_ft", data = aitidata::employment_by_industry, region = region_selected, "Employed full-time")
-  # boxes_server_industry("industry_pt", data = aitidata::employment_by_industry, region = region_selected, "Employed part-time")
-  # boxes_server_industry("industry_under", data = aitidata::employment_by_industry, region = region_selected, "Underemployed total")
-  # 
-
-  # callModule(retailTrade, "rt_ts", data = rt)
-  # callModule(retailTradeRegional, "rt_region", data  = rt)
-  # callModule(retailTradeAnalysis, "rt_analysis", data = rt)
-  # callModule(boxes, "turnover_temp", data = rt, indicator = "Turnover", percent = F)
+  callModule(empInd, "empInd_ts", data = industry_employment)
+  callModule(empIndComparison, "empInd_region", data = industry_employment, region = region_selected)
+  callModule(empIndAnalysis, "empInd_analysis", data = industry_employment, region = region_selected)
   
 
-  
-  # callModule(population, "pop_ts", data = pop)
-  # callModule(populationRegion, "pop_region", data = pop)
-  # callModule(populationDemo, "pop_demo", data = pop_pyramid)
-  # callModule(exports, "exports_ts", data = exports_data)
 
-  # callModule(industry, "industry_ts", data = state_accs)
-  # callModule(industryAnalysis, "industry_analysis", data = state_accs)
-  # callModule(industryAustralia, "industry_australia", data = nat_accs)
+  #Dashboard Summary
+  table_server("table", data = dashboard_data , region = region_selected)
   
 }
 

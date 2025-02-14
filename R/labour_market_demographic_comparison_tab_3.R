@@ -113,17 +113,18 @@ labourMarketDemogServer <- function(id, data) {
       filter(indicator == input$indicator,
              state %in% input$state,
              series_type == input$series_type,
-             gender == genders(),
-             age == ages(),
+             sex %in% genders(),
+             age %in% ages(),
              year >= input$years)
   })
   
   create_plot <- reactive({
-    p <- abs_plot(indicator = input$indicator,
-               states = input$state,
-               series_types = input$series_type,
-               sex = genders(),
-               ages = ages(),
+    p <- abs_plot(data = create_data(),
+                  v = list(indicator = input$indicator,
+                           state = input$state,
+                           series_type = input$series_type,
+                           sex = genders(),
+                           age = ages()),
                years = input$years,
                compare_aus = FALSE,
                plotly = TRUE)

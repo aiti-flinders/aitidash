@@ -98,18 +98,18 @@ labourMarketServer <- function(id, data) {
              year >= input$years,
              state %in% input$state,
              age == "Total (age)",
-             gender == "Persons",
+             sex == "Persons",
              series_type == input$series_type) %>%
-      select(date, month, year, indicator, value, unit, gender, age, state)
+      select(date, month, year, indicator, value, unit, sex, age, state)
     
   })
   
   create_plot <- reactive({
-    p <- abs_plot(.data = create_data(),
-                  indicator = input$indicator,
+    p <- abs_plot(data = create_data(),
+                  v = list(indicator = input$indicator,
+                           state = input$state,
+                           series_type = input$series_type),
                   years = input$years,
-                  states = input$state,
-                  series_types =  input$series_type,
                   compare_aus = FALSE,
                   plotly = TRUE) 
   })

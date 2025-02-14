@@ -129,8 +129,7 @@ empInd <- function(input, output, session, data) {
       filter(state == input$state, 
              indicator == input$indicator,
              industry != "Total (industry)",
-             series_type == "Original",
-             gender == "Persons") %>%
+             series_type == "Original") %>%
       group_by(date) %>%
       mutate(value_share = 100*value/sum(value)) %>%
       ungroup() %>%
@@ -168,7 +167,7 @@ empInd <- function(input, output, session, data) {
                            y =  as.name(y_var),
                            text = ~paste0(input$indicator, ": ", as_comma(value),
                                          " (", as_percent(value_share), ")"))) + 
-        geom_bar(stat='identity', fill = aititheme::aiti_blue) + 
+        geom_bar(stat='identity') + 
         labs(
           y = NULL,
           x = NULL,
@@ -192,7 +191,7 @@ empInd <- function(input, output, session, data) {
           y = NULL,
           title = plot_title
         ) + 
-        aititheme::scale_colour_aiti("blue") +
+        aititheme::scale_colour_aiti() +
         scale_y_continuous(labels = y_labels)  +
         theme_aiti()
       

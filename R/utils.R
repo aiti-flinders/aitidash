@@ -53,7 +53,7 @@ box_map <- function(...) {
 }
 
 labour_market_indicators <- function() {
-  aitidata::labour_force %>%
+  labour_force %>%
     dplyr::distinct(indicator) %>%
     dplyr::filter(!indicator %in% c("Monthly hours worked in all jobs (employed full-time)",
                                     "Monthly hours worked in all jobs (employed part-time)",
@@ -107,7 +107,7 @@ boxes_names <- function() {
 
 create_sparklines <- function(data, region) {
   data  %>%
-    dplyr::filter(gender == "Persons", 
+    dplyr::filter(sex == "Persons", 
            age == "Total (age)",
            state == {{region}},
            indicator %in% dashboard_summary$indicator,
@@ -186,5 +186,45 @@ add_arrows <- function(value, reverse) {
               value < 0 ~ "arrow-down")
   }
   
+  
+}
+
+current_release <- function() {
+  release_page <- xml2::read_html("https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/latest-release")
+  
+  current_release <- release_page |> 
+    rvest::html_nodes(xpath = '//*[@id="release-date-section"]/div[1]/div[2]') |> 
+    rvest::html_text() |> 
+    trimws()
+  
+  as.Date(current_release, format = "%d/%m/%Y")
+}
+
+next_release <- function() {
+  release_page <- xml2::read_html("https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/latest-release")
+  
+  next_release <- release_page |> 
+    rvest::html_nodes(xpath = '//*[@id="release-date-section"]/div[2]/div/div/ul/li[1]/span/text()') |> 
+    rvest::html_text() 
+  
+  next_release <- next_release |> 
+    gsub(x = next_release, pattern = "([A-Z])\\w+", replacement = "") |> 
+    trimws()
+  
+  next_release <- as.Date(next_release, format = "%d/%m/%Y")
+  
+  if(length(next_release) == 0) {
+    next_release <- release_page |> 
+      rvest::html_nodes(xpath = '//*[@id="release-date-section"]/div[2]/div/text()') |> 
+      rvest::html_text() %>% 
+      .data[2] |> 
+      trimws()
+    
+    next_release <- as.Date(next_release, format = "%d/%m/%Y") 
+  } 
+  
+  if(length(next_release) == 0) {
+    next_release <- NA
+  } 
   
 }

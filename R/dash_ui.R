@@ -53,11 +53,6 @@ sidebar <- function(...) {
           text = "Labour Force",
           tabName = "employment",
           icon = icon("briefcase")
-        ),
-        menuSubItem(
-          text = "Small Areas",
-          tabName = "salm",
-          icon = icon("map")
         )
       ),
       menuItem(
@@ -69,11 +64,6 @@ sidebar <- function(...) {
           tabName = "industry_employment",
           icon = icon("industry")
         )
-      ),
-      menuItem(
-        text = "Maps",
-        tabName = "maps",
-        icon = icon("map")
       )
       
     )
@@ -182,12 +172,12 @@ user_guide_tab <- function(...) {
 #### Summary UI ####
 summary_ui <- function(...) {
   
-  lf_release <- list("current" = aitidata::current_release("labour-force-australia"),
-                     "nxt" = aitidata::abs_next_release("labour-force-australia"))
+  lf_release <- list("current" = current_release(),
+                     "nxt" = next_release())
   
   fluidPage(
     h1(textOutput("region_selected")),
-    h2(paste0("Employment Insights - ", reportabs::release(aitidata::labour_force, "month"), " ", reportabs::release(aitidata::labour_force, "year"))),
+    h2(paste0("Employment Insights - ", reportabs::release(labour_force, "month"), " ", reportabs::release(labour_force, "year"))),
     p(paste0("Last updated on: ", format(lf_release$current, "%A, %d %B %Y"))),
     p(paste0("The next update is: ", format(lf_release$nxt, "%A, %d %B %Y"))),
     fluidRow(width = 12,
@@ -214,25 +204,14 @@ labour_market_tab <- function(...) {
       tabBox(
         id = 'labour_market_tab_id',
         width = 12,
-        labourMarketUI("lm_ts", data = aitidata::labour_force),
-        labourMarketDemogUI("lm_demog", data = aitidata::labour_force)
+        labourMarketUI("lm_ts", data = labour_force),
+        labourMarketDemogUI("lm_demog", data = labour_force)
       )
     )
   )
 }
 
-small_area_labour_market_tab <- function(...) {
-  tabItem(
-    tabName = "salm",
-    fluidRow(
-      tabBox(
-        id = "salm_tab_id",
-        width = 12,
-        map_ui("lm_salm", data = aitidata::small_area_labour_market, title = "Small Area Labour Market")
-      )
-    )
-  )
-}
+
 
 jobs_payroll_tab <- function(...) {
   tabItem(
@@ -256,22 +235,8 @@ emp_ind_tab <- function(...) {
       tabBox(
         id = "employment_industry_tab_id",
         width = 12,
-        empIndUI("empInd_ts", data = aitidata::industry_employment),
-        empIndComparisonUI("empInd_region", data = aitidata::industry_employment)
-      )
-    )
-  )
-}
-
-industry_payroll_tab <- function(...) {
-  tabItem(
-    tabName = "industry_payroll",
-    fluidRow(
-      tabBox(
-        id = "industry_payroll_tab_id",
-        width = 12,
-        covidIndustryUI("covid_industry", data = aitidata::payroll_index)
-        
+        empIndUI("empInd_ts", data = industry_employment),
+        empIndComparisonUI("empInd_region", data = industry_employment)
       )
     )
   )
@@ -279,38 +244,6 @@ industry_payroll_tab <- function(...) {
 
 
 
-#IVI Tab
-# internet_vacancies_tab <- function(...) {
-#   tabItem(
-#     tabName = "internet_vacancies", 
-#     fluidRow(
-#       tabBox(
-#         id = "internet_vacancies_tab_id",
-#         width = 12,
-#         iviUI("ivi_ts", data = aitidata::internet_vacancies_index),
-#         iviComparisonUI("ivi_comparison", data = aitidata::internet_vacancies_index),
-#         iviTreeUI("ivi_treemap", data = aitidata::internet_vacancies_index)
-#       )
-#     )
-#   )
-# }
-
-#### Map Tabs ####
-map_tab <- function(...) {
-  tabItem(
-    tabName = "maps",
-    fluidRow(
-      tabBox(
-        id = "map_tab_id",
-        width = 12,
-        map_ui("jobseeker_map", data = aitidata::jobseeker_sa2, title = "JobSeeker Data"),
-        map_ui("jobkeeper_map", data = aitidata::jobkeeper_sa2, title = "JobKeeper Data"),
-        map_ui("payroll_map", data = aitidata::payroll_substate, title = "Weekly Payroll Data")
-        
-      )
-    )
-  )
-}
 
 header <- function(...) {
   dashboardHeader(
@@ -326,11 +259,8 @@ header <- function(...) {
       condition = "input.sidebarmenu === 'dashboard'",
       radioGroupButtons(
         inputId = "region_select",
-        # 16/02/2024 - David Nicoll - data currently does not have state level only national so hardcode to national for now
-        #choiceNames = toupper(clean_state(regions())),
-        #choiceValues = regions(),
-        choiceNames = "Aus",
-        choiceValues = "Australia",
+        choiceNames = toupper(clean_state(regions())),
+        choiceValues = regions(),
         selected = "Australia",
         direction = "horizontal",
         justified = FALSE
@@ -341,18 +271,12 @@ header <- function(...) {
 
 body <- function(...) {
   dashboardBody(
-    use_theme(mytheme()),
     #tags$head(includeHTML(("custom-assets/google-analytics.html"))),
     tags$head(tags$link(rel = "stylesheet", type = 'text/css', href = 'custom-assets/custom2.css')),
     tabItems(
       dashboard_tab(),
       labour_market_tab(),
-      small_area_labour_market_tab(),
-      jobs_payroll_tab(),
-      emp_ind_tab(),
-      industry_payroll_tab(),
-      #internet_vacancies_tab(),
-      map_tab()
+      emp_ind_tab()
     )
   )
 }

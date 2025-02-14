@@ -11,7 +11,7 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 Imports:
     shiny,
     bs4Dash,
@@ -34,16 +34,16 @@ Imports:
     htmlwidgets,
     plotly,
     tidyr,
-    aitidata,
     reportabs,
     strayr,
     aititheme (>= 0.0.0.9000),
     webshot
 Remotes: 
-    aiti-flinders/aitidata,
     aiti-flinders/reportabs,
     runapp-aus/strayr,
     aiti-flinders/aititheme,
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+Depends: 
+    R (>= 3.5)

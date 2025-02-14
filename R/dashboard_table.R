@@ -18,7 +18,7 @@ table_server <- function(id, data, region) {
       output$table <- renderUI({
       
       using <- data %>%
-        dplyr::filter(gender == "Persons",
+        dplyr::filter(sex == "Persons",
                age == "Total (age)",
                state == region(),
                indicator %in% dashboard_summary$indicator,
@@ -33,7 +33,7 @@ table_server <- function(id, data, region) {
                state == region(),
                series_type == "Trend",
                age == "Total (age)",
-               gender == "Persons",
+               sex == "Persons",
                date == max(.$date)) %>%
         select(indicator, unit, current = value)
       
