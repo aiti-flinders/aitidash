@@ -227,4 +227,5 @@ next_release <- function() {
     next_release <- NA
   } 
   
+  return(next_release)
 }

@@ -16,7 +16,6 @@ Imports:
     shiny,
     bs4Dash,
     shinyWidgets,
-    shinydashboard,
     fresh,
     dplyr,
     forcats,
@@ -37,7 +36,9 @@ Imports:
     reportabs,
     strayr,
     aititheme (>= 0.0.0.9000),
-    webshot
+    xml2,
+    rvest,
+    tibble
 Remotes: 
     aiti-flinders/reportabs,
     runapp-aus/strayr,

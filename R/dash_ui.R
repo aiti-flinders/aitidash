@@ -213,19 +213,7 @@ labour_market_tab <- function(...) {
 
 
 
-jobs_payroll_tab <- function(...) {
-  tabItem(
-    tabName = "jobs_payroll",
-    fluidRow(
-      tabBox(
-        id = "jobs_payroll_tab_id",
-        width = 12,
-        covidRegionUI("covid_region", data = aitidata::payroll_index),
-        covidDemographicUI("covid_demog", data = aitidata::payroll_index)
-      )
-    )
-  )
-}
+
 
 #Employment by Industry
 emp_ind_tab <- function(...) {
