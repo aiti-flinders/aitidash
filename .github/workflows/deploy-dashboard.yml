@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: r-lib/actions/setup-r@v2
         with:
-          r-version: '4.1.0'
+          r-version: 'latest'
       - name: Check R and Rscript are available
         if: runner.os == 'macOS'
         run: |
