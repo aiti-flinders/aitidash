@@ -1741,9 +1741,9 @@
     },
     "readabs": {
       "Package": "readabs",
-      "Version": "0.4.18",
+      "Version": "0.4.16",
       "Source": "Repository",
-      "Repository": "CRAN",
+      "Repository": "RSPM",
       "Requirements": [
         "R",
         "dplyr",
@@ -1761,7 +1761,7 @@
         "tools",
         "xml2"
       ],
-      "Hash": "6b7d947436d41e586b31df2e260b6e92"
+      "Hash": "71aa30400ea6ca894e9adc78f53040ae"
     },
     "readr": {
       "Package": "readr",
