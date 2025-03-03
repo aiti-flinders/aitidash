@@ -81,9 +81,9 @@ covidDemographicServer <- function(id, data, region) {
           geom_line() +
           geom_hline(aes(yintercept = 100)) + 
           geom_point(shape = 1, size = 1) + 
-          theme_aiti() +
+          theme_fof() +
           scale_x_date(breaks = pretty_breaks(6), date_labels = "%B") + 
-          scale_colour_aiti() +
+          scale_colour_fof() +
           labs(x = NULL,
                y = NULL,
                title = toupper(

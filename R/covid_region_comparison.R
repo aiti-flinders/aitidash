@@ -111,9 +111,9 @@ covidRegionServer <- function(id, data) {
           geom_hline(aes(yintercept = 100)) +
           labs(title = plot_title) + 
           geom_point(shape = 1, size = 1) +
-          theme_aiti() +
+          theme_fof() +
           theme(strip.background = element_blank()) +
-          scale_colour_aiti()
+          scale_colour_fof()
       
          
         if (input$facet != "none") {

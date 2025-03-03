@@ -99,7 +99,7 @@ empIndDetailedServer <- function(id, data, region) {
                                      "Subdivision: ", input$subdivision, "<br>",
                                       as_comma(1000*value), " (", input$gender, ")"))) + 
           geom_line() + 
-          theme_aiti() + 
+          theme_fof() + 
           scale_y_continuous(labels = comma_format(scale = 1000)) + 
           labs(
             x = NULL,
