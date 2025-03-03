@@ -37,7 +37,7 @@ jobs:
           Rscript -e "remotes::install_deps(force = FALSE, type = 'binary', dependencies = TRUE)"
       - name: Update data
         run: |
-          Rscript -e "remotes::install_github('aiti-flinders/reportabs')"
+          Rscript -e "install.packages(c('readabs', 'tidyverse'))"
           Rscript -e "source('data-raw/dashboard_data.R')"
       - name: Commit new data
         run: |
