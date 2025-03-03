@@ -5,7 +5,9 @@
 
 <!-- badges: start -->
 
-[!deploy-dashboard](https://github.com/aiti-flinders/aitidash/actions/workflows/deploy-dashboard.yml/badge.svg)
+[![deploy-dashboard](https://github.com/aiti-flinders/aitidash/actions/workflows/deploy-dashboard.yml/badge.svg)](https://github.com/aiti-flinders/aitidash/actions/workflows/deploy-dashboard.yml)
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 
 <!-- badges: end -->
 

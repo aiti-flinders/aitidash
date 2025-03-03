@@ -17,7 +17,8 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 
-[!deploy-dashboard](https://github.com/aiti-flinders/aitidash/actions/workflows/deploy-dashboard.yml/badge.svg)
+[![deploy-dashboard](https://github.com/aiti-flinders/aitidash/actions/workflows/deploy-dashboard.yml/badge.svg)](https://github.com/aiti-flinders/aitidash/actions/workflows/deploy-dashboard.yml) 
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 
 <!-- badges: end -->
 
@@ -39,21 +40,21 @@ For any comments, requests, or issues, please contact [aiti\@flinders.edu.au](ma
 
 ## Definitions
 
-+-------------+----------------------------------------------------------------------------------------------------------------------------------------------+
-| Term        | Definition                                                                                                                                   |
-+=============+==============================================================================================================================================+
-| Indicator   | A time series variable, measured and collected by the ABS                                                                                    |
-+-------------+----------------------------------------------------------------------------------------------------------------------------------------------+
-| Series Type | How the observed data has been processed by the ABS:                                                                                         |
-|             |                                                                                                                                              |
-|             | -   original: the observed, unprocessed data                                                                                                 |
-|             |                                                                                                                                              |
-|             | -   seasonally adjusted: observed data processed to remove influences that are systematic and related to the calendar                        |
-|             |                                                                                                                                              |
-|             | -   trend: observed data processed to remove calendar related, and other irregular effects, to show the long term movement of an indicator.  |
-+-------------+----------------------------------------------------------------------------------------------------------------------------------------------+
-| Region      | States and Territories in Australia, or Australia itself.                                                                                    |
-+-------------+----------------------------------------------------------------------------------------------------------------------------------------------+
++-------------+---------------------------------------------------------------------------------------------------------------------------------------------+
+| Term        | Definition                                                                                                                                  |
++=============+=============================================================================================================================================+
+| Indicator   | A time series variable, measured and collected by the ABS                                                                                   |
++-------------+---------------------------------------------------------------------------------------------------------------------------------------------+
+| Series Type | How the observed data has been processed by the ABS:                                                                                        |
+|             |                                                                                                                                             |
+|             | -   original: the observed, unprocessed data                                                                                                |
+|             |                                                                                                                                             |
+|             | -   seasonally adjusted: observed data processed to remove influences that are systematic and related to the calendar                       |
+|             |                                                                                                                                             |
+|             | -   trend: observed data processed to remove calendar related, and other irregular effects, to show the long term movement of an indicator. |
++-------------+---------------------------------------------------------------------------------------------------------------------------------------------+
+| Region      | States and Territories in Australia, or Australia itself.                                                                                   |
++-------------+---------------------------------------------------------------------------------------------------------------------------------------------+
 
 ## Notes on Data Availability
 
