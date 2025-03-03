@@ -35,7 +35,7 @@ jobs:
           Rscript -e "remotes::install_deps(force = FALSE, type = 'binary', dependencies = TRUE)"
       - name: Update data
         run: |
-          Rscript -e "source('data-raw/dashboard_data.R')
+          Rscript -e "source('data-raw/dashboard_data.R')"
       - name: Commit new data
         run: |
           git config --global user.name 'Hamish Gamble'
