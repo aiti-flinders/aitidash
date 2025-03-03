@@ -43,7 +43,7 @@ jobs:
         run: |
           git config --global user.name 'Hamish Gamble'
           git config --global user.email 'gamb0043@flinders.edu.au'
-          git add.
+          git add .
           git commit -m 'Update dashboard data' || echo 'No changes to commit'
           git push || echo 'No changes to commit'
       - name: Push to shiny.io
