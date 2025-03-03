@@ -1,0 +1,57 @@
+# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
+# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+on:
+  push:
+    branches: [main, master]
+  schedule:
+    - cron: '10 1 * * 1-5'
+
+name: shiny-deploy.yaml
+
+permissions: read-all
+
+jobs:
+  shiny-deploy:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+          r-version: renv
+
+      - uses: r-lib/actions/setup-renv@v2
+      
+      - name: Update dashboard data
+        run: |
+          Rscript -e "install.packages(c('readabs', 'remotes', 'tidyverse', 'usethis'))"
+          Rscript -e "remotes::install_github('aiti-flinders/reportabs')"
+          Rscript -e "source('data-raw/dashboard_data.R')"
+          
+      - name: Commit new data
+        run: |
+          git config --global user.name 'Hamish Gamble'
+          git config --global user.email 'gamb0043@flinders.edu.au'
+          git add .
+          git commit -m 'Update dashboard data' || echo 'No changes to commit'
+          git push || echo 'No changes to commit'
+
+      - name: Install rsconnect
+        run: install.packages("rsconnect")
+        shell: Rscript {0}
+
+      - name: Authorize and deploy app
+        env:
+          # Provide your app name, account name, and server to be deployed below
+          APPNAME: WorkSight
+          ACCOUNT: aiti
+          SERVER: shinyapps.io # server to deploy
+        run: |
+          rsconnect::setAccountInfo(name = "${{ env.APPNAME }}", "${{ secrets.SHINYAPPS_TOKEN }}", "${{ secrets.SHINYAPPS__SECRET }}")
+          rsconnect::deployApp(appName = "${{ env.APPNAME }}", account = "${{ env.ACCOUNT }}", server = "${{ env.SERVER }}")
+        shell: Rscript {0}

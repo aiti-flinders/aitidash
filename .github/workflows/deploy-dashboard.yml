@@ -2,14 +2,6 @@ name: deploy-dashboard
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the dev branch
-on:
-  schedule:
-     - cron:  '10 1 * * 1-5'
-
-  push:
-   branches:
-     master
-
 
 jobs: 
   deploy-dashboard:
