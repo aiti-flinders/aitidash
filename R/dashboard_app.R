@@ -1,9 +1,9 @@
 #'@rawNamespace import(shiny, except = c(column, tabsetPanel, insertTab, actionButton))
 #'@rawNamespace import(shinyWidgets, except = c(progressBar))
-#'@import bs4Dash
 #'@import fresh
 #'@import dplyr
 #'@import forcats
+#'@import bs4Dash
 #'@import ggplot2
 #'@import lubridate
 #'@import scales
@@ -14,7 +14,6 @@
 #'@import leaflet
 #'@import mapview
 #'@import strayr
-#'@import aititheme
 #'@import pkgload
 #'@import sparkline
 #'@import formattable
@@ -33,10 +32,6 @@ Sys.setenv("plotly_username" = "hamgamb")
 Sys.setenv("plotly_api_key" = 'SDYMDyK3YM0eZrTNpyoa')
 
 
-#Install fonts
-dir.create("~/.fonts")
-file.copy("inst/www/Roboto.ttf", "~/.fonts")
-system('fc-cache -f ~/.fonts')
 
 
 

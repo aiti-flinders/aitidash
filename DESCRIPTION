@@ -14,7 +14,6 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Imports:
     shiny,
-    bs4Dash,
     shinyWidgets,
     fresh,
     dplyr,
@@ -35,14 +34,14 @@ Imports:
     tidyr,
     reportabs,
     strayr,
-    aititheme (>= 0.0.0.9000),
     xml2,
     rvest,
-    tibble
+    tibble,
+    bslib,
+    bs4Dash
 Remotes: 
     aiti-flinders/reportabs,
     runapp-aus/strayr,
-    aiti-flinders/aititheme,
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
