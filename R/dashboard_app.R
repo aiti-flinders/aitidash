@@ -9,10 +9,7 @@
 #'@import scales
 #'@import zoo
 #'@import reportabs
-#'@import sf
 #'@import pkgload
-#'@import leaflet
-#'@import mapview
 #'@import strayr
 #'@import pkgload
 #'@import sparkline

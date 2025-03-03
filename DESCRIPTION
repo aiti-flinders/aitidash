@@ -22,10 +22,7 @@ Imports:
     lubridate,
     scales,
     zoo,
-    sf,
     pkgload,
-    leaflet,
-    mapview,
     sparkline,
     formattable,
     htmltools,
@@ -37,7 +34,6 @@ Imports:
     xml2,
     rvest,
     tibble,
-    bslib,
     bs4Dash
 Remotes: 
     aiti-flinders/reportabs,
