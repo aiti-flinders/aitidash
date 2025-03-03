@@ -106,7 +106,7 @@ labourMarketServer <- function(id, data) {
   
   create_plot <- reactive({
     p <- abs_plot(data = create_data(),
-                  v = list(indicator = input$indicator,
+                  over = list(indicator = input$indicator,
                            state = input$state,
                            series_type = input$series_type),
                   years = input$years,
