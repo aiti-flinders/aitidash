@@ -17,7 +17,7 @@ industry_employment <- read_absdata("industry_employment") |>
 usethis::use_data(industry_employment, compress = 'xz', overwrite = TRUE)
 
 dashboard_data <- bind_rows(
-  read_absdata("labour_force"),
+  labour_force,
   read_absdata("hours_worked")
 ) 
 
