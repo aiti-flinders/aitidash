@@ -26,6 +26,8 @@ jobs:
           r-version: renv
 
       - uses: r-lib/actions/setup-renv@v2
+        run: |
+          Rscript -e "renv::status()"
       
       - name: Update dashboard data
         run: |
