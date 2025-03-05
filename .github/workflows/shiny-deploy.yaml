@@ -29,7 +29,7 @@ jobs:
 
       - name: Update dashboard data
         run: |
-           Rscript -e "renv::status()"
+          Rscript -e "renv::status()"
           Rscript -e "install.packages(c('readabs', 'remotes', 'tidyverse', 'usethis'))"
           Rscript -e "remotes::install_github('aiti-flinders/reportabs')"
           Rscript -e "source('data-raw/dashboard_data.R')"
