@@ -53,6 +53,6 @@ jobs:
           ACCOUNT: aiti
           SERVER: shinyapps.io # server to deploy
         run: |
-          rsconnect::setAccountInfo(name = "${{ env.APPNAME }}", token = "${{ secrets.SHINYAPPS_TOKEN }}", secret = "${{ secrets.SHINYAPPS__SECRET }}")
+          rsconnect::setAccountInfo(name = "${{ env.APPNAME }}", token = "${{ secrets.SHINYAPPS_TOKEN }}", secret = "${{ secrets.SHINYAPPS_SECRET }}")
           rsconnect::deployApp(appName = "${{ env.APPNAME }}", account = "${{ env.ACCOUNT }}", server = "${{ env.SERVER }}")
         shell: Rscript {0}
